@@ -3,7 +3,9 @@ using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
 using System.Diagnostics;
+using System.IO;
 using System.Linq;
+using System.Resources;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
@@ -14,6 +16,7 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
+using MahApps.Metro.Controls;
 using System.Windows.Shapes;
 
 namespace ArgPerm
@@ -21,77 +24,166 @@ namespace ArgPerm
     /// <summary>
     /// Interaction logic for MainWindow.xaml
     /// </summary>
-    public partial class MainWindow : Window
+    public partial class MainWindow : MetroWindow
     {
         public MainWindow()
         {
             InitializeComponent();
 
-            //MSSQL sql = new MSSQL();
 
-            Stopwatch sw = new Stopwatch();
-            sw.Start();
-
-            //SqlConnection con = new SqlConnection(
-            //    @"Server=PC-W10-SW\MSSQLSERVER_DEV;Database=ArgesPerm;Trusted_Connection=True;"
-            //);
-            //SqlDataAdapter sda = new SqlDataAdapter("SELECT * FROM argarm.adgroups", con);
-            //DataSet ds = new DataSet();
-            //sda.Fill(ds, "argarm.adgroups");
-
-            ////var result = from dirs in ds.Tables["argarm.dirs"].AsEnumerable()
-            ////             where dirs.Field<string>("Directory").Substring(2).Split('\\').Length <= 2
-            ////             orderby dirs.Field<string>("Directory")
-            ////             group dirs by dirs.Field<string>("Directory") into gdirs
-            ////             select new
-            ////             {
-            ////                 dir = gdirs.Key,
-            ////             };
-
-            //var result = from grps in ds.Tables["argarm.adgroups"].AsEnumerable()
-            //             //where dirs.Field<string>("Directory").Substring(2).Split('\\').Length <= 2
-            //             orderby grps.Field<string>("SamAccountName")
-            //             group grps by grps.Field<string>("SamAccountName") into ggrps
-            //             select new
-            //             {
-            //                 grps = ggrps.Key,
-            //             };
-
-
-
-            //foreach (var row in result)
-            //{
-            //    listBox_test.Items.Add(row.grps);
-            //}
-
-            GetAllDirs();
-
-            sw.Stop();
-            lbl_time.Content = sw.ElapsedMilliseconds;
+            MyTreeViewItem rootNode = GetRootNodeWithThreeLevels("Apollon");
+            treeView_Directorys.Items.Add(rootNode);
         }
 
-        
 
-        void GetAllDirs()
+        #region Directory TreeView
+        Uri iconUri_folder = new Uri("pack://siteoforigin:,,,/Resources/win/Folder_16x.png");
+        Uri iconUri_folderShared = new Uri("pack://siteoforigin:,,,/Resources/win/FolderShared_16x.png");
+        Uri iconUri_server = new Uri("pack://siteoforigin:,,,/Resources/win/LocalServer_16x.png");
+
+        private MyTreeViewItem GetRootNodeWithThreeLevels(string Servername)
         {
+            MyTreeViewItem root = new MyTreeViewItem
+            {
+                HeaderText = Servername,
+                Tag = "\\\\" + Servername.ToLower(),
+                Icon = new BitmapImage(iconUri_server)
+            };
+
+            List<DirWithSubcount> listOfDirs = GetDirectories(root.Tag.ToString());
+
+            foreach (DirWithSubcount row in listOfDirs)
+            {
+                MyTreeViewItem item = new MyTreeViewItem
+                {
+                    HeaderText = row.Dir.Substring(root.Tag.ToString().Length + 1),
+                    Tag = row.Dir,
+                    Icon = new BitmapImage(iconUri_folderShared)
+                };
+
+                List<DirWithSubcount> listOfSubDirs = GetDirectories(row.Dir);
+
+                foreach (var SubRow in listOfSubDirs)
+                {
+                    MyTreeViewItem subitem = new MyTreeViewItem
+                    {
+                        HeaderText = SubRow.Dir.Substring(item.Tag.ToString().Length + 1),
+                        Tag = SubRow.Dir,
+                        Icon = new BitmapImage(iconUri_folder)
+                    };
+                    subitem.Expanding += new RoutedEventHandler(TreeViewBeforeExpand);
+
+                    if (SubRow.Subcount > 0)
+                    {
+                        MyTreeViewItem subsubitem = new MyTreeViewItem
+                        {
+                            Header = "..."
+                        };
+                        subitem.Items.Add(subsubitem);
+                    }
+
+                    item.Items.Add(subitem);
+                }
+
+                root.Items.Add(item);
+            }
+            return root;
+        }
+
+        private List<DirWithSubcount> GetDirectories(string v)
+        {
+            int level = v.Substring(2).Split('\\').Count();
             DataClassesDataContext db = new DataClassesDataContext();
             var result = from dir in db.dirs
-                         where dir.Directory.Substring(2).Length - dir.Directory.Substring(2).Replace("\\","").Length < 3   //.Substring(2).Split('\\').Length <= 2
+                         where
+                           dir.Directory.ToLower().StartsWith(v.ToLower()) &&
+                           dir.Directory.Substring(2).Length - dir.Directory.Substring(2).Replace("\\", "").Length == level
                          group dir by dir.Directory into gdirs
                          orderby gdirs.Key
                          select new
                          {
-                             dir = gdirs.Key,
-                             //level = gdirs.Key.Replace('\\', '').Length - gdirs.Key.Length
+                             dir = gdirs.Key
                          };
 
+
+            List<DirWithSubcount> listOfDirs = new List<DirWithSubcount>();
             foreach (var row in result)
             {
-                listBox_test.Items.Add(row.dir);
-            }
+                var subdirs = from Argarm_Dirs in
+                                (from Argarm_Dirs in db.dirs
+                                 where Argarm_Dirs.Directory.StartsWith(row.dir + "\\")
+                                 select new
+                                 {
+                                     Dummy = "x"
+                                 })
+                              group Argarm_Dirs by new { Argarm_Dirs.Dummy } into g
+                              select new
+                              {
+                                  Column1 = g.Count()
+                              };
 
+                DirWithSubcount entry = new DirWithSubcount(row.dir, subdirs.Count());
+                listOfDirs.Add(entry);
+            }
+            return listOfDirs;
         }
 
-        
+        private void TreeViewBeforeExpand(object sender, RoutedEventArgs args)
+        {
+            MyTreeViewItem e = (MyTreeViewItem)args.Source;
+
+            if (e.Items.Count > 0)
+            {
+                MyTreeViewItem node0 = (MyTreeViewItem)e.Items[0];
+                if (node0.Header.ToString() == "..." && node0.Tag == null)
+                {
+                    e.Items.Clear();
+
+                    //get the list of sub directories
+                    List<DirWithSubcount> dirs = GetDirectories(e.Tag.ToString());
+
+                    foreach (DirWithSubcount dir in dirs)
+                    {
+                        MyTreeViewItem node = new MyTreeViewItem
+                        {
+                            HeaderText = dir.Dir.Substring(e.Tag.ToString().Length + 1),
+                            //keep the directory's full path in the tag for use later
+                            Tag = dir.Dir,
+                            Icon = new BitmapImage(iconUri_folder)
+                        };
+
+                        node.Expanding += new RoutedEventHandler(TreeViewBeforeExpand);
+
+                        //if (getDirectories(dir).Count() > 0)
+                        if (dir.Subcount > 0)
+                        {
+                            MyTreeViewItem subnode = new MyTreeViewItem
+                            {
+                                Header = "..."
+                            };
+                            node.Items.Add(subnode);
+                        }
+
+                        e.Items.Add(node);
+                    }
+                }
+            }
+        }
+
+
+        #endregion Directory TreeView
+
+    }
+
+    class DirWithSubcount
+    {
+        public string Dir { get; set; }
+        public int Subcount { get; set; }
+
+        public DirWithSubcount(string dir, int subcount)
+        {
+            this.Dir = dir;
+            this.Subcount = subcount;
+        }
     }
 }

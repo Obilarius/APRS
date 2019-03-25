@@ -35,10 +35,20 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="ControlzEx, Version=3.0.2.4, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\ControlzEx.3.0.2.4\lib\net45\ControlzEx.dll</HintPath>
+    </Reference>
+    <Reference Include="MahApps.Metro, Version=1.6.5.1, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\MahApps.Metro.1.6.5\lib\net46\MahApps.Metro.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Data" />
     <Reference Include="System.Data.Linq" />
+    <Reference Include="System.Drawing" />
     <Reference Include="System.Windows.Forms" />
+    <Reference Include="System.Windows.Interactivity, Version=4.5.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\ControlzEx.3.0.2.4\lib\net45\System.Windows.Interactivity.dll</HintPath>
+    </Reference>
     <Reference Include="System.Xml" />
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="System.Core" />
@@ -70,10 +80,10 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>ArgesPermDataSet.xsd</DependentUpon>
     </Compile>
-    <Compile Include="DataClasses.designer.cs">
+    <Compile Include="LinqToSQLClass.designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
-      <DependentUpon>DataClasses.dbml</DependentUpon>
+      <DependentUpon>LinqToSQLClass.dbml</DependentUpon>
     </Compile>
     <Compile Include="Datasets\ArgPerm.Designer.cs">
       <AutoGen>True</AutoGen>
@@ -87,6 +97,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="MSSQL.cs" />
+    <Compile Include="MyTreeViewItem.cs" />
     <Compile Include="Properties\AssemblyInfo.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -115,13 +126,13 @@
     <None Include="ArgesPermDataSet.xss">
       <DependentUpon>ArgesPermDataSet.xsd</DependentUpon>
     </None>
-    <None Include="DataClasses.dbml">
+    <None Include="LinqToSQLClass.dbml">
       <Generator>MSLinqToSQLGenerator</Generator>
-      <LastGenOutput>DataClasses.designer.cs</LastGenOutput>
+      <LastGenOutput>LinqToSQLClass.designer.cs</LastGenOutput>
       <SubType>Designer</SubType>
     </None>
-    <None Include="DataClasses.dbml.layout">
-      <DependentUpon>DataClasses.dbml</DependentUpon>
+    <None Include="LinqToSQLClass.dbml.layout">
+      <DependentUpon>LinqToSQLClass.dbml</DependentUpon>
     </None>
     <None Include="Datasets\ArgPerm.xsc">
       <DependentUpon>ArgPerm.xsd</DependentUpon>
@@ -134,6 +145,7 @@
     <None Include="Datasets\ArgPerm.xss">
       <DependentUpon>ArgPerm.xsd</DependentUpon>
     </None>
+    <None Include="packages.config" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
@@ -144,6 +156,9 @@
   </ItemGroup>
   <ItemGroup>
     <Service Include="{3259AA49-8AA1-44D3-9025-A0B520596A8C}" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Folder_16x.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

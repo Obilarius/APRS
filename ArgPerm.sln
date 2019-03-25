@@ -7,6 +7,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ArgPerm_liveView", "Tests\A
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ArgPerm", "ArgPerm\ArgPerm.csproj", "{BB8D4A00-93EC-44CE-966A-81465F949A9C}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ArgPermDeamon", "ArgPermDeamon\ArgPermDeamon.csproj", "{731BCD86-EA0A-4DFD-AF9D-D279957CA9C1}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -21,6 +23,10 @@ Global
 		{BB8D4A00-93EC-44CE-966A-81465F949A9C}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{BB8D4A00-93EC-44CE-966A-81465F949A9C}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{BB8D4A00-93EC-44CE-966A-81465F949A9C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{731BCD86-EA0A-4DFD-AF9D-D279957CA9C1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{731BCD86-EA0A-4DFD-AF9D-D279957CA9C1}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{731BCD86-EA0A-4DFD-AF9D-D279957CA9C1}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{731BCD86-EA0A-4DFD-AF9D-D279957CA9C1}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
