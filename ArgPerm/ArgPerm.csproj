@@ -160,5 +160,29 @@
   <ItemGroup>
     <None Include="Resources\Folder_16x.png" />
   </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\win\Folder_16x.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\win\FolderShared_16x.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\win\LocalServer_16x.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Group_16x.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\User_16x.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\LockClose_16x.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\LockOpen_16x.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Warning_16x.png" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

@@ -26,6 +26,17 @@ namespace ArgPerm
     /// </summary>
     public partial class MainWindow : MetroWindow
     {
+        Uri iconUri_folder = new Uri("pack://siteoforigin:,,,/Resources/win/Folder_16x.png");
+        Uri iconUri_folderShared = new Uri("pack://siteoforigin:,,,/Resources/win/FolderShared_16x.png");
+        Uri iconUri_server = new Uri("pack://siteoforigin:,,,/Resources/win/LocalServer_16x.png");
+
+        Uri iconUri_user = new Uri("pack://siteoforigin:,,,/Resources/User_16x.png");
+        Uri iconUri_group = new Uri("pack://siteoforigin:,,,/Resources/Group_16x.png");
+
+        Uri iconUri_warning = new Uri("pack://siteoforigin:,,,/Resources/Warning_16x.png");
+        Uri iconUri_lockOpen = new Uri("pack://siteoforigin:,,,/Resources/LockOpen_16x.png");
+        Uri iconUri_lockClosed = new Uri("pack://siteoforigin:,,,/Resources/LockClosed_16x.png");
+
         public MainWindow()
         {
             InitializeComponent();
@@ -33,14 +44,14 @@ namespace ArgPerm
 
             MyTreeViewItem rootNode = GetRootNodeWithThreeLevels("Apollon");
             treeView_Directorys.Items.Add(rootNode);
+
+            var item = new AccountWithPermissions(iconUri_user, "Sascha Walzenbach (walzenbach@arges.local)", 2, 2);
+            listView_AccountWithPermissions.Items.Add(item);
         }
 
 
-        #region Directory TreeView
-        Uri iconUri_folder = new Uri("pack://siteoforigin:,,,/Resources/win/Folder_16x.png");
-        Uri iconUri_folderShared = new Uri("pack://siteoforigin:,,,/Resources/win/FolderShared_16x.png");
-        Uri iconUri_server = new Uri("pack://siteoforigin:,,,/Resources/win/LocalServer_16x.png");
 
+        #region Directory TreeView
         private MyTreeViewItem GetRootNodeWithThreeLevels(string Servername)
         {
             MyTreeViewItem root = new MyTreeViewItem
@@ -169,8 +180,6 @@ namespace ArgPerm
                 }
             }
         }
-
-
         #endregion Directory TreeView
 
     }
@@ -184,6 +193,22 @@ namespace ArgPerm
         {
             this.Dir = dir;
             this.Subcount = subcount;
+        }
+    }
+
+    class AccountWithPermissions
+    {
+        public Uri IconPath { get; set; }
+        public string Name { get; set; }
+        public int HowOftenGranted { get; set; }
+        public int Inheritance { get; set; }
+
+        public AccountWithPermissions(Uri iconPath, string name, int howOftenGranted, int inheritance)
+        {
+            this.IconPath = iconPath;
+            this.Name = name;
+            this.HowOftenGranted = howOftenGranted;
+            this.Inheritance = inheritance;
         }
     }
 }

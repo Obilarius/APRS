@@ -21,15 +21,32 @@ namespace ArgPermDeamon
         static void Main(string[] args)
         {
             Stopwatch sw = new Stopwatch();
-            sw.Start();
+            
 
-            var path = @"\\apollon\user\walzenbach";
-            //GetDirectorySecurity(path, 5);
+            List<string> paths = new List<string>();
+            paths.Add(@"\\apollon\QMS");
+            paths.Add(@"\\apollon\User");
+            paths.Add(@"\\apollon\HardDev");
+            int levels = 5;
 
-            ADWorker.ReadAD();
+            List<string> output = new List<string>();
+            foreach (var path in paths)
+            {
+                sw.Reset();
+                sw.Start();
 
-            sw.Stop();
-            Console.WriteLine(sw.ElapsedMilliseconds);
+                GetDirectorySecurity(path, levels);
+
+                sw.Stop();
+                output.Add(path + " -- " + sw.ElapsedMilliseconds);
+            }
+
+            //ADWorker.ReadAD();
+
+            foreach (var line in output)
+                Console.WriteLine(line);
+
+            Console.WriteLine("FERTIG");
             Console.ReadKey();
         }
 
@@ -59,13 +76,17 @@ namespace ArgPermDeamon
                     IdentityReference owner = dSecurity.GetOwner(typeof(SecurityIdentifier));  // FÜR SID
                     string ownerSID = owner.Value;
 
-                    Console.WriteLine(directory);
+                    if (curLevel <= 2)
+                    {
+                        Console.WriteLine(directory);
+                    }
 
                     // Write or Update MSSQL
                     string hash = Hash(directory);
+                    var dirTemp = directory.Replace("'", "''");
                     string sql = $"IF NOT EXISTS (SELECT * FROM dirs WHERE Hash = '{hash}') " +
                                         $"INSERT INTO dirs(Directory, Owner, Hash) " +
-                                        $"VALUES ('{directory}', '{ownerSID}', '{hash}') " +
+                                        $"VALUES ('{dirTemp}', '{ownerSID}', '{hash}') " +
                                  $"ELSE " +
                                         $"UPDATE dirs " +
                                         $"SET Owner = '{ownerSID}' " +
@@ -114,10 +135,7 @@ namespace ArgPermDeamon
                             cmd = new SqlCommand(rightSql, con);
                             cmd.ExecuteNonQuery();
                         }
-                        
                     }
-
-                    
                 }
                 catch (Exception ex)
                 {
