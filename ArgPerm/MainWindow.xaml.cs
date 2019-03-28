@@ -65,64 +65,14 @@ namespace ArgPerm
                 Icon = new BitmapImage(iconUri_server)
             };
             root.IsSelected = true;
-            //root.Expanding += new RoutedEventHandler(TreeViewBeforeExpand);
+            root.Expanding += new RoutedEventHandler(TreeViewBeforeExpand);
 
-            //MyTreeViewItem subitem = new MyTreeViewItem
-            //{
-            //    Header = "..."
-            //};
-            //root.Items.Add(subitem);
-
-            //Holt sich alle Freigaben des Servers
-            List<DirWithSubcount> listOfDirs = GetDirectories(root.Tag.ToString());
-
-            foreach (DirWithSubcount row in listOfDirs)
+            MyTreeViewItem subitem = new MyTreeViewItem
             {
-                // Bildet die Nodes für die Freigaben (Level 1)
-                MyTreeViewItem item = new MyTreeViewItem
-                {
-                    HeaderText = row.Dir.Substring(root.Tag.ToString().Length + 1),
-                    Tag = row.Dir,
-                    Icon = new BitmapImage(iconUri_folderShared)
-                };
-                item.Expanding += new RoutedEventHandler(TreeViewBeforeExpand);
+                Header = "..."
+            };
+            root.Items.Add(subitem);
 
-                // Holt sich alle Unterordner der Freigaben
-                //List<DirWithSubcount> listOfSubDirs = GetDirectories(row.Dir);
-
-                //foreach (var SubRow in listOfSubDirs)
-                //{
-                //    MyTreeViewItem subitem = new MyTreeViewItem
-                //    {
-                //        HeaderText = SubRow.Dir.Substring(item.Tag.ToString().Length + 1),
-                //        Tag = SubRow.Dir,
-                //        Icon = new BitmapImage(iconUri_folder)
-                //    };
-                //    subitem.Expanding += new RoutedEventHandler(TreeViewBeforeExpand);
-
-                //    if (SubRow.Subcount > 0)
-                //    {
-                //        MyTreeViewItem subsubitem = new MyTreeViewItem
-                //        {
-                //            Header = "..."
-                //        };
-                //        subitem.Items.Add(subsubitem);
-                //    }
-
-                //    item.Items.Add(subitem);
-                //}
-
-                if (row.Subcount > 0)
-                {
-                    MyTreeViewItem subitem = new MyTreeViewItem
-                    {
-                        Header = "..."
-                    };
-                    item.Items.Add(subitem);
-                }
-
-                root.Items.Add(item);
-            }
             return root;
         }
 
