@@ -24,10 +24,27 @@ namespace ArgPermDeamon
             
 
             List<string> paths = new List<string>();
-            paths.Add(@"\\apollon\QMS");
-            paths.Add(@"\\apollon\User");
+            paths.Add(@"\\apollon\Administration");
+            paths.Add(@"\\apollon\Appslab");
+            paths.Add(@"\\apollon\Archiv");
+            paths.Add(@"\\apollon\Contacts");
+            paths.Add(@"\\apollon\Documentation");
             paths.Add(@"\\apollon\HardDev");
-            int levels = 5;
+            paths.Add(@"\\apollon\Install");
+            paths.Add(@"\\apollon\Marketing");
+            paths.Add(@"\\apollon\Mechanik");
+            paths.Add(@"\\apollon\Metallography");
+            paths.Add(@"\\apollon\PM");
+            paths.Add(@"\\apollon\Production");
+            paths.Add(@"\\apollon\Public");
+            paths.Add(@"\\apollon\Purchasing");
+            paths.Add(@"\\apollon\QMS");
+            paths.Add(@"\\apollon\REMINST");
+            paths.Add(@"\\apollon\Sales");
+            paths.Add(@"\\apollon\SoftDev");
+            paths.Add(@"\\apollon\User");
+            paths.Add(@"\\apollon\Vorlagen");
+            int levels = 999;
 
             List<string> output = new List<string>();
             foreach (var path in paths)
