@@ -38,9 +38,9 @@
                 </Grid.ColumnDefinitions>
                 <Image Grid.Column="0" Height="25" Source="pack://siteoforigin:,,,/Resources/Folder_16x.png"/>
                 <StackPanel Grid.Column="1">
-                    <Label x:Name="lbl_FolderName" Content="Finances" Padding="0" HorizontalAlignment="Left" VerticalAlignment="Top" 
+                    <Label x:Name="lbl_FolderName" Content="Apollon" Padding="0" HorizontalAlignment="Left" VerticalAlignment="Top" 
                            FontSize="18" FontWeight="Bold" Foreground="{DynamicResource secColor}"/>
-                    <Label x:Name="lbl_FolderPath" Content="\\apollon\Finances" Padding="0" HorizontalAlignment="Left" VerticalAlignment="Bottom"/>
+                    <Label x:Name="lbl_FolderPath" Content="\\apollon" Padding="0" HorizontalAlignment="Left" VerticalAlignment="Bottom"/>
                     
                 </StackPanel>
                 
@@ -60,7 +60,7 @@
                         <ColumnDefinition Width="*"/>
                     </Grid.ColumnDefinitions>
                     <Image Grid.Column="0" x:Name="img_OwnerIcon" Height="16" Width="16"/>
-                    <Label Grid.Column="1" x:Name="lbl_OwnerName" Content="Finance (finance@arges.local)" HorizontalAlignment="Left"/>
+                    <Label Grid.Column="1" x:Name="lbl_OwnerName" Content="Kein Besitzer gefunden" HorizontalAlignment="Left"/>
                 </Grid>
             </Grid>
             <!-- 3. Row - NTFS Access rights -->

@@ -57,6 +57,7 @@ namespace ArgPerm
         #region Directory TreeView
         private MyTreeViewItem GetRootNodeWithThreeLevels(string Servername)
         {
+            // Bildet die root Node für den Server (Level 0)
             MyTreeViewItem root = new MyTreeViewItem
             {
                 HeaderText = Servername,
@@ -64,39 +65,59 @@ namespace ArgPerm
                 Icon = new BitmapImage(iconUri_server)
             };
             root.IsSelected = true;
+            //root.Expanding += new RoutedEventHandler(TreeViewBeforeExpand);
 
+            //MyTreeViewItem subitem = new MyTreeViewItem
+            //{
+            //    Header = "..."
+            //};
+            //root.Items.Add(subitem);
+
+            //Holt sich alle Freigaben des Servers
             List<DirWithSubcount> listOfDirs = GetDirectories(root.Tag.ToString());
 
             foreach (DirWithSubcount row in listOfDirs)
             {
+                // Bildet die Nodes für die Freigaben (Level 1)
                 MyTreeViewItem item = new MyTreeViewItem
                 {
                     HeaderText = row.Dir.Substring(root.Tag.ToString().Length + 1),
                     Tag = row.Dir,
                     Icon = new BitmapImage(iconUri_folderShared)
                 };
+                item.Expanding += new RoutedEventHandler(TreeViewBeforeExpand);
 
-                List<DirWithSubcount> listOfSubDirs = GetDirectories(row.Dir);
+                // Holt sich alle Unterordner der Freigaben
+                //List<DirWithSubcount> listOfSubDirs = GetDirectories(row.Dir);
 
-                foreach (var SubRow in listOfSubDirs)
+                //foreach (var SubRow in listOfSubDirs)
+                //{
+                //    MyTreeViewItem subitem = new MyTreeViewItem
+                //    {
+                //        HeaderText = SubRow.Dir.Substring(item.Tag.ToString().Length + 1),
+                //        Tag = SubRow.Dir,
+                //        Icon = new BitmapImage(iconUri_folder)
+                //    };
+                //    subitem.Expanding += new RoutedEventHandler(TreeViewBeforeExpand);
+
+                //    if (SubRow.Subcount > 0)
+                //    {
+                //        MyTreeViewItem subsubitem = new MyTreeViewItem
+                //        {
+                //            Header = "..."
+                //        };
+                //        subitem.Items.Add(subsubitem);
+                //    }
+
+                //    item.Items.Add(subitem);
+                //}
+
+                if (row.Subcount > 0)
                 {
                     MyTreeViewItem subitem = new MyTreeViewItem
                     {
-                        HeaderText = SubRow.Dir.Substring(item.Tag.ToString().Length + 1),
-                        Tag = SubRow.Dir,
-                        Icon = new BitmapImage(iconUri_folder)
+                        Header = "..."
                     };
-                    subitem.Expanding += new RoutedEventHandler(TreeViewBeforeExpand);
-
-                    if (SubRow.Subcount > 0)
-                    {
-                        MyTreeViewItem subsubitem = new MyTreeViewItem
-                        {
-                            Header = "..."
-                        };
-                        subitem.Items.Add(subsubitem);
-                    }
-
                     item.Items.Add(subitem);
                 }
 
@@ -124,18 +145,25 @@ namespace ArgPerm
             List<DirWithSubcount> listOfDirs = new List<DirWithSubcount>();
             foreach (var row in result)
             {
-                var subdirs = from Argarm_Dirs in
-                                (from Argarm_Dirs in db.dirs
-                                 where Argarm_Dirs.Directory.StartsWith(row.dir + "\\")
-                                 select new
-                                 {
-                                     Dummy = "x"
-                                 })
-                              group Argarm_Dirs by new { Argarm_Dirs.Dummy } into g
-                              select new
-                              {
-                                  Column1 = g.Count()
-                              };
+                //var subdirs = from Argarm_Dirs in
+                //                (from Argarm_Dirs in db.dirs
+                //                 where Argarm_Dirs.Directory.StartsWith(row.dir + "\\")
+                //                 select new
+                //                 {
+                //                     Dummy = "x"
+                //                 })
+                //              group Argarm_Dirs by new { Argarm_Dirs.Dummy } into g
+                //              select new
+                //              {
+                //                  Column1 = g.Count()
+                //              };
+
+                var subdirs = (from dirs in db.dirs
+                               where dirs.Directory.StartsWith(row.dir + "\\")
+                               select new
+                               {
+                                   dirs.ID
+                               }).Take(1);
 
                 DirWithSubcount entry = new DirWithSubcount(row.dir, subdirs.Count());
                 listOfDirs.Add(entry);
