@@ -36,12 +36,12 @@ namespace ArgPerm
     partial void Insertaduser(aduser instance);
     partial void Updateaduser(aduser instance);
     partial void Deleteaduser(aduser instance);
-    partial void Insertdir(dir instance);
-    partial void Updatedir(dir instance);
-    partial void Deletedir(dir instance);
     partial void Insertright(right instance);
     partial void Updateright(right instance);
     partial void Deleteright(right instance);
+    partial void Insertdir(dir instance);
+    partial void Updatedir(dir instance);
+    partial void Deletedir(dir instance);
     #endregion
 		
 		public DataClassesDataContext() : 
@@ -90,14 +90,6 @@ namespace ArgPerm
 			}
 		}
 		
-		public System.Data.Linq.Table<dir> dirs
-		{
-			get
-			{
-				return this.GetTable<dir>();
-			}
-		}
-		
 		public System.Data.Linq.Table<grp_user> grp_users
 		{
 			get
@@ -111,6 +103,14 @@ namespace ArgPerm
 			get
 			{
 				return this.GetTable<right>();
+			}
+		}
+		
+		public System.Data.Linq.Table<dir> dirs
+		{
+			get
+			{
+				return this.GetTable<dir>();
 			}
 		}
 	}
@@ -503,140 +503,6 @@ namespace ArgPerm
 		}
 	}
 	
-	[global::System.Data.Linq.Mapping.TableAttribute(Name="dbo.dirs")]
-	public partial class dir : INotifyPropertyChanging, INotifyPropertyChanged
-	{
-		
-		private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs(String.Empty);
-		
-		private int _ID;
-		
-		private string _Directory;
-		
-		private string _Owner;
-		
-		private string _Hash;
-		
-    #region Extensibility Method Definitions
-    partial void OnLoaded();
-    partial void OnValidate(System.Data.Linq.ChangeAction action);
-    partial void OnCreated();
-    partial void OnIDChanging(int value);
-    partial void OnIDChanged();
-    partial void OnDirectoryChanging(string value);
-    partial void OnDirectoryChanged();
-    partial void OnOwnerChanging(string value);
-    partial void OnOwnerChanged();
-    partial void OnHashChanging(string value);
-    partial void OnHashChanged();
-    #endregion
-		
-		public dir()
-		{
-			OnCreated();
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_ID", AutoSync=AutoSync.OnInsert, DbType="Int NOT NULL IDENTITY", IsPrimaryKey=true, IsDbGenerated=true)]
-		public int ID
-		{
-			get
-			{
-				return this._ID;
-			}
-			set
-			{
-				if ((this._ID != value))
-				{
-					this.OnIDChanging(value);
-					this.SendPropertyChanging();
-					this._ID = value;
-					this.SendPropertyChanged("ID");
-					this.OnIDChanged();
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_Directory", DbType="NVarChar(MAX) NOT NULL", CanBeNull=false)]
-		public string Directory
-		{
-			get
-			{
-				return this._Directory;
-			}
-			set
-			{
-				if ((this._Directory != value))
-				{
-					this.OnDirectoryChanging(value);
-					this.SendPropertyChanging();
-					this._Directory = value;
-					this.SendPropertyChanged("Directory");
-					this.OnDirectoryChanged();
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_Owner", DbType="NVarChar(100) NOT NULL", CanBeNull=false)]
-		public string Owner
-		{
-			get
-			{
-				return this._Owner;
-			}
-			set
-			{
-				if ((this._Owner != value))
-				{
-					this.OnOwnerChanging(value);
-					this.SendPropertyChanging();
-					this._Owner = value;
-					this.SendPropertyChanged("Owner");
-					this.OnOwnerChanged();
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_Hash", DbType="NChar(40) NOT NULL", CanBeNull=false)]
-		public string Hash
-		{
-			get
-			{
-				return this._Hash;
-			}
-			set
-			{
-				if ((this._Hash != value))
-				{
-					this.OnHashChanging(value);
-					this.SendPropertyChanging();
-					this._Hash = value;
-					this.SendPropertyChanged("Hash");
-					this.OnHashChanged();
-				}
-			}
-		}
-		
-		public event PropertyChangingEventHandler PropertyChanging;
-		
-		public event PropertyChangedEventHandler PropertyChanged;
-		
-		protected virtual void SendPropertyChanging()
-		{
-			if ((this.PropertyChanging != null))
-			{
-				this.PropertyChanging(this, emptyChangingEventArgs);
-			}
-		}
-		
-		protected virtual void SendPropertyChanged(String propertyName)
-		{
-			if ((this.PropertyChanged != null))
-			{
-				this.PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
-			}
-		}
-	}
-	
 	[global::System.Data.Linq.Mapping.TableAttribute(Name="dbo.grp_user")]
 	public partial class grp_user
 	{
@@ -887,6 +753,164 @@ namespace ArgPerm
 					this._InheritanceFlags = value;
 					this.SendPropertyChanged("InheritanceFlags");
 					this.OnInheritanceFlagsChanged();
+				}
+			}
+		}
+		
+		public event PropertyChangingEventHandler PropertyChanging;
+		
+		public event PropertyChangedEventHandler PropertyChanged;
+		
+		protected virtual void SendPropertyChanging()
+		{
+			if ((this.PropertyChanging != null))
+			{
+				this.PropertyChanging(this, emptyChangingEventArgs);
+			}
+		}
+		
+		protected virtual void SendPropertyChanged(String propertyName)
+		{
+			if ((this.PropertyChanged != null))
+			{
+				this.PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
+			}
+		}
+	}
+	
+	[global::System.Data.Linq.Mapping.TableAttribute(Name="dbo.dirs")]
+	public partial class dir : INotifyPropertyChanging, INotifyPropertyChanged
+	{
+		
+		private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs(String.Empty);
+		
+		private int _ID;
+		
+		private string _Directory;
+		
+		private string _Owner;
+		
+		private string _Hash;
+		
+		private System.Nullable<int> _ParentID;
+		
+    #region Extensibility Method Definitions
+    partial void OnLoaded();
+    partial void OnValidate(System.Data.Linq.ChangeAction action);
+    partial void OnCreated();
+    partial void OnIDChanging(int value);
+    partial void OnIDChanged();
+    partial void OnDirectoryChanging(string value);
+    partial void OnDirectoryChanged();
+    partial void OnOwnerChanging(string value);
+    partial void OnOwnerChanged();
+    partial void OnHashChanging(string value);
+    partial void OnHashChanged();
+    partial void OnParentIDChanging(System.Nullable<int> value);
+    partial void OnParentIDChanged();
+    #endregion
+		
+		public dir()
+		{
+			OnCreated();
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_ID", AutoSync=AutoSync.OnInsert, DbType="Int NOT NULL IDENTITY", IsPrimaryKey=true, IsDbGenerated=true)]
+		public int ID
+		{
+			get
+			{
+				return this._ID;
+			}
+			set
+			{
+				if ((this._ID != value))
+				{
+					this.OnIDChanging(value);
+					this.SendPropertyChanging();
+					this._ID = value;
+					this.SendPropertyChanged("ID");
+					this.OnIDChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_Directory", DbType="NVarChar(MAX) NOT NULL", CanBeNull=false)]
+		public string Directory
+		{
+			get
+			{
+				return this._Directory;
+			}
+			set
+			{
+				if ((this._Directory != value))
+				{
+					this.OnDirectoryChanging(value);
+					this.SendPropertyChanging();
+					this._Directory = value;
+					this.SendPropertyChanged("Directory");
+					this.OnDirectoryChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_Owner", DbType="NVarChar(100) NOT NULL", CanBeNull=false)]
+		public string Owner
+		{
+			get
+			{
+				return this._Owner;
+			}
+			set
+			{
+				if ((this._Owner != value))
+				{
+					this.OnOwnerChanging(value);
+					this.SendPropertyChanging();
+					this._Owner = value;
+					this.SendPropertyChanged("Owner");
+					this.OnOwnerChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_Hash", DbType="NChar(40) NOT NULL", CanBeNull=false)]
+		public string Hash
+		{
+			get
+			{
+				return this._Hash;
+			}
+			set
+			{
+				if ((this._Hash != value))
+				{
+					this.OnHashChanging(value);
+					this.SendPropertyChanging();
+					this._Hash = value;
+					this.SendPropertyChanged("Hash");
+					this.OnHashChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_ParentID", DbType="Int")]
+		public System.Nullable<int> ParentID
+		{
+			get
+			{
+				return this._ParentID;
+			}
+			set
+			{
+				if ((this._ParentID != value))
+				{
+					this.OnParentIDChanging(value);
+					this.SendPropertyChanging();
+					this._ParentID = value;
+					this.SendPropertyChanged("ParentID");
+					this.OnParentIDChanged();
 				}
 			}
 		}

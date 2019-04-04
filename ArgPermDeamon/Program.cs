@@ -10,6 +10,7 @@ using System.Security.AccessControl;
 using System.Security.Cryptography;
 using System.Security.Principal;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
 namespace ArgPermDeamon
@@ -21,7 +22,8 @@ namespace ArgPermDeamon
         static void Main(string[] args)
         {
             Stopwatch sw = new Stopwatch();
-            
+
+            FillParentID();
 
             List<string> paths = new List<string>();
             paths.Add(@"\\apollon\Administration");
@@ -46,22 +48,22 @@ namespace ArgPermDeamon
             paths.Add(@"\\apollon\Vorlagen");
             int levels = 999;
 
-            List<string> output = new List<string>();
-            foreach (var path in paths)
-            {
-                sw.Reset();
-                sw.Start();
+            //List<string> output = new List<string>();
+            //foreach (var path in paths)
+            //{
+            //    sw.Reset();
+            //    sw.Start();
 
-                GetDirectorySecurity(path, levels);
+            //    GetDirectorySecurity(path, levels);
 
-                sw.Stop();
-                output.Add(path + " -- " + sw.ElapsedMilliseconds);
-            }
+            //    sw.Stop();
+            //    output.Add(path + " -- " + sw.ElapsedMilliseconds);
+            //}
 
             //ADWorker.ReadAD();
 
-            foreach (var line in output)
-                Console.WriteLine(line);
+            //foreach (var line in output)
+            //    Console.WriteLine(line);
 
             Console.WriteLine("FERTIG");
             Console.ReadKey();
@@ -163,9 +165,136 @@ namespace ArgPermDeamon
             con.Close();
         }
 
-        
+        static void FillParentID ()
+        {
+            SqlConnection con = new SqlConnection(@"Data Source=PC-W10-SW\MSSQLSERVER_DEV;Initial Catalog=ArgesPerm;Integrated Security=True");
+            con.Open();
+
+            string sql = "SELECT ID, Directory FROM dirs";
+            SqlCommand cmd = new SqlCommand(sql, con);
+
+            List<string[]> allList = new List<string[]>();
+            using (SqlDataReader reader = cmd.ExecuteReader())
+            {
+                while (reader.Read())
+                {
+                    var id = reader.GetInt32(0);
+                    var dir = reader.GetString(1);
+
+                    allList.Add(new[] { id.ToString(), dir });
+                }
+            }
+
+            DateTime StartTime = DateTime.Now;
+            Stopwatch swComp = new Stopwatch();
+            swComp.Start();
+
+            Stopwatch sw = new Stopwatch();
+            sw.Start();
+
+            int index = 0;
+            DateTime EndTime = DateTime.Now;
+            foreach (var row in allList)
+            {
+                sw.Restart();
+
+                var dir = row[1];
+                var id = row[0];
+
+                Regex pattern = new Regex(@"^.+\\");
+                Match match = pattern.Match(dir);
+                var parentDir = match.Value;
+                parentDir = parentDir.Substring(0, parentDir.Length - 1);
 
 
+                // Ohne Parameter
+                //sql = $"UPDATE dirs SET ParentID = (SELECT TOP(1) ID FROM dirs WHERE Directory = '{parentDir}') WHERE ID = { id }";
+                //cmd = new SqlCommand(sql, con);
+                //cmd.ExecuteNonQuery();
+
+                // Mit Parameter
+                string sql2 = "UPDATE dirs SET ParentID = (SELECT TOP(1) ID FROM dirs WHERE Directory = @parentDir) WHERE ID = @id";
+                cmd = new SqlCommand(sql2, con);
+
+                var parentDirParam = new SqlParameter("parentDir", System.Data.SqlDbType.NVarChar);
+                parentDirParam.Value = parentDir;
+
+                var idParam = new SqlParameter("id", System.Data.SqlDbType.Int);
+                idParam.Value = id;
+
+                cmd.Parameters.Add(parentDirParam);
+                cmd.Parameters.Add(idParam);
+                cmd.ExecuteNonQuery();
+
+
+                index++;
+                float percent = ((float)index / (float)allList.Count) * 100f;
+                if (index % 100 == 0)
+                {
+                    TimeSpan geschaetzteLaufzeit = TimeSpan.FromTicks((long)(swComp.Elapsed.Ticks * (100 / percent)));
+                    EndTime = StartTime + geschaetzteLaufzeit;
+                }
+                
+                Console.WriteLine($"{percent.ToString("0.0000")}% - ENDTIME: {EndTime.ToLongTimeString()} - EXECUTE: {sw.ElapsedMilliseconds} -- {dir}");
+            }
+
+            swComp.Stop();
+            sw.Stop();
+            con.Close();
+
+
+
+            //using (SqlDataReader reader = cmd.ExecuteReader())
+            //{
+            //    while (reader.Read())
+            //    {
+            //        //Console.WriteLine("{0}\t{1}", reader.GetInt32(0), reader.GetString(1));
+            //        var dir = reader.GetString(1);
+            //        var id = reader.GetInt32(0);
+
+            //        Regex pattern = new Regex(@"^[\w\\ ]+\\");
+            //        Match match = pattern.Match(dir);
+            //        var parentDir = match.Value;
+            //        parentDir = parentDir.Substring(0, parentDir.Length - 1);
+
+
+            //        using (SqlConnection con2 = new SqlConnection(@"Data Source=PC-W10-SW\MSSQLSERVER_DEV;Initial Catalog=ArgesPerm;Integrated Security=True"))
+            //        { 
+            //            con2.Open();
+
+            //            string innersql = $"SELECT ID FROM dirs WHERE Directory = '{parentDir}'";
+            //            SqlCommand innercmd = new SqlCommand(innersql, con2);
+
+            //            SqlDataReader innerreader = innercmd.ExecuteReader();
+
+            //            if (innerreader.HasRows)
+            //            {
+            //                while (innerreader.Read())
+            //                {
+            //                    var parentID = innerreader.GetInt32(0);
+
+            //                    string updatesql = $"UPDATE dirs " +
+            //                        $"SET ParentID = {parentID} " +
+            //                        $"WHERE ID = {id}";
+
+            //                    innerreader.Close();
+
+            //                    SqlCommand updatecmd = new SqlCommand(updatesql, con2);
+            //                    updatecmd.ExecuteNonQuery();
+
+            //                    Console.WriteLine(dir);
+
+            //                    break;
+            //                }
+            //            }
+
+            //            con2.Close();
+            //        }
+            //    }
+            //}
+
+            //con.Close();
+        }
 
 
 

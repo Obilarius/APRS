@@ -76,7 +76,8 @@
             </Grid>
             <Border DockPanel.Dock="Top" BorderThickness="2" BorderBrush="{DynamicResource secColor}"></Border>
             
-            <ListView DockPanel.Dock="Bottom" x:Name="listView_AccountWithPermissions" BorderThickness="0">
+            <!-- Account with permissions -->
+            <ListView DockPanel.Dock="Bottom" x:Name="listView_AccountWithPermissions" BorderThickness="0" PreviewMouseLeftButtonUp="ListViewItem_MouseLeftButtonUp">
                 <!-- Contect Menu -->
                 <ListView.ContextMenu>
                     <ContextMenu Name="ZoneInformationList" StaysOpen="true">
@@ -99,7 +100,10 @@
                         <GridViewColumn Header="Name" Width="300" >
                             <GridViewColumn.CellTemplate>
                                 <DataTemplate>
-                                    <TextBlock Text="{Binding Name}" Tag="{Binding SID}" TextAlignment="Left" HorizontalAlignment="Left" />
+                                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Left">
+                                        <Image Source="{Binding IconGroup}" Width="auto" Height="16" Margin="0 0 5 0"/>
+                                        <TextBlock Text="{Binding Name}" Tag="{Binding SID}" />
+                                    </StackPanel>
                                 </DataTemplate>
                             </GridViewColumn.CellTemplate>
                         </GridViewColumn>

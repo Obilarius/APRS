@@ -21,14 +21,6 @@
       <Column Name="Enabled" Type="System.Int16" DbType="SmallInt NOT NULL" CanBeNull="false" />
     </Type>
   </Table>
-  <Table Name="dbo.dirs" Member="dirs">
-    <Type Name="dir">
-      <Column Name="ID" Type="System.Int32" DbType="Int NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
-      <Column Name="Directory" Type="System.String" DbType="NVarChar(MAX) NOT NULL" CanBeNull="false" />
-      <Column Name="Owner" Type="System.String" DbType="NVarChar(100) NOT NULL" CanBeNull="false" />
-      <Column Name="Hash" Type="System.String" DbType="NChar(40) NOT NULL" CanBeNull="false" />
-    </Type>
-  </Table>
   <Table Name="dbo.grp_user" Member="grp_users">
     <Type Name="grp_user">
       <Column Name="userSID" Type="System.String" DbType="NVarChar(100) NOT NULL" CanBeNull="false" />
@@ -45,6 +37,15 @@
       <Column Name="FileSystemRights" Type="System.String" DbType="NVarChar(300) NOT NULL" CanBeNull="false" />
       <Column Name="IsInherited" Type="System.Int16" DbType="SmallInt NOT NULL" CanBeNull="false" />
       <Column Name="InheritanceFlags" Type="System.String" DbType="NVarChar(50) NOT NULL" CanBeNull="false" />
+    </Type>
+  </Table>
+  <Table Name="dbo.dirs" Member="dirs">
+    <Type Name="dir">
+      <Column Name="ID" Type="System.Int32" DbType="Int NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
+      <Column Name="Directory" Type="System.String" DbType="NVarChar(MAX) NOT NULL" CanBeNull="false" />
+      <Column Name="Owner" Type="System.String" DbType="NVarChar(100) NOT NULL" CanBeNull="false" />
+      <Column Name="Hash" Type="System.String" DbType="NChar(40) NOT NULL" CanBeNull="false" />
+      <Column Name="ParentID" Type="System.Int32" DbType="Int" CanBeNull="true" />
     </Type>
   </Table>
 </Database>

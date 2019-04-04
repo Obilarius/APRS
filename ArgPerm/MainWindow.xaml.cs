@@ -20,6 +20,7 @@ using MahApps.Metro.Controls;
 using System.Windows.Shapes;
 using PdfSharp.Pdf;
 using PdfSharp.Drawing;
+using System.Text.RegularExpressions;
 
 namespace ArgPerm
 {
@@ -47,7 +48,8 @@ namespace ArgPerm
         private void Window_ContentRendered(object sender, EventArgs e)
         {
             Mouse.OverrideCursor = Cursors.Wait;
-            MyTreeViewItem rootNode = GetRootNodeWithThreeLevels("Apollon");
+            MyTreeViewItem rootNode = GetRootAndFirstLevelNodes("Apollon");
+            //MyTreeViewItem rootNode = GetRootNode("Apollon");
             treeView_Directorys.Items.Add(rootNode);
             Mouse.OverrideCursor = null;
         }
@@ -55,7 +57,7 @@ namespace ArgPerm
 
 
         #region Directory TreeView
-        private MyTreeViewItem GetRootNodeWithThreeLevels(string Servername)
+        private MyTreeViewItem GetRootNode(string Servername)
         {
             // Bildet die root Node für den Server (Level 0)
             MyTreeViewItem root = new MyTreeViewItem
@@ -76,46 +78,122 @@ namespace ArgPerm
             return root;
         }
 
-        private List<DirWithSubcount> GetDirectories(string v)
+        private MyTreeViewItem GetRootAndFirstLevelNodes(string Servername)
         {
-            int level = v.Substring(2).Split('\\').Count();
+            // Bildet die root Node für den Server (Level 0)
+            MyTreeViewItem root = new MyTreeViewItem
+            {
+                HeaderText = Servername,
+                Tag = new[] { null, "\\\\" + Servername.ToLower() },
+                Icon = new BitmapImage(iconUri_server)
+            };
+            root.IsSelected = true;
+
+            // Sucht alle Unterordner des Servers und bildet die Nodes dafür (Level 1)
             DataClassesDataContext db = new DataClassesDataContext();
+
             var result = from dir in db.dirs
                          where
-                           dir.Directory.ToLower().StartsWith(v.ToLower() + "\\") &&
-                           dir.Directory.Substring(2).Length - dir.Directory.Substring(2).Replace("\\", "").Length == level
-                         group dir by dir.Directory into gdirs
-                         orderby gdirs.Key
+                             dir.ParentID == null && 
+                             dir.Directory.ToLower().StartsWith("\\\\" + Servername.ToLower() + "\\")
+                         orderby dir.Directory
                          select new
                          {
-                             dir = gdirs.Key
+                             dir.ID,
+                             dir.Directory
                          };
 
-
-            List<DirWithSubcount> listOfDirs = new List<DirWithSubcount>();
             foreach (var row in result)
             {
-                //var subdirs = from Argarm_Dirs in
-                //                (from Argarm_Dirs in db.dirs
-                //                 where Argarm_Dirs.Directory.StartsWith(row.dir + "\\")
-                //                 select new
-                //                 {
-                //                     Dummy = "x"
-                //                 })
-                //              group Argarm_Dirs by new { Argarm_Dirs.Dummy } into g
-                //              select new
-                //              {
-                //                  Column1 = g.Count()
-                //              };
+                MyTreeViewItem node = new MyTreeViewItem
+                {
+                    HeaderText = Regex.Match(row.Directory, @"\w+$").Value,
+                    Tag = new [] { row.ID.ToString(), row.Directory },
+                    Icon = new BitmapImage(iconUri_folderShared)
+                };
+                node.Expanding += new RoutedEventHandler(TreeViewBeforeExpand);
 
                 var subdirs = (from dirs in db.dirs
-                               where dirs.Directory.StartsWith(row.dir + "\\")
+                               where dirs.ParentID == row.ID
                                select new
                                {
                                    dirs.ID
                                }).Take(1);
 
-                DirWithSubcount entry = new DirWithSubcount(row.dir, subdirs.Count());
+                if (subdirs.Count() > 0)
+                {
+                    MyTreeViewItem subnode = new MyTreeViewItem
+                    {
+                        Header = "..."
+                    };
+                    node.Items.Add(subnode);
+                }
+
+                root.Items.Add(node);
+            }
+
+            return root;
+        }
+
+        //private List<DirWithSubcount> GetDirectories(string v)
+        //{
+        //    int level = v.Substring(2).Split('\\').Count();
+        //    DataClassesDataContext db = new DataClassesDataContext();
+
+        //    var result = from dir in db.dirs
+        //                 where
+        //                   dir.Directory.ToLower().StartsWith(v.ToLower() + "\\") &&
+        //                   dir.Directory.Substring(2).Length - dir.Directory.Substring(2).Replace("\\", "").Length == level
+        //                 group dir by dir.Directory into gdirs
+        //                 orderby gdirs.Key
+        //                 select new
+        //                 {
+        //                     dir = gdirs.Key
+        //                 };
+
+        //    List < DirWithSubcount > listOfDirs = new List<DirWithSubcount>();
+        //    foreach (var row in result)
+        //    {
+        //        var subdirs = (from dirs in db.dirs
+        //                       where dirs.Directory.StartsWith(row.dir + "\\")
+        //                       select new
+        //                       {
+        //                           dirs.ID
+        //                       }).Take(1);
+
+
+        //        DirWithSubcount entry = new DirWithSubcount(row.dir, subdirs.Count());
+        //        listOfDirs.Add(entry);
+        //    }
+        //    return listOfDirs;
+        //}
+
+        private List<DirWithSubcount> GetDirectoriesByParentID(int parentID)
+        {
+            DataClassesDataContext db = new DataClassesDataContext();
+            
+            var result = from dir in db.dirs
+                        where
+                            dir.ParentID == parentID
+                        orderby dir.Directory
+                        select new
+                        {
+                            dir.Directory,
+                            dir.ID
+                        };
+
+            List<DirWithSubcount> listOfDirs = new List<DirWithSubcount>();
+            foreach (var row in result)
+            {
+                var subdirs = (from dirs in db.dirs
+                               where dirs.ParentID == row.ID
+                               select new
+                               {
+                                   dirs.ID
+                               }).Take(1);
+
+
+                DirWithSubcount entry = new DirWithSubcount(row.ID, row.Directory, subdirs.Count());
                 listOfDirs.Add(entry);
             }
             return listOfDirs;
@@ -123,25 +201,27 @@ namespace ArgPerm
 
         private void TreeViewBeforeExpand(object sender, RoutedEventArgs args)
         {
-            MyTreeViewItem e = (MyTreeViewItem)args.Source;
+            Mouse.OverrideCursor = Cursors.Wait;
+            MyTreeViewItem selectedTVI = (MyTreeViewItem)args.Source;
 
-            if (e.Items.Count > 0)
+            if (selectedTVI.Items.Count > 0)
             {
-                MyTreeViewItem node0 = (MyTreeViewItem)e.Items[0];
+                MyTreeViewItem node0 = (MyTreeViewItem)selectedTVI.Items[0];
                 if (node0.Header.ToString() == "..." && node0.Tag == null)
                 {
-                    e.Items.Clear();
+                    selectedTVI.Items.Clear();
 
                     //get the list of sub directories
-                    List<DirWithSubcount> dirs = GetDirectories(e.Tag.ToString());
+                    int parentID = Convert.ToInt32(((string[])selectedTVI.Tag)[0]);
+                    List<DirWithSubcount> dirs = GetDirectoriesByParentID(parentID);
 
                     foreach (DirWithSubcount dir in dirs)
                     {
                         MyTreeViewItem node = new MyTreeViewItem
                         {
-                            HeaderText = dir.Dir.Substring(e.Tag.ToString().Length + 1),
+                            HeaderText = Regex.Match(dir.Dir, @"\w+$").Value,
                             //keep the directory's full path in the tag for use later
-                            Tag = dir.Dir,
+                            Tag = new[] { dir.ID.ToString(), dir.Dir },
                             Icon = new BitmapImage(iconUri_folder)
                         };
 
@@ -157,16 +237,17 @@ namespace ArgPerm
                             node.Items.Add(subnode);
                         }
 
-                        e.Items.Add(node);
+                        selectedTVI.Items.Add(node);
                     }
                 }
             }
+            Mouse.OverrideCursor = null;
         }
 
         private void TreeViewSelectedItemChange(object sender, RoutedPropertyChangedEventArgs<object> e)
         {
-            TreeViewItem selectedItem = treeView_Directorys.SelectedItem as TreeViewItem;
-            string fullPath = selectedItem.Tag.ToString();
+            MyTreeViewItem selectedItem = treeView_Directorys.SelectedItem as MyTreeViewItem;
+            string fullPath = ((string[])selectedItem.Tag)[1];
             var folderName = fullPath.Split('\\').Last();
 
             lbl_FolderName.Content = folderName;
@@ -176,9 +257,9 @@ namespace ArgPerm
 
             #region FolderOwner
             var owner = from d in db.dirs
-                         join u in db.adusers on new { Owner = d.Owner } equals new { Owner = u.SID } into u_join
+                         join u in db.adusers on new { d.Owner } equals new { Owner = u.SID } into u_join
                          from u in u_join.DefaultIfEmpty()
-                         join g in db.adgroups on new { Owner = d.Owner } equals new { Owner = g.SID } into g_join
+                         join g in db.adgroups on new { d.Owner } equals new { Owner = g.SID } into g_join
                          from g in g_join.DefaultIfEmpty()
                          where
                            d.Directory == fullPath
@@ -200,13 +281,12 @@ namespace ArgPerm
             }
             #endregion
 
-            // WORK IN PROGRESS
             listView_AccountWithPermissions.Items.Clear();
             var result = from d in db.dirs
-                         join r in db.rights on new { ID = d.ID } equals new { ID = r.DirID }
-                         join u in db.adusers on new { IdentityReference = r.IdentityReference } equals new { IdentityReference = u.SID } into u_join
+                         join r in db.rights on new { d.ID } equals new { ID = r.DirID }
+                         join u in db.adusers on new { r.IdentityReference } equals new { IdentityReference = u.SID } into u_join
                          from u in u_join.DefaultIfEmpty()
-                         join g in db.adgroups on new { IdentityReference = r.IdentityReference } equals new { IdentityReference = g.SID } into g_join
+                         join g in db.adgroups on new { r.IdentityReference } equals new { IdentityReference = g.SID } into g_join
                          from g in g_join.DefaultIfEmpty()
                          where
                            d.Directory == fullPath &&
@@ -290,15 +370,12 @@ namespace ArgPerm
                 }
             }
         }
-
         #endregion Directory TreeView
 
 
         #region Account with Permissions
         void FillAccountWithPermissonsSection(List<User> UserList)
         {
-            //UserList.Sort((x, y) => string.Compare(x.Name, y.Name));
-
             var ret = from ul in UserList
                       group ul by new
                       {
@@ -308,15 +385,20 @@ namespace ArgPerm
                       orderby gul.Key.Name
                       select new
                       {
-                          SID = gul.Key.SID,
-                          Name = gul.Key.Name,
+                          gul.Key.SID,
+                          gul.Key.Name,
                           Count = gul.Count(),
                           InheritedCount = gul.Sum(p => (p.IsInherited) ? 1 : 0)
                       };
 
             foreach (var user in ret)
             {
-                var item = new AccountWithPermissions(iconUri_user, user.Name, user.Count, user.InheritedCount, user.SID);
+                List<string> groups = (from ul in UserList
+                                     where ul.SID == user.SID
+                                     select ul.Group
+                                     ).ToList();
+
+                var item = new AccountWithPermissions(iconUri_user, user.Name, user.Count, user.InheritedCount, user.SID, groups);
                 listView_AccountWithPermissions.Items.Add(item);
             }
         }
@@ -330,7 +412,7 @@ namespace ArgPerm
             DataClassesDataContext db = new DataClassesDataContext();
 
             var result = from r in db.rights
-                         join d in db.dirs on new { ID = r.DirID } equals new { ID = d.ID }
+                         join d in db.dirs on new { ID = r.DirID } equals new { d.ID }
                          where
                                ((from gu in db.grp_users
                                  where gu.userSID == SID
@@ -359,11 +441,6 @@ namespace ArgPerm
 
 
 
-            //PdfDocument document = new PdfDocument();
-            //document.Info.Title = "Show all directories on which the user has permissions";
-
-            //string output = "Anzahl Verzeichnisse: " + count.ToString();
-            //Section section = docum;
 
             foreach (var item in result)
             {
@@ -371,28 +448,70 @@ namespace ArgPerm
             }
 
             
-            //PdfPage page = document.AddPage();
 
-            //XGraphics gfx = XGraphics.FromPdfPage(page);
-            //XFont font = new XFont("Verdana", 20, XFontStyle.BoldItalic);
-            //gfx.DrawString(output, font, XBrushes.Black,
-            //    new XRect(0, 0, page.Width, page.Height),
-            //    XStringFormats.TopLeft);
+        }
 
-            //string filename = $"Report_{DateTime.Now.ToString("yyyy-MM-dd_HH-mm-ss")}.pdf";
-            //document.Save(filename);
-            //Process.Start(filename);
+        private void ListViewItem_MouseLeftButtonUp(object sender, MouseButtonEventArgs e)
+        {
+
+            if (!(listView_AccountWithPermissions.SelectedItem is AccountWithPermissions selUser))
+            {
+                return;
+            }
+
+            #region Lösche Gruppen unter dem User
+            List<int> toRemove = new List<int>();
+            for (int i = listView_AccountWithPermissions.SelectedIndex + 1; i < listView_AccountWithPermissions.Items.Count; i++)
+            {
+                var checkItem = listView_AccountWithPermissions.Items.GetItemAt(i);
+                AccountWithPermissions _item = checkItem as AccountWithPermissions;
+
+                if (_item.IconGroup == null)
+                {
+                    break;
+                }
+                else
+                {
+                    toRemove.Add(i);
+                    //listView_AccountWithPermissions.Items.RemoveAt(i);
+                }
+            }
+
+            bool ifRemoved = false;
+            if (toRemove.Count > 0)
+            {
+                for (int i = toRemove.Last(); i >= toRemove.First(); i--)
+                {
+                    listView_AccountWithPermissions.Items.RemoveAt(i);
+                    ifRemoved = true;
+                }
+            }
+            #endregion
+
+            #region Fügt die Gruppen unter dem User ein
+            if (!ifRemoved)
+            {
+                foreach (var group in selUser.Groups)
+                {
+                    AccountWithPermissions groupItem = new AccountWithPermissions(iconUri_group, group);
+                    listView_AccountWithPermissions.Items.Insert(listView_AccountWithPermissions.SelectedIndex + 1, groupItem);
+                }
+            }
+            #endregion
         }
         #endregion
+
     }
 
     class DirWithSubcount
     {
+        public int ID { get; set; }
         public string Dir { get; set; }
         public int Subcount { get; set; }
 
-        public DirWithSubcount(string dir, int subcount)
+        public DirWithSubcount(int id, string dir, int subcount)
         {
+            this.ID = id;
             this.Dir = dir;
             this.Subcount = subcount;
         }
@@ -408,13 +527,17 @@ namespace ArgPerm
         public Uri IconWarning { get; }
         public string Inheritance { get; set; }
         public Uri IconInheritance { get; }
+        public List<string> Groups { get; set; }
+        public Uri IconGroup { get; set; }
+        public SolidColorBrush BackgroudColor { get; set; }
 
-        public AccountWithPermissions(Uri iconPath, string name, int howOftenGranted, int inheritance, string sid)
+        public AccountWithPermissions(Uri iconPath, string name, int howOftenGranted, int inheritance, string sid, List<string> groups)
         {
             this.IconPath = iconPath;
             this.Name = name;
             this.SID = sid;
             this.HowOftenGranted = howOftenGranted;
+            this.Groups = groups;
 
             if (this.HowOftenGranted > 1)
                 this.IconWarning = MainWindow.iconUri_warning;
@@ -427,6 +550,13 @@ namespace ArgPerm
                 this.Inheritance = inheritance.ToString() + "x";
 
             this.IconInheritance = MainWindow.iconUri_lockOpen;
+        }
+
+        public AccountWithPermissions(Uri iconPath, string name)
+        {
+            this.IconGroup = iconPath;
+            this.Name = name;
+            this.BackgroudColor = new SolidColorBrush(Colors.AliceBlue);
         }
     }
 

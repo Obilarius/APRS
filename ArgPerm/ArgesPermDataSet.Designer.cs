@@ -1109,6 +1109,8 @@ namespace ArgPerm {
             
             private global::System.Data.DataColumn columnHash;
             
+            private global::System.Data.DataColumn columnParentID;
+            
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "15.0.0.0")]
             public dirsDataTable() {
@@ -1176,6 +1178,14 @@ namespace ArgPerm {
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "15.0.0.0")]
+            public global::System.Data.DataColumn ParentIDColumn {
+                get {
+                    return this.columnParentID;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "15.0.0.0")]
             [global::System.ComponentModel.Browsable(false)]
             public int Count {
                 get {
@@ -1211,13 +1221,14 @@ namespace ArgPerm {
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "15.0.0.0")]
-            public dirsRow AdddirsRow(string Directory, string Owner, string Hash) {
+            public dirsRow AdddirsRow(string Directory, string Owner, string Hash, int ParentID) {
                 dirsRow rowdirsRow = ((dirsRow)(this.NewRow()));
                 object[] columnValuesArray = new object[] {
                         null,
                         Directory,
                         Owner,
-                        Hash};
+                        Hash,
+                        ParentID};
                 rowdirsRow.ItemArray = columnValuesArray;
                 this.Rows.Add(rowdirsRow);
                 return rowdirsRow;
@@ -1251,6 +1262,7 @@ namespace ArgPerm {
                 this.columnDirectory = base.Columns["Directory"];
                 this.columnOwner = base.Columns["Owner"];
                 this.columnHash = base.Columns["Hash"];
+                this.columnParentID = base.Columns["ParentID"];
             }
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
@@ -1264,6 +1276,8 @@ namespace ArgPerm {
                 base.Columns.Add(this.columnOwner);
                 this.columnHash = new global::System.Data.DataColumn("Hash", typeof(string), null, global::System.Data.MappingType.Element);
                 base.Columns.Add(this.columnHash);
+                this.columnParentID = new global::System.Data.DataColumn("ParentID", typeof(int), null, global::System.Data.MappingType.Element);
+                base.Columns.Add(this.columnParentID);
                 this.Constraints.Add(new global::System.Data.UniqueConstraint("Constraint1", new global::System.Data.DataColumn[] {
                                 this.columnID}, true));
                 this.columnID.AutoIncrement = true;
@@ -2450,6 +2464,34 @@ namespace ArgPerm {
                 set {
                     this[this.tabledirs.HashColumn] = value;
                 }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "15.0.0.0")]
+            public int ParentID {
+                get {
+                    try {
+                        return ((int)(this[this.tabledirs.ParentIDColumn]));
+                    }
+                    catch (global::System.InvalidCastException e) {
+                        throw new global::System.Data.StrongTypingException("The value for column \'ParentID\' in table \'dirs\' is DBNull.", e);
+                    }
+                }
+                set {
+                    this[this.tabledirs.ParentIDColumn] = value;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "15.0.0.0")]
+            public bool IsParentIDNull() {
+                return this.IsNull(this.tabledirs.ParentIDColumn);
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "15.0.0.0")]
+            public void SetParentIDNull() {
+                this[this.tabledirs.ParentIDColumn] = global::System.Convert.DBNull;
             }
         }
         
@@ -3851,36 +3893,43 @@ SELECT SID, DisplayName, SamAccountName, DistinguishedName, UserPrincipalName, E
             tableMapping.ColumnMappings.Add("Directory", "Directory");
             tableMapping.ColumnMappings.Add("Owner", "Owner");
             tableMapping.ColumnMappings.Add("Hash", "Hash");
+            tableMapping.ColumnMappings.Add("ParentID", "ParentID");
             this._adapter.TableMappings.Add(tableMapping);
             this._adapter.DeleteCommand = new global::System.Data.SqlClient.SqlCommand();
             this._adapter.DeleteCommand.Connection = this.Connection;
-            this._adapter.DeleteCommand.CommandText = "DELETE FROM [dbo].[dirs] WHERE (([ID] = @Original_ID) AND ([Owner] = @Original_Ow" +
-                "ner) AND ([Hash] = @Original_Hash))";
+            this._adapter.DeleteCommand.CommandText = "DELETE FROM [dirs] WHERE (([ID] = @Original_ID) AND ([Owner] = @Original_Owner) A" +
+                "ND ([Hash] = @Original_Hash) AND ((@IsNull_ParentID = 1 AND [ParentID] IS NULL) " +
+                "OR ([ParentID] = @Original_ParentID)))";
             this._adapter.DeleteCommand.CommandType = global::System.Data.CommandType.Text;
             this._adapter.DeleteCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@Original_ID", global::System.Data.SqlDbType.Int, 0, global::System.Data.ParameterDirection.Input, 0, 0, "ID", global::System.Data.DataRowVersion.Original, false, null, "", "", ""));
             this._adapter.DeleteCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@Original_Owner", global::System.Data.SqlDbType.NVarChar, 0, global::System.Data.ParameterDirection.Input, 0, 0, "Owner", global::System.Data.DataRowVersion.Original, false, null, "", "", ""));
             this._adapter.DeleteCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@Original_Hash", global::System.Data.SqlDbType.NChar, 0, global::System.Data.ParameterDirection.Input, 0, 0, "Hash", global::System.Data.DataRowVersion.Original, false, null, "", "", ""));
+            this._adapter.DeleteCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@IsNull_ParentID", global::System.Data.SqlDbType.Int, 0, global::System.Data.ParameterDirection.Input, 0, 0, "ParentID", global::System.Data.DataRowVersion.Original, true, null, "", "", ""));
+            this._adapter.DeleteCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@Original_ParentID", global::System.Data.SqlDbType.Int, 0, global::System.Data.ParameterDirection.Input, 0, 0, "ParentID", global::System.Data.DataRowVersion.Original, false, null, "", "", ""));
             this._adapter.InsertCommand = new global::System.Data.SqlClient.SqlCommand();
             this._adapter.InsertCommand.Connection = this.Connection;
-            this._adapter.InsertCommand.CommandText = "INSERT INTO [dbo].[dirs] ([Directory], [Owner], [Hash]) VALUES (@Directory, @Owne" +
-                "r, @Hash);\r\nSELECT ID, Directory, Owner, Hash FROM dirs WHERE (ID = SCOPE_IDENTI" +
-                "TY())";
+            this._adapter.InsertCommand.CommandText = "INSERT INTO [dirs] ([Directory], [Owner], [Hash], [ParentID]) VALUES (@Directory," +
+                " @Owner, @Hash, @ParentID);\r\nSELECT ID, Directory, Owner, Hash, ParentID FROM di" +
+                "rs WHERE (ID = SCOPE_IDENTITY())";
             this._adapter.InsertCommand.CommandType = global::System.Data.CommandType.Text;
             this._adapter.InsertCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@Directory", global::System.Data.SqlDbType.NVarChar, 0, global::System.Data.ParameterDirection.Input, 0, 0, "Directory", global::System.Data.DataRowVersion.Current, false, null, "", "", ""));
             this._adapter.InsertCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@Owner", global::System.Data.SqlDbType.NVarChar, 0, global::System.Data.ParameterDirection.Input, 0, 0, "Owner", global::System.Data.DataRowVersion.Current, false, null, "", "", ""));
             this._adapter.InsertCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@Hash", global::System.Data.SqlDbType.NChar, 0, global::System.Data.ParameterDirection.Input, 0, 0, "Hash", global::System.Data.DataRowVersion.Current, false, null, "", "", ""));
+            this._adapter.InsertCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@ParentID", global::System.Data.SqlDbType.Int, 0, global::System.Data.ParameterDirection.Input, 0, 0, "ParentID", global::System.Data.DataRowVersion.Current, false, null, "", "", ""));
             this._adapter.UpdateCommand = new global::System.Data.SqlClient.SqlCommand();
             this._adapter.UpdateCommand.Connection = this.Connection;
-            this._adapter.UpdateCommand.CommandText = "UPDATE [dbo].[dirs] SET [Directory] = @Directory, [Owner] = @Owner, [Hash] = @Has" +
-                "h WHERE (([ID] = @Original_ID) AND ([Owner] = @Original_Owner) AND ([Hash] = @Or" +
-                "iginal_Hash));\r\nSELECT ID, Directory, Owner, Hash FROM dirs WHERE (ID = @ID)";
+            this._adapter.UpdateCommand.CommandText = @"UPDATE [dirs] SET [Directory] = @Directory, [Owner] = @Owner, [Hash] = @Hash, [ParentID] = @ParentID WHERE (([ID] = @Original_ID) AND ([Owner] = @Original_Owner) AND ([Hash] = @Original_Hash) AND ((@IsNull_ParentID = 1 AND [ParentID] IS NULL) OR ([ParentID] = @Original_ParentID)));
+SELECT ID, Directory, Owner, Hash, ParentID FROM dirs WHERE (ID = @ID)";
             this._adapter.UpdateCommand.CommandType = global::System.Data.CommandType.Text;
             this._adapter.UpdateCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@Directory", global::System.Data.SqlDbType.NVarChar, 0, global::System.Data.ParameterDirection.Input, 0, 0, "Directory", global::System.Data.DataRowVersion.Current, false, null, "", "", ""));
             this._adapter.UpdateCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@Owner", global::System.Data.SqlDbType.NVarChar, 0, global::System.Data.ParameterDirection.Input, 0, 0, "Owner", global::System.Data.DataRowVersion.Current, false, null, "", "", ""));
             this._adapter.UpdateCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@Hash", global::System.Data.SqlDbType.NChar, 0, global::System.Data.ParameterDirection.Input, 0, 0, "Hash", global::System.Data.DataRowVersion.Current, false, null, "", "", ""));
+            this._adapter.UpdateCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@ParentID", global::System.Data.SqlDbType.Int, 0, global::System.Data.ParameterDirection.Input, 0, 0, "ParentID", global::System.Data.DataRowVersion.Current, false, null, "", "", ""));
             this._adapter.UpdateCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@Original_ID", global::System.Data.SqlDbType.Int, 0, global::System.Data.ParameterDirection.Input, 0, 0, "ID", global::System.Data.DataRowVersion.Original, false, null, "", "", ""));
             this._adapter.UpdateCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@Original_Owner", global::System.Data.SqlDbType.NVarChar, 0, global::System.Data.ParameterDirection.Input, 0, 0, "Owner", global::System.Data.DataRowVersion.Original, false, null, "", "", ""));
             this._adapter.UpdateCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@Original_Hash", global::System.Data.SqlDbType.NChar, 0, global::System.Data.ParameterDirection.Input, 0, 0, "Hash", global::System.Data.DataRowVersion.Original, false, null, "", "", ""));
+            this._adapter.UpdateCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@IsNull_ParentID", global::System.Data.SqlDbType.Int, 0, global::System.Data.ParameterDirection.Input, 0, 0, "ParentID", global::System.Data.DataRowVersion.Original, true, null, "", "", ""));
+            this._adapter.UpdateCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@Original_ParentID", global::System.Data.SqlDbType.Int, 0, global::System.Data.ParameterDirection.Input, 0, 0, "ParentID", global::System.Data.DataRowVersion.Original, false, null, "", "", ""));
             this._adapter.UpdateCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@ID", global::System.Data.SqlDbType.Int, 4, global::System.Data.ParameterDirection.Input, 0, 0, "ID", global::System.Data.DataRowVersion.Current, false, null, "", "", ""));
         }
         
@@ -3897,7 +3946,7 @@ SELECT SID, DisplayName, SamAccountName, DistinguishedName, UserPrincipalName, E
             this._commandCollection = new global::System.Data.SqlClient.SqlCommand[1];
             this._commandCollection[0] = new global::System.Data.SqlClient.SqlCommand();
             this._commandCollection[0].Connection = this.Connection;
-            this._commandCollection[0].CommandText = "SELECT ID, Directory, Owner, Hash FROM dbo.dirs";
+            this._commandCollection[0].CommandText = "SELECT ID, Directory, Owner, Hash, ParentID FROM dirs";
             this._commandCollection[0].CommandType = global::System.Data.CommandType.Text;
         }
         
@@ -3958,7 +4007,7 @@ SELECT SID, DisplayName, SamAccountName, DistinguishedName, UserPrincipalName, E
         [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "15.0.0.0")]
         [global::System.ComponentModel.Design.HelpKeywordAttribute("vs.data.TableAdapter")]
         [global::System.ComponentModel.DataObjectMethodAttribute(global::System.ComponentModel.DataObjectMethodType.Delete, true)]
-        public virtual int Delete(int Original_ID, string Original_Owner, string Original_Hash) {
+        public virtual int Delete(int Original_ID, string Original_Owner, string Original_Hash, global::System.Nullable<int> Original_ParentID) {
             this.Adapter.DeleteCommand.Parameters[0].Value = ((int)(Original_ID));
             if ((Original_Owner == null)) {
                 throw new global::System.ArgumentNullException("Original_Owner");
@@ -3971,6 +4020,14 @@ SELECT SID, DisplayName, SamAccountName, DistinguishedName, UserPrincipalName, E
             }
             else {
                 this.Adapter.DeleteCommand.Parameters[2].Value = ((string)(Original_Hash));
+            }
+            if ((Original_ParentID.HasValue == true)) {
+                this.Adapter.DeleteCommand.Parameters[3].Value = ((object)(0));
+                this.Adapter.DeleteCommand.Parameters[4].Value = ((int)(Original_ParentID.Value));
+            }
+            else {
+                this.Adapter.DeleteCommand.Parameters[3].Value = ((object)(1));
+                this.Adapter.DeleteCommand.Parameters[4].Value = global::System.DBNull.Value;
             }
             global::System.Data.ConnectionState previousConnectionState = this.Adapter.DeleteCommand.Connection.State;
             if (((this.Adapter.DeleteCommand.Connection.State & global::System.Data.ConnectionState.Open) 
@@ -3992,7 +4049,7 @@ SELECT SID, DisplayName, SamAccountName, DistinguishedName, UserPrincipalName, E
         [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "15.0.0.0")]
         [global::System.ComponentModel.Design.HelpKeywordAttribute("vs.data.TableAdapter")]
         [global::System.ComponentModel.DataObjectMethodAttribute(global::System.ComponentModel.DataObjectMethodType.Insert, true)]
-        public virtual int Insert(string Directory, string Owner, string Hash) {
+        public virtual int Insert(string Directory, string Owner, string Hash, global::System.Nullable<int> ParentID) {
             if ((Directory == null)) {
                 throw new global::System.ArgumentNullException("Directory");
             }
@@ -4010,6 +4067,12 @@ SELECT SID, DisplayName, SamAccountName, DistinguishedName, UserPrincipalName, E
             }
             else {
                 this.Adapter.InsertCommand.Parameters[2].Value = ((string)(Hash));
+            }
+            if ((ParentID.HasValue == true)) {
+                this.Adapter.InsertCommand.Parameters[3].Value = ((int)(ParentID.Value));
+            }
+            else {
+                this.Adapter.InsertCommand.Parameters[3].Value = global::System.DBNull.Value;
             }
             global::System.Data.ConnectionState previousConnectionState = this.Adapter.InsertCommand.Connection.State;
             if (((this.Adapter.InsertCommand.Connection.State & global::System.Data.ConnectionState.Open) 
@@ -4031,7 +4094,7 @@ SELECT SID, DisplayName, SamAccountName, DistinguishedName, UserPrincipalName, E
         [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "15.0.0.0")]
         [global::System.ComponentModel.Design.HelpKeywordAttribute("vs.data.TableAdapter")]
         [global::System.ComponentModel.DataObjectMethodAttribute(global::System.ComponentModel.DataObjectMethodType.Update, true)]
-        public virtual int Update(string Directory, string Owner, string Hash, int Original_ID, string Original_Owner, string Original_Hash, int ID) {
+        public virtual int Update(string Directory, string Owner, string Hash, global::System.Nullable<int> ParentID, int Original_ID, string Original_Owner, string Original_Hash, global::System.Nullable<int> Original_ParentID, int ID) {
             if ((Directory == null)) {
                 throw new global::System.ArgumentNullException("Directory");
             }
@@ -4050,20 +4113,34 @@ SELECT SID, DisplayName, SamAccountName, DistinguishedName, UserPrincipalName, E
             else {
                 this.Adapter.UpdateCommand.Parameters[2].Value = ((string)(Hash));
             }
-            this.Adapter.UpdateCommand.Parameters[3].Value = ((int)(Original_ID));
+            if ((ParentID.HasValue == true)) {
+                this.Adapter.UpdateCommand.Parameters[3].Value = ((int)(ParentID.Value));
+            }
+            else {
+                this.Adapter.UpdateCommand.Parameters[3].Value = global::System.DBNull.Value;
+            }
+            this.Adapter.UpdateCommand.Parameters[4].Value = ((int)(Original_ID));
             if ((Original_Owner == null)) {
                 throw new global::System.ArgumentNullException("Original_Owner");
             }
             else {
-                this.Adapter.UpdateCommand.Parameters[4].Value = ((string)(Original_Owner));
+                this.Adapter.UpdateCommand.Parameters[5].Value = ((string)(Original_Owner));
             }
             if ((Original_Hash == null)) {
                 throw new global::System.ArgumentNullException("Original_Hash");
             }
             else {
-                this.Adapter.UpdateCommand.Parameters[5].Value = ((string)(Original_Hash));
+                this.Adapter.UpdateCommand.Parameters[6].Value = ((string)(Original_Hash));
             }
-            this.Adapter.UpdateCommand.Parameters[6].Value = ((int)(ID));
+            if ((Original_ParentID.HasValue == true)) {
+                this.Adapter.UpdateCommand.Parameters[7].Value = ((object)(0));
+                this.Adapter.UpdateCommand.Parameters[8].Value = ((int)(Original_ParentID.Value));
+            }
+            else {
+                this.Adapter.UpdateCommand.Parameters[7].Value = ((object)(1));
+                this.Adapter.UpdateCommand.Parameters[8].Value = global::System.DBNull.Value;
+            }
+            this.Adapter.UpdateCommand.Parameters[9].Value = ((int)(ID));
             global::System.Data.ConnectionState previousConnectionState = this.Adapter.UpdateCommand.Connection.State;
             if (((this.Adapter.UpdateCommand.Connection.State & global::System.Data.ConnectionState.Open) 
                         != global::System.Data.ConnectionState.Open)) {
@@ -4084,8 +4161,8 @@ SELECT SID, DisplayName, SamAccountName, DistinguishedName, UserPrincipalName, E
         [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "15.0.0.0")]
         [global::System.ComponentModel.Design.HelpKeywordAttribute("vs.data.TableAdapter")]
         [global::System.ComponentModel.DataObjectMethodAttribute(global::System.ComponentModel.DataObjectMethodType.Update, true)]
-        public virtual int Update(string Directory, string Owner, string Hash, int Original_ID, string Original_Owner, string Original_Hash) {
-            return this.Update(Directory, Owner, Hash, Original_ID, Original_Owner, Original_Hash, Original_ID);
+        public virtual int Update(string Directory, string Owner, string Hash, global::System.Nullable<int> ParentID, int Original_ID, string Original_Owner, string Original_Hash, global::System.Nullable<int> Original_ParentID) {
+            return this.Update(Directory, Owner, Hash, ParentID, Original_ID, Original_Owner, Original_Hash, Original_ParentID, Original_ID);
         }
     }
     
