@@ -57,26 +57,26 @@ namespace ArgPerm
 
 
         #region Directory TreeView
-        private MyTreeViewItem GetRootNode(string Servername)
-        {
-            // Bildet die root Node für den Server (Level 0)
-            MyTreeViewItem root = new MyTreeViewItem
-            {
-                HeaderText = Servername,
-                Tag = "\\\\" + Servername.ToLower(),
-                Icon = new BitmapImage(iconUri_server)
-            };
-            root.IsSelected = true;
-            root.Expanding += new RoutedEventHandler(TreeViewBeforeExpand);
+        //private MyTreeViewItem GetRootNode(string Servername)
+        //{
+        //    // Bildet die root Node für den Server (Level 0)
+        //    MyTreeViewItem root = new MyTreeViewItem
+        //    {
+        //        HeaderText = Servername,
+        //        Tag = "\\\\" + Servername.ToLower(),
+        //        Icon = new BitmapImage(iconUri_server)
+        //    };
+        //    root.IsSelected = true;
+        //    root.Expanding += new RoutedEventHandler(TreeViewBeforeExpand);
 
-            MyTreeViewItem subitem = new MyTreeViewItem
-            {
-                Header = "..."
-            };
-            root.Items.Add(subitem);
+        //    MyTreeViewItem subitem = new MyTreeViewItem
+        //    {
+        //        Header = "..."
+        //    };
+        //    root.Items.Add(subitem);
 
-            return root;
-        }
+        //    return root;
+        //}
 
         private MyTreeViewItem GetRootAndFirstLevelNodes(string Servername)
         {
@@ -219,7 +219,7 @@ namespace ArgPerm
                     {
                         MyTreeViewItem node = new MyTreeViewItem
                         {
-                            HeaderText = Regex.Match(dir.Dir, @"\w+$").Value,
+                            HeaderText = Regex.Match(dir.Dir, @"([^\\]+)(?=[^\\]*$)").Value,
                             //keep the directory's full path in the tag for use later
                             Tag = new[] { dir.ID.ToString(), dir.Dir },
                             Icon = new BitmapImage(iconUri_folder)
