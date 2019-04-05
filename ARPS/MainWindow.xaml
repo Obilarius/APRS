@@ -5,6 +5,8 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:controls="http://metro.mahapps.com/winfx/xaml/controls"
         xmlns:local="clr-namespace:ARPS"
+        xmlns:viewmodels="clr-namespace:ARPS.ViewModels"
+        xmlns:views="clr-namespace:ARPS.Views"
         mc:Ignorable="d"
         Title="ARPS" Height="450" Width="800">
     <Window.Resources>
@@ -21,6 +23,20 @@
                 </Trigger>
             </Style.Triggers>-->
         </Style>
+
+        <!-- DATA TEMPLATES -->
+        <DataTemplate x:Name="dashboardViewTemplate" DataType="{x:Type viewmodels:DashboardViewModel}">
+            <views:Dashboard DataContext="{Binding}"/>
+        </DataTemplate>
+        <DataTemplate x:Name="permissionsViewTemplate" DataType="{x:Type viewmodels:PermissionsViewModel}">
+            <views:Permissions DataContext="{Binding}"/>
+        </DataTemplate>
+        <DataTemplate x:Name="ressourcesViewTemplate" DataType="{x:Type viewmodels:RessourcesViewModel}">
+            <views:Ressources DataContext="{Binding}"/>
+        </DataTemplate>
+        <DataTemplate x:Name="scheduleViewTemplate" DataType="{x:Type viewmodels:ScheduleViewModel}">
+            <views:Schedule DataContext="{Binding}"/>
+        </DataTemplate>
     </Window.Resources>
     <Grid>
         <Grid.RowDefinitions>
@@ -35,10 +51,10 @@
                 <ColumnDefinition/>
                 <ColumnDefinition/>
             </Grid.ColumnDefinitions>
-            <Button Content="Dashboard" Grid.Column="0"/>
-            <Button Content="Ressourcen" Grid.Column="1"/>
-            <Button Content="Berechtigungen" Grid.Column="2"/>
-            <Button Content="Planung" Grid.Column="3"/>
+            <Button x:Name="btn_dashboard" Content="{DynamicResource DE_Dashboard}" Grid.Column="0" Click="Button_Dashboard_Click"/>
+            <Button x:Name="btn_ressources" Content="{DynamicResource DE_Ressources}" Grid.Column="1" Click="Button_Ressources_Click"/>
+            <Button x:Name="btn_permissions" Content="{DynamicResource DE_Permissions}" Grid.Column="2" Click="Button_Permissions_Click"/>
+            <Button x:Name="btn_schedule" Content="{DynamicResource DE_Schedule}" Grid.Column="3" Click="Button_Schedule_Click"/>
         </Grid>
         <Rectangle Grid.Row="1" Fill="{DynamicResource ArgesGelb}" />
         <ContentControl Grid.Row="2" Content="{Binding}"/>

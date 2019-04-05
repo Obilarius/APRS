@@ -1,0 +1,8 @@
+﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:local="clr-namespace:ARPS.Resources"
+                    xmlns:system="clr-namespace:System;assembly=mscorlib">
+
+    <BitmapImage x:Key="Img_Folder" UriSource="pack://siteoforigin:,,,/Resources/Images/Folder_16x.png"/>
+
+</ResourceDictionary>

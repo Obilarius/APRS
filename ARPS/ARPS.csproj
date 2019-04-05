@@ -43,6 +43,7 @@
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Data" />
+    <Reference Include="System.Drawing" />
     <Reference Include="System.Windows.Interactivity, Version=4.5.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <HintPath>..\packages\ControlzEx.3.0.2.4\lib\net45\System.Windows.Interactivity.dll</HintPath>
     </Reference>
@@ -64,6 +65,22 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="ViewModels\DashboardViewModel.cs" />
+    <Compile Include="ViewModels\PermissionsViewModel.cs" />
+    <Compile Include="ViewModels\RessourcesViewModel.cs" />
+    <Compile Include="ViewModels\ScheduleViewModel.cs" />
+    <Compile Include="Views\Dashboard.xaml.cs">
+      <DependentUpon>Dashboard.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\Permissions.xaml.cs">
+      <DependentUpon>Permissions.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\Ressources.xaml.cs">
+      <DependentUpon>Ressources.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\Schedule.xaml.cs">
+      <DependentUpon>Schedule.xaml</DependentUpon>
+    </Compile>
     <Page Include="MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -77,6 +94,34 @@
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
+    <Page Include="Resources\ColorRessources.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Resources\ImageRessources.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Resources\StringRessources.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\Dashboard.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\Permissions.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\Ressources.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\Schedule.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs">
@@ -106,8 +151,28 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="ViewModels\" />
-    <Folder Include="Views\" />
+    <None Include="Resources\Images\Folder_16x.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Images\FolderShared_16x.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Images\Group_16x.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Images\LocalServer_16x.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Images\LockClose_16x.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Images\LockOpen_16x.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Images\User_16x.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Images\Warning_16x.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

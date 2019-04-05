@@ -13,20 +13,12 @@
                 <!-- Accent and AppTheme setting -->
                 <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/Accents/Blue.xaml" />
                 <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/Accents/BaseLight.xaml" />
+                
+                <!-- OWN RESSOURCES -->
+                <ResourceDictionary Source="Resources/StringRessources.xaml" />
+                <ResourceDictionary Source="Resources/ColorRessources.xaml" />
+                <ResourceDictionary Source="Resources/ImageRessources.xaml" />
             </ResourceDictionary.MergedDictionaries>
-
-            
-            <!-- COLORS -->
-            <SolidColorBrush x:Key="HeaderColor" Color="#30383a" />
-            <SolidColorBrush x:Key="HeaderTextColor" Color="Gainsboro" />
-
-            <SolidColorBrush x:Key="ArgesBlau" Color="#004481" />
-            <SolidColorBrush x:Key="ArgesGelb" Color="#ffd500" />
-            <SolidColorBrush x:Key="ArgesGrauBlau_dunkel" Color="#c7d2db" />
-            <SolidColorBrush x:Key="ArgesGrauBlau_mittel" Color="#e3eaee" />
-            <SolidColorBrush x:Key="ArgesGrauBlau_hell" Color="#eaeff2" />
-
-            <Color x:Key="Color1">#FFE8EDF9</Color>
         </ResourceDictionary>
     </Application.Resources>
 </Application>

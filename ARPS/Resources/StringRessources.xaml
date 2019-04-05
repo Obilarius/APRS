@@ -1,0 +1,19 @@
+﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:local="clr-namespace:ARPS"
+                    xmlns:system="clr-namespace:System;assembly=mscorlib">
+
+    <!-- String resource that can be localized -->
+    <system:String x:Key="DE_Dashboard">Dashboard</system:String>
+    <system:String x:Key="DE_Permissions">Berechtigungen</system:String>
+    <system:String x:Key="DE_Ressources">Ressourcen</system:String>
+    <system:String x:Key="DE_Schedule">Planung</system:String>
+
+
+    <!-- VIEW: Ressources -->
+    <system:String x:Key="String_DE_Owner">Besitzer</system:String>
+    <system:String x:Key="String_DE_AccountsWithPermissions">Konten mit Berechtigung</system:String>
+    
+    
+
+</ResourceDictionary>
