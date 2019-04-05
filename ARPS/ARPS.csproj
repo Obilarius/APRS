@@ -4,10 +4,10 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{BB8D4A00-93EC-44CE-966A-81465F949A9C}</ProjectGuid>
+    <ProjectGuid>{28F4DC88-DE72-498B-8B46-147D4E9598E4}</ProjectGuid>
     <OutputType>WinExe</OutputType>
-    <RootNamespace>ArgPerm</RootNamespace>
-    <AssemblyName>ArgPerm</AssemblyName>
+    <RootNamespace>ARPS</RootNamespace>
+    <AssemblyName>ARPS</AssemblyName>
     <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <ProjectTypeGuids>{60dc8134-eba5-43b8-bcc9-bb4bc16c2548};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
@@ -41,26 +41,8 @@
     <Reference Include="MahApps.Metro, Version=1.6.5.1, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\MahApps.Metro.1.6.5\lib\net46\MahApps.Metro.dll</HintPath>
     </Reference>
-    <Reference Include="MigraDoc.DocumentObjectModel-wpf, Version=1.50.5147.0, Culture=neutral, PublicKeyToken=f94615aa0424f9eb, processorArchitecture=MSIL">
-      <HintPath>..\packages\PDFsharp-MigraDoc-wpf.1.50.5147\lib\net30\MigraDoc.DocumentObjectModel-wpf.dll</HintPath>
-    </Reference>
-    <Reference Include="MigraDoc.Rendering-wpf, Version=1.50.5147.0, Culture=neutral, PublicKeyToken=f94615aa0424f9eb, processorArchitecture=MSIL">
-      <HintPath>..\packages\PDFsharp-MigraDoc-wpf.1.50.5147\lib\net30\MigraDoc.Rendering-wpf.dll</HintPath>
-    </Reference>
-    <Reference Include="MigraDoc.RtfRendering-wpf, Version=1.50.5147.0, Culture=neutral, PublicKeyToken=f94615aa0424f9eb, processorArchitecture=MSIL">
-      <HintPath>..\packages\PDFsharp-MigraDoc-wpf.1.50.5147\lib\net30\MigraDoc.RtfRendering-wpf.dll</HintPath>
-    </Reference>
-    <Reference Include="PdfSharp-wpf, Version=1.50.5147.0, Culture=neutral, PublicKeyToken=f94615aa0424f9eb, processorArchitecture=MSIL">
-      <HintPath>..\packages\PDFsharp-MigraDoc-wpf.1.50.5147\lib\net30\PdfSharp-wpf.dll</HintPath>
-    </Reference>
-    <Reference Include="PdfSharp.Charting-wpf, Version=1.50.5147.0, Culture=neutral, PublicKeyToken=f94615aa0424f9eb, processorArchitecture=MSIL">
-      <HintPath>..\packages\PDFsharp-MigraDoc-wpf.1.50.5147\lib\net30\PdfSharp.Charting-wpf.dll</HintPath>
-    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Data" />
-    <Reference Include="System.Data.Linq" />
-    <Reference Include="System.Drawing" />
-    <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Windows.Interactivity, Version=4.5.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <HintPath>..\packages\ControlzEx.3.0.2.4\lib\net45\System.Windows.Interactivity.dll</HintPath>
     </Reference>
@@ -90,35 +72,13 @@
       <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="ArgesPermDataSet.Designer.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>ArgesPermDataSet.xsd</DependentUpon>
-    </Compile>
-    <Compile Include="LinqToSQLClass.designer.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>LinqToSQLClass.dbml</DependentUpon>
-    </Compile>
-    <Compile Include="Datasets\ArgPerm.Designer.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>ArgPerm.xsd</DependentUpon>
-    </Compile>
+    <Compile Include="Models\MsSql.cs" />
     <Compile Include="MainWindow.xaml.cs">
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
-    <Page Include="Pages\Ressources.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="MyTreeViewItem.cs" />
-    <Compile Include="Pages\Ressources.xaml.cs">
-      <DependentUpon>Ressources.xaml</DependentUpon>
-    </Compile>
     <Compile Include="Properties\AssemblyInfo.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -136,36 +96,6 @@
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
-    <None Include="ArgesPermDataSet.xsc">
-      <DependentUpon>ArgesPermDataSet.xsd</DependentUpon>
-    </None>
-    <None Include="ArgesPermDataSet.xsd">
-      <Generator>MSDataSetGenerator</Generator>
-      <LastGenOutput>ArgesPermDataSet.Designer.cs</LastGenOutput>
-      <SubType>Designer</SubType>
-    </None>
-    <None Include="ArgesPermDataSet.xss">
-      <DependentUpon>ArgesPermDataSet.xsd</DependentUpon>
-    </None>
-    <None Include="LinqToSQLClass.dbml">
-      <Generator>MSLinqToSQLGenerator</Generator>
-      <LastGenOutput>LinqToSQLClass.designer.cs</LastGenOutput>
-      <SubType>Designer</SubType>
-    </None>
-    <None Include="LinqToSQLClass.dbml.layout">
-      <DependentUpon>LinqToSQLClass.dbml</DependentUpon>
-    </None>
-    <None Include="Datasets\ArgPerm.xsc">
-      <DependentUpon>ArgPerm.xsd</DependentUpon>
-    </None>
-    <None Include="Datasets\ArgPerm.xsd">
-      <SubType>Designer</SubType>
-      <Generator>MSDataSetGenerator</Generator>
-      <LastGenOutput>ArgPerm.Designer.cs</LastGenOutput>
-    </None>
-    <None Include="Datasets\ArgPerm.xss">
-      <DependentUpon>ArgPerm.xsd</DependentUpon>
-    </None>
     <None Include="packages.config" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
@@ -176,34 +106,8 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
-    <Service Include="{3259AA49-8AA1-44D3-9025-A0B520596A8C}" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Resources\Folder_16x.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Resources\win\Folder_16x.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Resources\win\FolderShared_16x.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Resources\win\LocalServer_16x.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Resources\Group_16x.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Resources\User_16x.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Resources\LockClose_16x.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Resources\LockOpen_16x.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Resources\Warning_16x.png" />
+    <Folder Include="ViewModels\" />
+    <Folder Include="Views\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

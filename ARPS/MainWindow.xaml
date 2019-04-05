@@ -1,0 +1,46 @@
+﻿<controls:MetroWindow x:Class="ARPS.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:controls="http://metro.mahapps.com/winfx/xaml/controls"
+        xmlns:local="clr-namespace:ARPS"
+        mc:Ignorable="d"
+        Title="ARPS" Height="450" Width="800">
+    <Window.Resources>
+        <!-- Resources for this Window can be defined here. -->
+        <Style TargetType="Button">
+            <Setter Property="Background" Value="{DynamicResource ArgesGrauBlau_dunkel}" />
+            <Setter Property="BorderThickness" Value="0" />
+            <Setter Property="Foreground" Value="{DynamicResource ArgesBlau}" />
+            <Setter Property="FontSize" Value="20"/>
+            <Setter Property="FontWeight" Value="Bold"/>
+            <!--<Style.Triggers>
+                <Trigger Property="IsMouseOver" Value="True">
+                    <Setter Property="Foreground" Value="{DynamicResource ArgesBlau}"/>
+                </Trigger>
+            </Style.Triggers>-->
+        </Style>
+    </Window.Resources>
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="70"/>
+            <RowDefinition Height="5"/>
+            <RowDefinition/>
+        </Grid.RowDefinitions>
+        <Grid Grid.Row="0">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition/>
+                <ColumnDefinition/>
+                <ColumnDefinition/>
+                <ColumnDefinition/>
+            </Grid.ColumnDefinitions>
+            <Button Content="Dashboard" Grid.Column="0"/>
+            <Button Content="Ressourcen" Grid.Column="1"/>
+            <Button Content="Berechtigungen" Grid.Column="2"/>
+            <Button Content="Planung" Grid.Column="3"/>
+        </Grid>
+        <Rectangle Grid.Row="1" Fill="{DynamicResource ArgesGelb}" />
+        <ContentControl Grid.Row="2" Content="{Binding}"/>
+    </Grid>
+</controls:MetroWindow>
