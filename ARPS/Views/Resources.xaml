@@ -29,9 +29,9 @@
                 </Grid.ColumnDefinitions>
                 <Image Grid.Column="0" Height="25" Source="{StaticResource Img_Folder}"/>
                 <StackPanel Grid.Column="1">
-                    <Label x:Name="lbl_FolderName" Content="Apollon" Padding="0" HorizontalAlignment="Left" VerticalAlignment="Top" 
+                    <Label x:Name="lbl_FolderName" Content="{Binding FolderName}" Padding="0" HorizontalAlignment="Left" VerticalAlignment="Top" 
                            FontSize="18" FontWeight="Bold" Foreground="{StaticResource ArgesBlau}"/>
-                    <Label x:Name="lbl_FolderPath" Content="\\apollon" Padding="0" HorizontalAlignment="Left" VerticalAlignment="Bottom" Foreground="{StaticResource ArgesBlau}"/>
+                    <Label x:Name="lbl_FolderPath" Content="{Binding FolderPath}" Padding="0" HorizontalAlignment="Left" VerticalAlignment="Bottom" Foreground="{StaticResource ArgesBlau}"/>
                 </StackPanel>
             </Grid>
 
@@ -51,7 +51,7 @@
                         <ColumnDefinition Width="*"/>
                     </Grid.ColumnDefinitions>
                     <Image Grid.Column="0" x:Name="img_OwnerIcon" Height="16" Width="16"/>
-                    <Label Grid.Column="1" x:Name="lbl_OwnerName" Content="Kein Besitzer gefunden" HorizontalAlignment="Left"/>
+                    <Label Grid.Column="1" x:Name="lbl_OwnerName" Content="{Binding Owner}" HorizontalAlignment="Left"/>
                 </Grid>
             </Grid>
             <!-- 3. Row - NTFS Access rights -->
