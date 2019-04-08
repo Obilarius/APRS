@@ -46,7 +46,7 @@ namespace ArgPermDeamon
             paths.Add(@"\\apollon\SoftDev");
             paths.Add(@"\\apollon\User");
             paths.Add(@"\\apollon\Vorlagen");
-            int levels = 999;
+            //int levels = 999;
 
             //List<string> output = new List<string>();
             //foreach (var path in paths)

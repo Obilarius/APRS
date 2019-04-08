@@ -31,8 +31,8 @@
         <DataTemplate x:Name="permissionsViewTemplate" DataType="{x:Type viewmodels:PermissionsViewModel}">
             <views:Permissions DataContext="{Binding}"/>
         </DataTemplate>
-        <DataTemplate x:Name="ressourcesViewTemplate" DataType="{x:Type viewmodels:RessourcesViewModel}">
-            <views:Ressources DataContext="{Binding}"/>
+        <DataTemplate x:Name="ressourcesViewTemplate" DataType="{x:Type viewmodels:ResourcesViewModel}">
+            <views:Resources DataContext="{Binding}"/>
         </DataTemplate>
         <DataTemplate x:Name="scheduleViewTemplate" DataType="{x:Type viewmodels:ScheduleViewModel}">
             <views:Schedule DataContext="{Binding}"/>

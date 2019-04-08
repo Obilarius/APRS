@@ -67,7 +67,7 @@
     </ApplicationDefinition>
     <Compile Include="ViewModels\DashboardViewModel.cs" />
     <Compile Include="ViewModels\PermissionsViewModel.cs" />
-    <Compile Include="ViewModels\RessourcesViewModel.cs" />
+    <Compile Include="ViewModels\ResourcesViewModel.cs" />
     <Compile Include="ViewModels\ScheduleViewModel.cs" />
     <Compile Include="Views\Dashboard.xaml.cs">
       <DependentUpon>Dashboard.xaml</DependentUpon>
@@ -75,8 +75,8 @@
     <Compile Include="Views\Permissions.xaml.cs">
       <DependentUpon>Permissions.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Views\Ressources.xaml.cs">
-      <DependentUpon>Ressources.xaml</DependentUpon>
+    <Compile Include="Views\Resources.xaml.cs">
+      <DependentUpon>Resources.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\Schedule.xaml.cs">
       <DependentUpon>Schedule.xaml</DependentUpon>
@@ -114,7 +114,7 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Views\Ressources.xaml">
+    <Page Include="Views\Resources.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

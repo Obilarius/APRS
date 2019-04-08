@@ -16,11 +16,11 @@ using System.Windows.Shapes;
 namespace ARPS.Views
 {
     /// <summary>
-    /// Interaction logic for Ressources.xaml
+    /// Interaction logic for Resources.xaml
     /// </summary>
-    public partial class Ressources : UserControl
+    public partial class Resources : UserControl
     {
-        public Ressources()
+        public Resources()
         {
             InitializeComponent();
         }

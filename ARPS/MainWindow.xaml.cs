@@ -37,7 +37,7 @@ namespace ARPS
 
         private void Button_Ressources_Click(object sender, RoutedEventArgs e)
         {
-            DataContext = new RessourcesViewModel();
+            DataContext = new ResourcesViewModel();
             ResetButtonColor();
             btn_ressources.Background = (Brush)Application.Current.FindResource("ArgesGrauBlau_mittel");
         }

@@ -6,9 +6,9 @@ using System.Threading.Tasks;
 
 namespace ARPS.ViewModels
 {
-    public class RessourcesViewModel
+    public class ResourcesViewModel
     {
-        public RessourcesViewModel()
+        public ResourcesViewModel()
         {
             
         }
