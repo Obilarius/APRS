@@ -71,6 +71,13 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="Models\Directory\Data\DirectoryItem.cs" />
+    <Compile Include="Models\Directory\Data\DirectoryItemType.cs" />
+    <Compile Include="Models\Directory\Data\HeaderToImageConverter.cs" />
+    <Compile Include="Models\Directory\ViewModel\DirectoryItemViewModel.cs" />
+    <Compile Include="Models\Directory\Data\DirectoryStructure.cs" />
+    <Compile Include="Models\RelayCommand.cs" />
+    <Compile Include="ViewModels\BaseViewModel.cs" />
     <Compile Include="ViewModels\DashboardViewModel.cs" />
     <Compile Include="ViewModels\PermissionsViewModel.cs" />
     <Compile Include="ViewModels\ResourcesViewModel.cs" />
@@ -182,6 +189,11 @@
   </ItemGroup>
   <ItemGroup>
     <Resource Include="FodyWeavers.xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\Images\FolderShared_32x.png" />
+    <Resource Include="Resources\Images\Folder_32x.png" />
+    <Resource Include="Resources\Images\LocalServer_32x.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="..\packages\Fody.4.2.1\build\Fody.targets" Condition="Exists('..\packages\Fody.4.2.1\build\Fody.targets')" />

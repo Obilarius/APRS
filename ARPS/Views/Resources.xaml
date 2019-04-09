@@ -3,9 +3,9 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
-             xmlns:local="clr-namespace:ARPS.Views"
+             xmlns:local="clr-namespace:ARPS"
              mc:Ignorable="d" 
-             d:DesignHeight="450" d:DesignWidth="800">
+             d:DesignHeight="600" d:DesignWidth="1000">
     <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="400"/>
@@ -14,7 +14,22 @@
         
         <!-- Left Side - Foder Tree -->
         <!--<TreeView x:Name="treeView_Directorys" Grid.Column="0" BorderThickness="0" Margin="0 0 7 0" Padding="0 10" SelectedItemChanged="TreeViewSelectedItemChange"/>-->
-        <TreeView x:Name="treeView_Directorys" Grid.Column="0" BorderThickness="0" Margin="0 0 7 0" Padding="0 10"/>
+        <TreeView x:Name="treeView_Directorys" Grid.Column="0" ItemsSource="{Binding Items}" BorderThickness="0" Margin="0 0 7 0" Padding="0 10">
+            <TreeView.ItemContainerStyle>
+                <Style TargetType="{x:Type TreeViewItem}">
+                    <Setter Property="IsExpanded" Value="{Binding IsExpanded, Mode=TwoWay}"/>
+                    <Setter Property="IsSelected" Value="{Binding IsSelected}" />
+                </Style>
+            </TreeView.ItemContainerStyle>
+            <TreeView.ItemTemplate>
+                <HierarchicalDataTemplate ItemsSource="{Binding Children}">
+                    <StackPanel Orientation="Horizontal">
+                        <Image Width="20" Margin="2" Source="{Binding Type, Converter={x:Static local:HeaderToImageConverter.Instance}}"/>
+                        <TextBlock VerticalAlignment="Center" Margin="0 0 20 0" Text="{Binding Name}"/>
+                    </StackPanel>
+                </HierarchicalDataTemplate>
+            </TreeView.ItemTemplate>
+        </TreeView>
 
         <!-- Splitter-->
         <GridSplitter Grid.Column="0" BorderBrush="{StaticResource ArgesGrauBlau_hell}" BorderThickness="4"></GridSplitter>
@@ -31,7 +46,7 @@
                 <StackPanel Grid.Column="1">
                     <Label x:Name="lbl_FolderName" Content="{Binding FolderName}" Padding="0" HorizontalAlignment="Left" VerticalAlignment="Top" 
                            FontSize="18" FontWeight="Bold" Foreground="{StaticResource ArgesBlau}"/>
-                    <Label x:Name="lbl_FolderPath" Content="{Binding FolderPath}" Padding="0" HorizontalAlignment="Left" VerticalAlignment="Bottom" Foreground="{StaticResource ArgesBlau}"/>
+                    <Label x:Name="lbl_FolderPath" Content="{Binding FullPath}" Padding="0" HorizontalAlignment="Left" VerticalAlignment="Bottom" Foreground="{StaticResource ArgesBlau}"/>
                 </StackPanel>
             </Grid>
 

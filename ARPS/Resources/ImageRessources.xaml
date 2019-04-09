@@ -3,6 +3,8 @@
                     xmlns:local="clr-namespace:ARPS.Resources"
                     xmlns:system="clr-namespace:System;assembly=mscorlib">
 
-    <BitmapImage x:Key="Img_Folder" UriSource="pack://siteoforigin:,,,/Resources/Images/Folder_16x.png"/>
+    <BitmapImage x:Key="Img_Folder" UriSource="pack://siteoforigin:,,,/Resources/Images/Folder_32x.png"/>
+    <BitmapImage x:Key="Img_SharedFolder" UriSource="pack://siteoforigin:,,,/Resources/Images/FolderShared_32x.png"/>
+    <BitmapImage x:Key="Img_Server" UriSource="pack://siteoforigin:,,,/Resources/Images/LocalServer_32x.png"/>
 
 </ResourceDictionary>

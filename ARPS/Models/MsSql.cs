@@ -5,19 +5,21 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace ARPS.Classes
+namespace ARPS
 {
     public class MsSql
     {
+        public SqlConnection Con { get; private set; }
+
         public MsSql()
         {
-            SqlConnection con = new SqlConnection(@"Data Source=PC-W10-SW\MSSQLSERVER_DEV;Initial Catalog=ArgesPerm;Integrated Security=True");
+            Con = new SqlConnection(@"Data Source=PC-W10-SW\MSSQLSERVER_DEV;Initial Catalog=ArgesPerm;Integrated Security=True");
 
 
-            //con.Open();
+            //Con.Open();
 
             //string sql = "SELECT ID, Directory FROM dirs";
-            //SqlCommand cmd = new SqlCommand(sql, con);
+            //SqlCommand cmd = new SqlCommand(sql, Con);
 
             //using (SqlDataReader reader = cmd.ExecuteReader())
             //{
@@ -29,6 +31,16 @@ namespace ARPS.Classes
             //        allList.Add(new[] { id.ToString(), dir });
             //    }
             //}
+        }
+
+        public void Open ()
+        {
+            Con.Open();
+        }
+
+        public void Close ()
+        {
+            Con.Close();
         }
     }
 }

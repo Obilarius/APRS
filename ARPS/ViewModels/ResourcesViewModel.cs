@@ -1,32 +1,58 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
+﻿using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace ARPS.ViewModels
 {
-    public class ResourcesViewModel : INotifyPropertyChanged
+    /// <summary>
+    /// Das ViewModel für die Unterseite "Resourcen"
+    /// </summary>
+    public class ResourcesViewModel : BaseViewModel
     {
-        public event PropertyChangedEventHandler PropertyChanged;
+        #region Public Propertys
 
-        public string FolderName { get; set; } = "Name";
-        public string FolderPath { get; set; } = "\\\\Path"; 
-        public string Owner { get; set; } = "Kein Besitzer gefunden";
+        /// <summary>
+        /// Der Ordnername der in der rechten Übersicht angezeigt wird
+        /// </summary>
+        public string FolderName { get; set; } = "-";
 
+        /// <summary>
+        /// Der volle Pfad des Ordners der in der rechten Übersicht angezeigt wird
+        /// </summary>
+        public string FullPath { get; set; } = "-";
+
+        /// <summary>
+        /// Der Besitzer des Ordners der in der rechten Übersicht angezeigt wird
+        /// </summary>
+        public string Owner { get; set; } = "-";
+
+        /// <summary>
+        /// Eine Liste mit allen Ordnern
+        /// </summary>
+        public ObservableCollection<DirectoryItemViewModel> Items { get; set; }
+
+        #endregion
+
+        #region Constructor
+
+        /// <summary>
+        /// Default Constructor
+        /// </summary>
         public ResourcesViewModel()
         {
-            Task.Run(async () =>
+            // Erstelle eine Liste mit Servernamen die angezeigt werden sollen
+            var servers = new List<string>
             {
-                int i = 0;
+                "Apollon"
+            };
 
-                while (true)
-                {
-                    await Task.Delay(200);
-                    FolderName = (i++).ToString();
-                }
-            });
+            // Holt eine Liste mit dem Server und den SharedFolders
+            var nodes = DirectoryStructure.GetServers(servers);
+            // Erstellt die ViewModels für die Nodes
+            this.Items = new ObservableCollection<DirectoryItemViewModel>(
+                nodes.Select(c => new DirectoryItemViewModel(c.Id, c.FullPath, c.Type, c.Owner)));
         }
+
+        #endregion
     }
 }
