@@ -8,7 +8,8 @@
         xmlns:viewmodels="clr-namespace:ARPS.ViewModels"
         xmlns:views="clr-namespace:ARPS.Views"
         mc:Ignorable="d"
-        Title="ARPS" Height="450" Width="800">
+        Title="ARPS" Height="450" Width="800"
+        WindowStartupLocation="CenterScreen" WindowState="Maximized">
     <Window.Resources>
         <!-- Resources for this Window can be defined here. -->
         <Style TargetType="Button">

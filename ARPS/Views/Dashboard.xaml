@@ -5,8 +5,80 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:ARPS.Views"
              mc:Ignorable="d" 
-             d:DesignHeight="450" d:DesignWidth="800">
-    <Grid Background="#FFFFBB">
-        <TextBlock VerticalAlignment="Center" HorizontalAlignment="Center" FontSize="20">Dashboard</TextBlock>    
+             d:DesignHeight="800" d:DesignWidth="1000">
+
+    <UserControl.Resources>
+    </UserControl.Resources>
+
+    <Grid Background="White">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="2*"/>
+            <ColumnDefinition Width="3*"/>
+        </Grid.ColumnDefinitions>
+        
+        <!-- TODO: Linke Seite -->
+
+        <!-- Splitter-->
+        <GridSplitter Grid.Column="0" BorderBrush="{StaticResource ArgesGrauBlau_hell}" BorderThickness="4"></GridSplitter>
+
+        <StackPanel Grid.Column="1">
+            <Expander Header="Benutzer und andere Accounts" IsExpanded="True" BorderThickness="0" Padding="0">
+                <DataGrid ItemsSource="{Binding UserAndOtherAccounts}" AlternatingRowBackground="WhiteSmoke" GridLinesVisibility="None" AutoGenerateColumns="False" HeadersVisibility="None" BorderThickness="0">
+                    <DataGrid.RowStyle>
+                        <Style TargetType="DataGridRow">
+                            <Style.Triggers>
+                                <Trigger Property="IsMouseOver" Value="True">
+                                    <Setter Property="Background" Value="Transparent" />
+                                </Trigger>
+                            </Style.Triggers>
+                        </Style>
+                    </DataGrid.RowStyle>
+                    <DataGrid.Columns>
+                        <DataGridTextColumn Width="30"/>
+                        <DataGridTextColumn Width="2*" Binding="{Binding Name}" />
+                        <DataGridTextColumn Width="*" Binding="{Binding Count}" />
+                    </DataGrid.Columns>
+                </DataGrid>
+            </Expander>
+
+            <Expander Header="Gruppen" IsExpanded="True" BorderThickness="0" Padding="0">
+                <DataGrid ItemsSource="{Binding Groups}" AlternatingRowBackground="WhiteSmoke" GridLinesVisibility="None" AutoGenerateColumns="False" HeadersVisibility="None" BorderThickness="0">
+                    <DataGrid.RowStyle>
+                        <Style TargetType="DataGridRow">
+                            <Style.Triggers>
+                                <Trigger Property="IsMouseOver" Value="True">
+                                    <Setter Property="Background" Value="Transparent" />
+                                </Trigger>
+                            </Style.Triggers>
+                        </Style>
+                    </DataGrid.RowStyle>
+                    <DataGrid.Columns>
+                        <DataGridTextColumn Width="30"/>
+                        <DataGridTextColumn Width="2*" Binding="{Binding Name}" />
+                        <DataGridTextColumn Width="*" Binding="{Binding Count}" />
+                    </DataGrid.Columns>
+                </DataGrid>
+            </Expander>
+            
+            <Expander Header="OU / Kontakte / Mehr" IsExpanded="True" BorderThickness="0" Padding="0">
+                <DataGrid ItemsSource="{Binding OU}" AlternatingRowBackground="WhiteSmoke" GridLinesVisibility="None" AutoGenerateColumns="False" HeadersVisibility="None" BorderThickness="0">
+                    <DataGrid.RowStyle>
+                        <Style TargetType="DataGridRow">
+                            <Style.Triggers>
+                                <Trigger Property="IsMouseOver" Value="True">
+                                    <Setter Property="Background" Value="Transparent" />
+                                </Trigger>
+                            </Style.Triggers>
+                        </Style>
+                    </DataGrid.RowStyle>
+                    <DataGrid.Columns>
+                        <DataGridTextColumn Width="30"/>
+                        <DataGridTextColumn Width="2*" Binding="{Binding Name}" />
+                        <DataGridTextColumn Width="*" Binding="{Binding Count}" />
+                    </DataGrid.Columns>
+                </DataGrid>
+            </Expander>
+        </StackPanel>
+        
     </Grid>
 </UserControl>
