@@ -38,12 +38,12 @@ namespace ARPS
 
             #region Benutzer
             // Erstelle Eintrag für Benutzer
-            Entrys.Add(new CountEnrty { Name = "Benutzer", Count = GetCountUser() });
+            Entrys.Add(new CountEnrty { Name = "Benutzer", Count = GetCountUser().ToString() });
             #endregion
 
             #region Benutzer (deaktiviert)
             // Erstelle Eintrag für deaktivierte Benutzer
-            Entrys.Add(new CountEnrty { Name = "Benutzer (deaktiviert)", Count = GetCountDisabledUser() });
+            Entrys.Add(new CountEnrty { Name = "Benutzer (deaktiviert)", Count = GetCountDisabledUser().ToString() });
             #endregion
 
             #region Administratoren
@@ -58,12 +58,11 @@ namespace ARPS
             admins = admins.Distinct().ToList();
 
             // Erstelle Eintrag für Administratoren
-            Entrys.Add(new CountEnrty { Name = "Admininstratoren", Count = admins.Count });
+            Entrys.Add(new CountEnrty { Name = "Admininstratoren", Count = admins.Count.ToString() });
             #endregion
 
             #region Administratoren (deaktiviert) 
-            int disabledAdminsCount = GetCountDisabledAdmins(admins);
-            Entrys.Add(new CountEnrty { Name = "Admininstratoren (deaktiviert)", Count = disabledAdminsCount });
+            Entrys.Add(new CountEnrty { Name = "Admininstratoren (deaktiviert)", Count = GetCountDisabledAdmins(admins).ToString() });
             #endregion
 
             // Schließt die MsSql Verbindung

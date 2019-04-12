@@ -29,6 +29,7 @@ namespace ARPS.ViewModels
         {
             UserAndOtherAccounts = new UserAndOtherAccounts().Entrys;
             Groups = new Groups().Entrys;
+            OU = new OU().Entrys;
         }
 
 

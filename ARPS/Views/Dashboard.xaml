@@ -22,8 +22,11 @@
         <GridSplitter Grid.Column="0" BorderBrush="{StaticResource ArgesGrauBlau_hell}" BorderThickness="4"></GridSplitter>
 
         <StackPanel Grid.Column="1">
-            <Expander Header="Benutzer und andere Accounts" IsExpanded="True" BorderThickness="0" Padding="0">
-                <DataGrid ItemsSource="{Binding UserAndOtherAccounts}" AlternatingRowBackground="WhiteSmoke" GridLinesVisibility="None" AutoGenerateColumns="False" HeadersVisibility="None" BorderThickness="0">
+            <Expander IsExpanded="True" BorderThickness="0" Padding="0">
+                <Expander.Header>
+                    <TextBlock Text="BENUNTZER UND ANDERE ACCOUNTS" Foreground="White" FontSize="18" Margin="5"/>
+                </Expander.Header>
+                <DataGrid ItemsSource="{Binding UserAndOtherAccounts}" IsReadOnly="True" AlternatingRowBackground="WhiteSmoke" GridLinesVisibility="None" AutoGenerateColumns="False" HeadersVisibility="None" BorderThickness="0">
                     <DataGrid.RowStyle>
                         <Style TargetType="DataGridRow">
                             <Style.Triggers>
@@ -35,14 +38,17 @@
                     </DataGrid.RowStyle>
                     <DataGrid.Columns>
                         <DataGridTextColumn Width="30"/>
-                        <DataGridTextColumn Width="2*" Binding="{Binding Name}" />
-                        <DataGridTextColumn Width="*" Binding="{Binding Count}" />
+                        <DataGridTextColumn Width="3*" Binding="{Binding Name}" />
+                        <DataGridTextColumn Width="2*" Binding="{Binding Count}" />
                     </DataGrid.Columns>
                 </DataGrid>
             </Expander>
 
-            <Expander Header="Gruppen" IsExpanded="True" BorderThickness="0" Padding="0">
-                <DataGrid ItemsSource="{Binding Groups}" AlternatingRowBackground="WhiteSmoke" GridLinesVisibility="None" AutoGenerateColumns="False" HeadersVisibility="None" BorderThickness="0">
+            <Expander IsExpanded="True" BorderThickness="0" Padding="0">
+                <Expander.Header>
+                    <TextBlock Text="GRUPPEN" Foreground="White" FontSize="18" Margin="5"/>
+                </Expander.Header>
+                <DataGrid ItemsSource="{Binding Groups}" IsReadOnly="True" AlternatingRowBackground="WhiteSmoke" GridLinesVisibility="None" AutoGenerateColumns="False" HeadersVisibility="None" BorderThickness="0">
                     <DataGrid.RowStyle>
                         <Style TargetType="DataGridRow">
                             <Style.Triggers>
@@ -54,14 +60,17 @@
                     </DataGrid.RowStyle>
                     <DataGrid.Columns>
                         <DataGridTextColumn Width="30"/>
-                        <DataGridTextColumn Width="2*" Binding="{Binding Name}" />
-                        <DataGridTextColumn Width="*" Binding="{Binding Count}" />
+                        <DataGridTextColumn Width="3*" Binding="{Binding Name}" />
+                        <DataGridTextColumn Width="2*" Binding="{Binding Count}" />
                     </DataGrid.Columns>
                 </DataGrid>
             </Expander>
             
-            <Expander Header="OU / Kontakte / Mehr" IsExpanded="True" BorderThickness="0" Padding="0">
-                <DataGrid ItemsSource="{Binding OU}" AlternatingRowBackground="WhiteSmoke" GridLinesVisibility="None" AutoGenerateColumns="False" HeadersVisibility="None" BorderThickness="0">
+            <Expander IsExpanded="True" BorderThickness="0" Padding="0">
+                <Expander.Header>
+                    <TextBlock Text="COMPUTER / OU / MEHR" Foreground="White" FontSize="18" Margin="5"/>
+                </Expander.Header>
+                <DataGrid ItemsSource="{Binding OU}" IsReadOnly="True" AlternatingRowBackground="WhiteSmoke" GridLinesVisibility="None" AutoGenerateColumns="False" HeadersVisibility="None" BorderThickness="0">
                     <DataGrid.RowStyle>
                         <Style TargetType="DataGridRow">
                             <Style.Triggers>
@@ -73,8 +82,8 @@
                     </DataGrid.RowStyle>
                     <DataGrid.Columns>
                         <DataGridTextColumn Width="30"/>
-                        <DataGridTextColumn Width="2*" Binding="{Binding Name}" />
-                        <DataGridTextColumn Width="*" Binding="{Binding Count}" />
+                        <DataGridTextColumn Width="3*" Binding="{Binding Name}" />
+                        <DataGridTextColumn Width="2*" Binding="{Binding Count}" />
                     </DataGrid.Columns>
                 </DataGrid>
             </Expander>

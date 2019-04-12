@@ -8,8 +8,10 @@ namespace ArgPermDeamon
     {
         public static void ReadAD()
         {
-            GetAllADUsers();
-            GetAllADGroups();
+            //GetAllADUsers();
+            //GetAllADGroups();
+
+            GetAllADComputer();
         }
 
         static void GetAllADUsers()
@@ -113,6 +115,47 @@ namespace ArgPermDeamon
                 SqlCommand cmd = new SqlCommand(sql, con);
                 cmd.ExecuteNonQuery();
             }
+        }
+
+        static void GetAllADComputer()
+        {
+            SqlConnection con = new SqlConnection(@"Data Source=PC-W10-SW\MSSQLSERVER_DEV;Initial Catalog=ArgesPerm;Integrated Security=True");
+            con.Open();
+
+            // create your domain context
+            ComputerPrincipal ctx = new ComputerPrincipal(new PrincipalContext(ContextType.Domain));
+
+            // create your principal searcher passing in the QBE principal    
+            PrincipalSearcher srch = new PrincipalSearcher(ctx);
+
+            // find all matches
+            foreach (var found in srch.FindAll())
+            {
+                if (found is ComputerPrincipal computer)
+                {
+                    int enabled = (bool)computer.Enabled ? 1 : 0;
+                    string sql = $"IF NOT EXISTS (SELECT * FROM adcomputers WHERE SID = '{computer.Sid}') " +
+                                        $"INSERT INTO adcomputers(SID, SamAccountName, Name, DistinguishedName, DisplayName, Description, Enabled, LastLogon, LastPasswordSet) " +
+                                        $"VALUES ('{computer.Sid}', '{computer.SamAccountName}', '{computer.Name}', '{computer.DistinguishedName}', '{computer.DisplayName}', " +
+                                        $"'{computer.Description}', '{enabled}', '{computer.LastLogon}', '{computer.LastPasswordSet}') " +
+                                 $"ELSE " +
+                                        $"UPDATE adcomputers " +
+                                        $"SET SamAccountName = '{computer.SamAccountName}'," +
+                                            $"Name = '{computer.Name}'," +
+                                            $"DistinguishedName = '{computer.DistinguishedName}'," +
+                                            $"DisplayName = '{computer.DisplayName}'," +
+                                            $"Description = '{computer.Description}'," +
+                                            $"Enabled = '{enabled}'," +
+                                            $"LastLogon = '{computer.LastLogon}'," +
+                                            $"LastPasswordSet = '{computer.LastPasswordSet}'" +
+                                        $"WHERE SID = '{computer.Sid}'";
+
+                    SqlCommand cmd = new SqlCommand(sql, con);
+                    cmd.ExecuteNonQuery();
+                }
+            }
+
+            con.Close();
         }
     }
 }

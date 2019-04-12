@@ -72,6 +72,7 @@
       <SubType>Designer</SubType>
     </ApplicationDefinition>
     <Compile Include="Models\Dashboard\CountEntry.cs" />
+    <Compile Include="Models\Dashboard\OU.cs" />
     <Compile Include="Models\Dashboard\Groups.cs" />
     <Compile Include="Models\Dashboard\UserAndOtherAccounts.cs" />
     <Compile Include="Models\Directory\Data\DirectoryItem.cs" />

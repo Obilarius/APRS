@@ -23,7 +23,7 @@ namespace ArgPermDeamon
         {
             Stopwatch sw = new Stopwatch();
 
-            FillParentID();
+            //FillParentID();
 
             List<string> paths = new List<string>();
             paths.Add(@"\\apollon\Administration");
@@ -60,7 +60,7 @@ namespace ArgPermDeamon
             //    output.Add(path + " -- " + sw.ElapsedMilliseconds);
             //}
 
-            //ADWorker.ReadAD();
+            ADWorker.ReadAD();
 
             //foreach (var line in output)
             //    Console.WriteLine(line);
