@@ -139,7 +139,7 @@ namespace ARPS.ViewModels
             ClearSearchUserCommand = new RelayCommand(ClearSearchUser);
             SearchGroupCommand = new RelayCommand(SearchGroup);
             ClearSearchGroupCommand = new RelayCommand(ClearSearchGroup);
-            AddGroupToPlanCommand = new RelayCommand(AddGroupToPlan);
+            AddGroupToPlanCommand = new RelayCommand<GroupPrincipal>(AddGroupToPlan);
 
             // Liest alle User udn Gruppen aus und speichert sie in den Listen
             AllUsers = GetAllADUsers();
@@ -151,7 +151,7 @@ namespace ARPS.ViewModels
 
         #endregion
 
-        public void AddGroupToPlan(GroupPrincipal result)
+        public void AddGroupToPlan(GroupPrincipal group)
         {
 
         }
