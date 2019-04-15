@@ -17,6 +17,7 @@
         </Grid.ColumnDefinitions>
         
         <!-- TODO: Linke Seite -->
+        <Image Source="{StaticResource ArgesLogoBig}" Margin="100" MaxWidth="300"/>
 
         <!-- Splitter-->
         <GridSplitter Grid.Column="0" BorderBrush="{StaticResource ArgesGrauBlau_hell}" BorderThickness="4"></GridSplitter>
@@ -26,7 +27,16 @@
                 <Expander.Header>
                     <TextBlock Text="BENUNTZER UND ANDERE ACCOUNTS" Foreground="White" FontSize="18" Margin="5"/>
                 </Expander.Header>
-                <DataGrid ItemsSource="{Binding UserAndOtherAccounts}" IsReadOnly="True" AlternatingRowBackground="WhiteSmoke" GridLinesVisibility="None" AutoGenerateColumns="False" HeadersVisibility="None" BorderThickness="0">
+                <DataGrid 
+                    ItemsSource="{Binding UserAndOtherAccounts}" 
+                    IsReadOnly="True" 
+                    AlternatingRowBackground="WhiteSmoke" 
+                    GridLinesVisibility="None" 
+                    AutoGenerateColumns="False" 
+                    HeadersVisibility="None" 
+                    BorderThickness="0"
+                    SelectionChanged="DataGrid_SelectionChanged">
+                    
                     <DataGrid.RowStyle>
                         <Style TargetType="DataGridRow">
                             <Style.Triggers>
@@ -48,7 +58,16 @@
                 <Expander.Header>
                     <TextBlock Text="GRUPPEN" Foreground="White" FontSize="18" Margin="5"/>
                 </Expander.Header>
-                <DataGrid ItemsSource="{Binding Groups}" IsReadOnly="True" AlternatingRowBackground="WhiteSmoke" GridLinesVisibility="None" AutoGenerateColumns="False" HeadersVisibility="None" BorderThickness="0">
+                <DataGrid 
+                    ItemsSource="{Binding Groups}" 
+                    IsReadOnly="True" 
+                    AlternatingRowBackground="WhiteSmoke" 
+                    GridLinesVisibility="None" 
+                    AutoGenerateColumns="False" 
+                    HeadersVisibility="None" 
+                    BorderThickness="0"
+                    SelectionChanged="DataGrid_SelectionChanged">
+                    
                     <DataGrid.RowStyle>
                         <Style TargetType="DataGridRow">
                             <Style.Triggers>
@@ -70,7 +89,16 @@
                 <Expander.Header>
                     <TextBlock Text="COMPUTER / OU / MEHR" Foreground="White" FontSize="18" Margin="5"/>
                 </Expander.Header>
-                <DataGrid ItemsSource="{Binding OU}" IsReadOnly="True" AlternatingRowBackground="WhiteSmoke" GridLinesVisibility="None" AutoGenerateColumns="False" HeadersVisibility="None" BorderThickness="0">
+                <DataGrid 
+                    ItemsSource="{Binding OU}" 
+                    IsReadOnly="True" 
+                    AlternatingRowBackground="WhiteSmoke" 
+                    GridLinesVisibility="None" 
+                    AutoGenerateColumns="False" 
+                    HeadersVisibility="None" 
+                    BorderThickness="0"
+                    SelectionChanged="DataGrid_SelectionChanged">
+                    
                     <DataGrid.RowStyle>
                         <Style TargetType="DataGridRow">
                             <Style.Triggers>

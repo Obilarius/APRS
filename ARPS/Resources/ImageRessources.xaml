@@ -7,4 +7,6 @@
     <BitmapImage x:Key="Img_SharedFolder" UriSource="pack://siteoforigin:,,,/Resources/Images/FolderShared_32x.png"/>
     <BitmapImage x:Key="Img_Server" UriSource="pack://siteoforigin:,,,/Resources/Images/LocalServer_32x.png"/>
 
+    <BitmapImage x:Key="ArgesLogoBig" UriSource="pack://siteoforigin:,,,/Resources/Images/ARGES_logo.png"/>
+
 </ResourceDictionary>

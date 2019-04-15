@@ -13,5 +13,16 @@ namespace ARPS.Views
             InitializeComponent();
             this.DataContext = new DashboardViewModel();
         }
+
+        /// <summary>
+        /// Verhindet das selektieren eines Eintrags
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void DataGrid_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            var dg = sender as DataGrid;
+            dg.UnselectAllCells();
+        }
     }
 }
