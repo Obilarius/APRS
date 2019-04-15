@@ -41,6 +41,9 @@ namespace ARPS.ViewModels
         /// </summary>
         public ICommand UserSelectionChangedCommand { get; set; }
 
+        /// <summary>
+        /// Der Command wenn der Button zum hinzufügen der Gruppe zur Plannung gedrückt wird
+        /// </summary>
         public ICommand AddGroupToPlanCommand { get; set; }
 
         #endregion
@@ -76,6 +79,11 @@ namespace ARPS.ViewModels
         /// Die Gruppen in dennen der selektierte User Mitglied ist
         /// </summary>
         public ObservableCollection<GroupPrincipal> SelectedUserGroups { get; set; }
+
+        /// <summary>
+        /// Die Gruppen die geplant sind
+        /// </summary>
+        public ObservableCollection<GroupPrincipal> PlannedGroups { get; set; }
 
         #region User and Group Lists
 
@@ -153,7 +161,10 @@ namespace ARPS.ViewModels
 
         public void AddGroupToPlan(GroupPrincipal group)
         {
+            if (PlannedGroups == null)
+                PlannedGroups = new ObservableCollection<GroupPrincipal>();
 
+            PlannedGroups.Add(group);
         }
 
         /// <summary>
