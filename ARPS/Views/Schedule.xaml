@@ -5,20 +5,24 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
              xmlns:local="clr-namespace:ARPS.Views"
+             xmlns:app="clr-namespace:ARPS"
              mc:Ignorable="d" 
              d:DesignHeight="600" d:DesignWidth="1000">
 
+    <UserControl.Resources>
+        <app:SubmitPlanningFormConverter x:Key="SubmitPlanningFormConverter"/>
+    </UserControl.Resources>
     
     <Grid Background="White">
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="1*"/>
             <ColumnDefinition Width="5"/>
-            <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="1*"/>
             <ColumnDefinition Width="5"/>
-            <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="2*"/>
         </Grid.ColumnDefinitions>
         
-        <!-- User und Guppen suche -->
+        <!-- Spalte 1 - User und Guppen suche -->
         <Grid Grid.Column="0">
             <Grid.RowDefinitions>
                 <RowDefinition Height="*"/>
@@ -60,11 +64,16 @@
                     <ListView DockPanel.Dock="Top" ItemsSource="{Binding GroupsFiltered}" SelectionMode="Multiple" BorderThickness="0">
                         <ListView.ItemTemplate>
                             <DataTemplate>
-                                <WrapPanel>
-                                    <Button Content="+"
-                                            Command="{Binding RelativeSource={RelativeSource AncestorType={x:Type ListView}}, Path=DataContext.AddGroupToPlanCommand}"
-                                            CommandParameter="{Binding}"/>
-                                    <TextBlock Text="{Binding Name}"/>
+                                <WrapPanel VerticalAlignment="Center">
+                                    <Button
+                                        Command="{Binding RelativeSource={RelativeSource AncestorType={x:Type ListView}}, Path=DataContext.AddGroupToPlanCommand}"
+                                        CommandParameter="{Binding}"
+                                        Cursor="Hand"
+                                        Background="Transparent">
+                                        
+                                        <Image Source="{StaticResource ButtonPlus}" Height="22"/>
+                                    </Button>
+                                    <TextBlock Text="{Binding Name}" VerticalAlignment="Center" Margin="10 0 0 0"/>
                                 </WrapPanel>
                             </DataTemplate>
                         </ListView.ItemTemplate>
@@ -76,11 +85,19 @@
         <!-- Splitter -->
         <GridSplitter Grid.Column="1" Width="5" Background="{StaticResource ArgesGrauBlau_hell}" HorizontalAlignment="Stretch"/>
 
-        <StackPanel Grid.Column="2">
-            
-            <!-- User Infos -->
-            <Expander IsExpanded="True" BorderThickness="0" Padding="0" Header="User Info">
-                <DataGrid 
+        <!-- Spalte 2 -->
+        <Grid Grid.Column="2">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="5"/>
+                <RowDefinition Height="Auto"/>
+            </Grid.RowDefinitions>
+
+            <!-- UserInfos -->
+            <DockPanel  Grid.Row="0" LastChildFill="True" VerticalAlignment="Stretch">
+                <!-- User Infos -->
+                <Expander DockPanel.Dock="Top" IsExpanded="True" BorderThickness="0" Padding="0" Header="User Info">
+                    <DataGrid 
                     Margin="20 0" 
                     ItemsSource="{Binding UserInfos}" 
                     IsReadOnly="True" 
@@ -89,27 +106,27 @@
                     HeadersVisibility="None" 
                     BorderThickness="0"
                     SelectionChanged="UserInfos_SelectionChanged">
-                    
-                    <DataGrid.RowStyle>
-                        <Style TargetType="DataGridRow">
-                            <Style.Triggers>
-                                <Trigger Property="IsMouseOver" Value="True">
-                                    <Setter Property="Background" Value="Transparent" />
-                                </Trigger>
-                            </Style.Triggers>
-                        </Style>
-                        
-                    </DataGrid.RowStyle>
-                    <DataGrid.Columns>
-                        <DataGridTextColumn Width="*" Binding="{Binding Name}" />
-                        <DataGridTextColumn Width="*" Binding="{Binding Prop}" />
-                    </DataGrid.Columns>
-                </DataGrid>
-            </Expander>
 
-            <!-- User Gruppen -->
-            <Expander IsExpanded="True" BorderThickness="0" Padding="0" Header="User Gruppen">
-                <DataGrid 
+                        <DataGrid.RowStyle>
+                            <Style TargetType="DataGridRow">
+                                <Style.Triggers>
+                                    <Trigger Property="IsMouseOver" Value="True">
+                                        <Setter Property="Background" Value="Transparent" />
+                                    </Trigger>
+                                </Style.Triggers>
+                            </Style>
+
+                        </DataGrid.RowStyle>
+                        <DataGrid.Columns>
+                            <DataGridTextColumn Width="*" Binding="{Binding Name}" />
+                            <DataGridTextColumn Width="*" Binding="{Binding Prop}" />
+                        </DataGrid.Columns>
+                    </DataGrid>
+                </Expander>
+
+                <!-- User Gruppen -->
+                <Expander DockPanel.Dock="Top" IsExpanded="True" BorderThickness="0" Padding="0" Header="User Gruppen">
+                    <DataGrid 
                     Margin="20 0 0 0" 
                     ItemsSource="{Binding SelectedUserGroups}" 
                     IsReadOnly="True" 
@@ -120,27 +137,27 @@
                     SelectionChanged="UserInfos_SelectionChanged"
                     MaxHeight="300">
 
-                    <DataGrid.RowStyle>
-                        <Style TargetType="DataGridRow">
-                            <Style.Triggers>
-                                <Trigger Property="IsMouseOver" Value="True">
-                                    <Setter Property="Background" Value="Transparent" />
-                                </Trigger>
-                            </Style.Triggers>
-                        </Style>
+                        <DataGrid.RowStyle>
+                            <Style TargetType="DataGridRow">
+                                <Style.Triggers>
+                                    <Trigger Property="IsMouseOver" Value="True">
+                                        <Setter Property="Background" Value="Transparent" />
+                                    </Trigger>
+                                </Style.Triggers>
+                            </Style>
 
-                    </DataGrid.RowStyle>
-                    <DataGrid.Columns>
-                        <DataGridTextColumn Width="*" Binding="{Binding Name}" />
-                    </DataGrid.Columns>
-                </DataGrid>
+                        </DataGrid.RowStyle>
+                        <DataGrid.Columns>
+                            <DataGridTextColumn Width="*" Binding="{Binding Name}" />
+                        </DataGrid.Columns>
+                    </DataGrid>
 
-            </Expander>
-            
-            <!-- Geplante Gruppen -->
-            <Expander IsExpanded="True" BorderThickness="0" Padding="0" Header="Geplante Gruppen" Background="Firebrick">
-                <DataGrid 
-                    Margin="20 0 0 0" 
+                </Expander>
+
+                <!-- Geplante Gruppen -->
+                <Expander DockPanel.Dock="Top" IsExpanded="True" BorderThickness="0" Padding="0" Header="Geplante Gruppen" Background="Firebrick">
+                    <DataGrid 
+                    Padding="10 10 0 10" 
                     ItemsSource="{Binding PlannedGroups}" 
                     IsReadOnly="True" 
                     GridLinesVisibility="None" 
@@ -148,32 +165,93 @@
                     HeadersVisibility="None" 
                     BorderThickness="0"
                     SelectionChanged="UserInfos_SelectionChanged"
-                    MaxHeight="300">
+                    >
 
-                    <DataGrid.RowStyle>
-                        <Style TargetType="DataGridRow">
-                            <Style.Triggers>
-                                <Trigger Property="IsMouseOver" Value="True">
-                                    <Setter Property="Background" Value="Transparent" />
-                                </Trigger>
-                            </Style.Triggers>
-                        </Style>
+                        <DataGrid.RowStyle>
+                            <Style TargetType="DataGridRow">
+                                <Style.Triggers>
+                                    <Trigger Property="IsMouseOver" Value="True">
+                                        <Setter Property="Background" Value="Transparent" />
+                                    </Trigger>
+                                </Style.Triggers>
+                            </Style>
 
-                    </DataGrid.RowStyle>
-                    <DataGrid.Columns>
-                        <DataGridTemplateColumn Header="Delete">
-                            <DataGridTemplateColumn.CellTemplate>
-                                <DataTemplate>
-                                    <Button Content="Delete" Command="Delete"/>
-                                </DataTemplate>
-                            </DataGridTemplateColumn.CellTemplate>
-                        </DataGridTemplateColumn>
-                        <DataGridTextColumn Width="*" Binding="{Binding Name}" />
-                    </DataGrid.Columns>
-                </DataGrid>
+                        </DataGrid.RowStyle>
+                        <DataGrid.Columns>
+                            <DataGridTemplateColumn Header="Delete" Width="30">
+                                <DataGridTemplateColumn.CellTemplate>
+                                    <DataTemplate>
+                                        <Button
+                                        Command="{Binding RelativeSource={RelativeSource AncestorType={x:Type DataGrid}}, Path=DataContext.RemoveGroupFromPlanCommand}"
+                                        CommandParameter="{Binding}"
+                                        Background="Transparent"
+                                        Cursor="Hand">
 
-            </Expander>
-        </StackPanel>
+                                            <Image Source="{StaticResource ButtonMinus}" Height="22" Margin="0"/>
+                                        </Button>
+                                    </DataTemplate>
+                                </DataGridTemplateColumn.CellTemplate>
+                            </DataGridTemplateColumn>
+                            <DataGridTextColumn Width="*" Binding="{Binding Name}" />
+                        </DataGrid.Columns>
+                    </DataGrid>
+                </Expander>
+            </DockPanel>
+
+            <!-- Splitter Rect-->
+            <Rectangle Grid.Row="1" Fill="{StaticResource ArgesGrauBlau_hell}" VerticalAlignment="Stretch" Height="5"/>
+
+            <!-- Formular -->
+            <Grid Grid.Row="2" Margin="20 10 20 20">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="*" />
+                </Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                </Grid.RowDefinitions>
+                
+                <Label>Start:</Label>
+                <DatePicker x:Name="frm_start" Grid.Column="1" Margin="0,0,0,10" SelectedDateChanged="Frm_start_SelectedDateChanged"/>
+
+                <Label Grid.Row="1">Ende:</Label>
+                <DatePicker x:Name="frm_end" Grid.Row="1" Grid.Column="1" Margin="0,0,0,10" SelectedDateChanged="Frm_end_SelectedDateChanged"/>
+                <StackPanel Grid.Row="2" Grid.Column="1" Margin="0,0,0,10" Orientation="Horizontal">
+                    <CheckBox x:Name="frm_noEnd"/>
+                    <Label>kein Ende</Label>
+                </StackPanel>
+
+
+                <Label Grid.Row="3" Foreground="Firebrick" FontWeight="Bold">Initialen: *</Label>
+                <TextBox x:Name="frm_initials" Grid.Row="3" Grid.Column="1" Margin="0,0,0,10"/>
+
+                <Label Grid.Row="4" Foreground="Firebrick" FontWeight="Bold">Comment: *</Label>
+                <TextBox x:Name="frm_comment" Grid.Row="4" Grid.Column="1" Margin="0,0,0,10"/>
+
+                <!-- Button FormSubmit -->
+                <Button Grid.Row="5" 
+                        Grid.ColumnSpan="2" 
+                        Height="50" 
+                        Content="MITGLIEDSCHAFT PLANNEN"
+                        Command="{Binding SubmitPlanningFormCommand}">
+                    <Button.CommandParameter>
+                        <MultiBinding Converter="{StaticResource SubmitPlanningFormConverter}">
+                            <Binding Path="SelectedDate" ElementName="frm_start"/>
+                            <Binding Path="SelectedDate" ElementName="frm_end"/>
+                            <Binding Path="IsChecked"    ElementName="frm_noEnd"/>
+                            <Binding Path="Text"         ElementName="frm_initials"/>
+                            <Binding Path="Text"         ElementName="frm_comment"/>
+                        </MultiBinding>
+                    </Button.CommandParameter>
+                </Button>
+                
+            </Grid>
+        </Grid>
 
         <!-- Splitter -->
         <GridSplitter Grid.Column="3" Width="5" Background="{StaticResource ArgesGrauBlau_hell}" HorizontalAlignment="Stretch"/>

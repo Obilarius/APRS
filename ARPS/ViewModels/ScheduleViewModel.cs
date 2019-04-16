@@ -37,14 +37,28 @@ namespace ARPS.ViewModels
         #endregion
 
         /// <summary>
-        /// Der Command wenn ein anderer User ausgewählt wird
+        /// Command wird ausgeführt wenn sich der selektierte User ändert
         /// </summary>
         public ICommand UserSelectionChangedCommand { get; set; }
 
+        #region PlannedGroups
+
         /// <summary>
-        /// Der Command wenn der Button zum hinzufügen der Gruppe zur Plannung gedrückt wird
+        /// Command zum hinzufügen der Gruppe zu den geplanten Gruppen
         /// </summary>
         public ICommand AddGroupToPlanCommand { get; set; }
+
+        /// <summary>
+        /// Command zum entfernen einer Gruppe aus den geplannten Gruppen
+        /// </summary>
+        public ICommand RemoveGroupFromPlanCommand { get; set; }
+
+        #endregion
+
+        /// <summary>
+        /// Command zum Eintragen einer Planung
+        /// </summary>
+        public ICommand SubmitPlanningFormCommand { get; set; }
 
         #endregion
 
@@ -148,6 +162,8 @@ namespace ARPS.ViewModels
             SearchGroupCommand = new RelayCommand(SearchGroup);
             ClearSearchGroupCommand = new RelayCommand(ClearSearchGroup);
             AddGroupToPlanCommand = new RelayCommand<GroupPrincipal>(AddGroupToPlan);
+            RemoveGroupFromPlanCommand = new RelayCommand<GroupPrincipal>(RemoveGroupFromPlan);
+            SubmitPlanningFormCommand = new RelayCommand<object>(SubmitPlanningForm);
 
             // Liest alle User udn Gruppen aus und speichert sie in den Listen
             AllUsers = GetAllADUsers();
@@ -159,13 +175,52 @@ namespace ARPS.ViewModels
 
         #endregion
 
+        public void SubmitPlanningForm (object param)
+        {
+            var values = (object[])param;
+        }
+
+        #region PlannedGroup
+
+        /// <summary>
+        /// Fügt die übergebene Gruppen zur Liste der geplanten Gruppen hinzu
+        /// </summary>
+        /// <param name="group">Die Gruppe die geplant werden soll</param>
         public void AddGroupToPlan(GroupPrincipal group)
         {
+            // Prüfung ob überhaupt was übergeben wird
+            if (group == null)
+                return;
+
+            // Wenn es noch keine PlannedGroups gibt, wird eine neue Liste angelegt
             if (PlannedGroups == null)
                 PlannedGroups = new ObservableCollection<GroupPrincipal>();
 
+            // Falls die Gruppe schon in der Liste für geplante Gruppen vorhanden ist
+            if (PlannedGroups.Contains(group))
+                return;
+
+            // Die Übergebene Gruppe wird zur Liste hinzugefügt
             PlannedGroups.Add(group);
         }
+
+        /// <summary>
+        /// Löscht die übergebene Gruppe aus der Liste der geplanten Gruppen
+        /// </summary>
+        /// <param name="group">Die Gruppe die gelöscht werden soll</param>
+        public void RemoveGroupFromPlan(GroupPrincipal group)
+        {
+            // Prüfung ob überhaupt was übergeben wird
+            if (group == null)
+                return;
+
+            // Löscht die Gruppe aus der Liste
+            PlannedGroups.Remove(group);
+        }
+
+        #endregion
+
+        #region UserList
 
         /// <summary>
         /// Wenn ein neuer User selektiert wird
@@ -194,6 +249,8 @@ namespace ARPS.ViewModels
             // Setzt SelectedUserGroups auf die Ausgelesene Liste
             SelectedUserGroups = new ObservableCollection<GroupPrincipal>(tmpList);
         }
+
+        #endregion
 
         #region UserSearch
 
