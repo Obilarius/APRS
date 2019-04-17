@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.Data;
+using System.Data.SqlClient;
 using System.DirectoryServices.AccountManagement;
 using System.Linq;
 using System.Text;
@@ -10,6 +12,10 @@ using System.Windows.Input;
 
 namespace ARPS.ViewModels
 {
+    /// <summary>
+    /// 
+    /// IDataErrorInfo - Validierung - Video[https://www.youtube.com/watch?v=OOHDie8BdGI]
+    /// </summary>
     public class ScheduleViewModel : BaseViewModel, IDataErrorInfo
     {
         #region Commands
@@ -387,6 +393,8 @@ namespace ARPS.ViewModels
 
         #endregion
 
+        #region SUBMIT
+
         /// <summary>
         /// Methode die Ausgeführt wird sobald der Button zum Mitgliedschaft plannen geklickt wird
         /// </summary>
@@ -406,8 +414,49 @@ namespace ARPS.ViewModels
                 }
             }
 
-
+            PlannedScheduleToMSSQL();
         }
+
+
+        /// <summary>
+        /// Schreibt für jede geplannte Gruppe einen Datensatz in die Datenbank
+        /// </summary>
+        private void PlannedScheduleToMSSQL()
+        {
+            // Erstellt eine Datenbankverbindung
+            var mssql = new MsSql();
+            // Öffnet die Datenbankverbindung
+            mssql.Open();
+
+            // Schleife über alle Gruppen der geplanten Gruppen
+            foreach (var group in PlannedGroups)
+            {
+                // Der Insert SQL Befehl
+                string sql = $"INSERT INTO schedule (Username, UserSid, Groupname, GroupSid, StartDate, EndDate, Creator, Comment, Status) " +
+                    $"VALUES (@username, @usersid, @groupname, @groupsid, @startdate, @enddate, @creator, @comment, @status)";
+
+                SqlCommand cmd = new SqlCommand(sql, mssql.Con);
+
+                // Hängt alle SpaltenValues per Parameter an
+                cmd.Parameters.AddWithValue("@username", SelectedUser.Name.ToString());
+                cmd.Parameters.AddWithValue("@usersid", SelectedUser.Sid.ToString());
+                cmd.Parameters.AddWithValue("@startdate", StartDate);
+                cmd.Parameters.AddWithValue("@enddate", EndDate);
+                cmd.Parameters.AddWithValue("@creator", EditorInitials);
+                cmd.Parameters.AddWithValue("@comment", Comment);
+                cmd.Parameters.AddWithValue("@status", "planned");
+                cmd.Parameters.AddWithValue("@groupname", group.Name.ToString());
+                cmd.Parameters.AddWithValue("@groupsid", group.Sid.ToString());
+                
+                // Führt die Query aus
+                cmd.ExecuteNonQuery();
+            }
+
+            // Schliest die Datenbankverbindung
+            mssql.Close();
+        }
+
+        #endregion
 
         #region PlannedGroup
 
