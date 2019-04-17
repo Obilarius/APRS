@@ -217,12 +217,13 @@
                 </Grid.RowDefinitions>
                 
                 <Label>Start:</Label>
-                <DatePicker x:Name="StartDate" Grid.Column="1" Margin="0,0,0,10" SelectedDateChanged="Frm_start_SelectedDateChanged" 
+                <DatePicker x:Name="StartDate" Grid.Column="1" Margin="0,0,0,10"
                             SelectedDate="{Binding StartDate, ValidatesOnDataErrors=True, UpdateSourceTrigger=PropertyChanged}"/>
 
                 <Label Grid.Row="1">Ende:</Label>
-                <DatePicker x:Name="EndDate" Grid.Row="1" Grid.Column="1" Margin="0,0,0,10" SelectedDateChanged="Frm_end_SelectedDateChanged" 
-                            SelectedDate="{Binding EndDate, ValidatesOnDataErrors=True, UpdateSourceTrigger=PropertyChanged}" DisplayDateStart="{Binding DisplayStartDateEnd}"/>
+                <DatePicker x:Name="EndDate" Grid.Row="1" Grid.Column="1" Margin="0,0,0,10"
+                            SelectedDate="{Binding EndDate, ValidatesOnDataErrors=True, UpdateSourceTrigger=PropertyChanged}" DisplayDateStart="{Binding DisplayStartDateEnd}"
+                            IsEnabled="{Binding EndDateEnabled}"/>
                 <StackPanel Grid.Row="2" Grid.Column="1" Margin="0,0,0,10" Orientation="Horizontal">
                     <CheckBox x:Name="HasNoEnd" IsChecked="{Binding HasNoEnd, ValidatesOnDataErrors=True, UpdateSourceTrigger=PropertyChanged}"/>
                     <Label>kein Ende</Label>

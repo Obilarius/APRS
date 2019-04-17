@@ -113,6 +113,11 @@ namespace ARPS.ViewModels
         public DateTime EndDate { get; set; } = DateTime.Now.AddDays(1);
 
         /// <summary>
+        /// Falls HasNoEnd true ist wird der EndDate DatePicker deaktiviert damit das Datum nicht geändrt werden kann
+        /// </summary>
+        public bool EndDateEnabled { get; set; } = true;
+
+        /// <summary>
         /// Im DatePicker Kalender werden nur Daten nach diesem Datum angezeigt
         /// </summary>
         public DateTime DisplayStartDateEnd { get; set; } = DateTime.Now;
@@ -320,10 +325,16 @@ namespace ARPS.ViewModels
         {
             // Falls true wird das Enddatum auf MaxValue gesetzt
             if (HasNoEnd == true)
+            {
                 EndDate = DateTime.MaxValue;
+                EndDateEnabled = false;
+            }
             // Falls false wird das Enddatum wieder auf Morgen gesetzt
             else
+            {
                 EndDate = DateTime.Now.AddDays(1);
+                EndDateEnabled = true;
+            }
 
             return null;
         }
