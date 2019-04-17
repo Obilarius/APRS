@@ -50,6 +50,9 @@ namespace ARPS.Views
             // Hollt das Datum aus dem DatePicker für Ende
             var endDate = endDate_Picker.SelectedDate;
 
+            if (endDate == null)
+                return;
+
             // Fehlermeldungsprüfungen
             // Wenn das Enddatum vor dem aktuellen liegt
             if (endDate < now)

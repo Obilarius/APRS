@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.ComponentModel;
 using System.DirectoryServices.AccountManagement;
 using System.Linq;
 using System.Text;
@@ -9,7 +10,7 @@ using System.Windows.Input;
 
 namespace ARPS.ViewModels
 {
-    public class ScheduleViewModel : BaseViewModel
+    public class ScheduleViewModel : BaseViewModel, IDataErrorInfo
     {
         #region Commands
 
@@ -99,6 +100,40 @@ namespace ARPS.ViewModels
         /// </summary>
         public ObservableCollection<GroupPrincipal> PlannedGroups { get; set; }
 
+        #region Form Properties
+
+        /// <summary>
+        /// Startdatum
+        /// </summary>
+        public DateTime StartDate { get; set; } = DateTime.Now;
+
+        /// <summary>
+        /// Enddatum
+        /// </summary>
+        public DateTime EndDate { get; set; } = DateTime.Now.AddDays(1);
+
+        /// <summary>
+        /// Im DatePicker Kalender werden nur Daten nach diesem Datum angezeigt
+        /// </summary>
+        public DateTime DisplayStartDateEnd { get; set; } = DateTime.Now;
+
+        /// <summary>
+        /// Die Checkbox die aussagt ob die Gruppe wieder automatisch entfernt werden soll oder nicht
+        /// </summary>
+        public bool HasNoEnd { get; set; }
+
+        /// <summary>
+        /// Die Initialen des Users der die Planung durchgeführt hat
+        /// </summary>
+        public string EditorInitials { get; set; }
+
+        /// <summary>
+        /// Ein Kommentar wieso diese Gruppenplanung so ist wie sie ist
+        /// </summary>
+        public string Comment { get; set; }
+
+        #endregion
+
         #region User and Group Lists
 
         /// <summary>
@@ -144,6 +179,167 @@ namespace ARPS.ViewModels
         /// Der Suchtext nach dem die Gruppen gefiltert werden
         /// </summary>
         public string SearchTextGroup { get; set; }
+
+        #endregion
+
+        #endregion
+
+        #region Form Validation
+
+        #region IDataErrorInfo Members
+
+        string IDataErrorInfo.Error
+        {
+            get
+            {
+                return null;
+            }
+        }
+
+        string IDataErrorInfo.this[string propertyName]
+        {
+            get
+            {
+                return GetValidationError(propertyName);
+            }
+        }
+
+        #endregion
+
+
+        /// <summary>
+        /// Alle FormularFelder die überprüft werden müssen
+        /// </summary>
+        static readonly string[] ValidatedProperties =
+        {
+            "StartDate",
+            "EndDate",
+            "HasNoEnd",
+            "EditorInitials",
+            "Comment"
+        };
+
+
+        /// <summary>
+        /// Das Property das aussagt ob ein Feld Valid oder nicht ist
+        /// </summary>
+        public bool IsValid
+        {
+            get
+            {
+                foreach (string property in ValidatedProperties)
+                {
+                    if (GetValidationError(property) != null)
+                        return false;
+                }
+
+                return true;
+            }
+        }
+
+        /// <summary>
+        /// Prüft das übergebene Feld auf Fehler
+        /// </summary>
+        /// <param name="propertyName">PropertyName der im static string[] ValidatedProperties beinhaltet ist</param>
+        /// <returns>Null oder den ErrorText</returns>
+        private string GetValidationError(string propertyName)
+        {
+            string error = null;
+
+            switch (propertyName)
+            {
+                case "EditorInitials":
+                    error = ValidateInitials();
+                    break;
+                case "StartDate":
+                    error = ValidateStartDate();
+                    break;
+                case "EndDate":
+                    error = ValidateEndDate();
+                    break;
+                case "HasNoEnd":
+                    error = ValidateHasNoEnd();
+                    break;
+                case "Comment":
+                    error = ValidateComment();
+                    break;
+                default:
+                    break;
+            }
+
+            return error;
+        }
+
+
+        #region Property Validate Functions
+
+        /// <summary>
+        /// Validierung der Initialen
+        /// </summary>
+        /// <returns></returns>
+        private string ValidateInitials()
+        {   
+            // Überprüft obdie Initialen nicht leer sind
+            if (String.IsNullOrWhiteSpace(EditorInitials))
+                return "Initialen dürfen nicht leer sein.";
+
+            return null;
+        }
+
+        /// <summary>
+        /// Validierung des Start Datum
+        /// </summary>
+        /// <returns></returns>
+        private string ValidateStartDate()
+        {
+            return null;
+        }
+
+        /// <summary>
+        /// Validierung des End Datum
+        /// </summary>
+        /// <returns></returns>
+        private string ValidateEndDate()
+        {
+            // Überprüft das Ende nicht vor dem Start ist
+            if (EndDate <= StartDate)
+                return "Das Enddatum muss nach dem Startdatum liegen.";
+
+            // Überprüft das Ende nicht in der Vergangenheit liegt 
+            if (EndDate <= DateTime.Now)
+                return "Das Enddatum muss in der Zukunft liegen.";
+
+            return null;
+        }
+
+        /// <summary>
+        /// Validierung der Checkbox HasNoEnd. Ist immer Valid aber bei true wird hier das EndDatum auf DateTime.MaxValue gesetzt
+        /// </summary>
+        /// <returns></returns>
+        private string ValidateHasNoEnd()
+        {
+            // Falls true wird das Enddatum auf MaxValue gesetzt
+            if (HasNoEnd == true)
+                EndDate = DateTime.MaxValue;
+            // Falls false wird das Enddatum wieder auf Morgen gesetzt
+            else
+                EndDate = DateTime.Now.AddDays(1);
+
+            return null;
+        }
+
+        /// <summary>
+        /// Validierung des Kommentars
+        /// </summary>
+        /// <returns></returns>
+        private string ValidateComment()
+        {
+            // Überprüft das der Kommentar ausgefüllt und nicht leer ist
+            if (String.IsNullOrWhiteSpace(Comment))
+                return "Kommentar darf nicht leer sein.";
+
+            return null;
+        }
 
         #endregion
 

@@ -217,21 +217,24 @@
                 </Grid.RowDefinitions>
                 
                 <Label>Start:</Label>
-                <DatePicker x:Name="frm_start" Grid.Column="1" Margin="0,0,0,10" SelectedDateChanged="Frm_start_SelectedDateChanged"/>
+                <DatePicker x:Name="StartDate" Grid.Column="1" Margin="0,0,0,10" SelectedDateChanged="Frm_start_SelectedDateChanged" 
+                            SelectedDate="{Binding StartDate, ValidatesOnDataErrors=True, UpdateSourceTrigger=PropertyChanged}"/>
 
                 <Label Grid.Row="1">Ende:</Label>
-                <DatePicker x:Name="frm_end" Grid.Row="1" Grid.Column="1" Margin="0,0,0,10" SelectedDateChanged="Frm_end_SelectedDateChanged"/>
+                <DatePicker x:Name="EndDate" Grid.Row="1" Grid.Column="1" Margin="0,0,0,10" SelectedDateChanged="Frm_end_SelectedDateChanged" 
+                            SelectedDate="{Binding EndDate, ValidatesOnDataErrors=True, UpdateSourceTrigger=PropertyChanged}" DisplayDateStart="{Binding DisplayStartDateEnd}"/>
                 <StackPanel Grid.Row="2" Grid.Column="1" Margin="0,0,0,10" Orientation="Horizontal">
-                    <CheckBox x:Name="frm_noEnd"/>
+                    <CheckBox x:Name="HasNoEnd" IsChecked="{Binding HasNoEnd, ValidatesOnDataErrors=True, UpdateSourceTrigger=PropertyChanged}"/>
                     <Label>kein Ende</Label>
                 </StackPanel>
 
-
                 <Label Grid.Row="3" Foreground="Firebrick" FontWeight="Bold">Initialen: *</Label>
-                <TextBox x:Name="frm_initials" Grid.Row="3" Grid.Column="1" Margin="0,0,0,10"/>
+                <TextBox x:Name="EditorInitials" Grid.Row="3" Grid.Column="1" Margin="0,0,0,10" 
+                         Text="{Binding EditorInitials, ValidatesOnDataErrors=True, UpdateSourceTrigger=PropertyChanged}"/>
 
                 <Label Grid.Row="4" Foreground="Firebrick" FontWeight="Bold">Comment: *</Label>
-                <TextBox x:Name="frm_comment" Grid.Row="4" Grid.Column="1" Margin="0,0,0,10"/>
+                <TextBox x:Name="Comment" Grid.Row="4" Grid.Column="1" Margin="0,0,0,10" 
+                         Text="{Binding Comment, ValidatesOnDataErrors=True, UpdateSourceTrigger=PropertyChanged}"/>
 
                 <!-- Button FormSubmit -->
                 <Button Grid.Row="5" 
@@ -239,15 +242,15 @@
                         Height="50" 
                         Content="MITGLIEDSCHAFT PLANNEN"
                         Command="{Binding SubmitPlanningFormCommand}">
-                    <Button.CommandParameter>
+                    <!--<Button.CommandParameter>
                         <MultiBinding Converter="{StaticResource SubmitPlanningFormConverter}">
-                            <Binding Path="SelectedDate" ElementName="frm_start"/>
-                            <Binding Path="SelectedDate" ElementName="frm_end"/>
-                            <Binding Path="IsChecked"    ElementName="frm_noEnd"/>
-                            <Binding Path="Text"         ElementName="frm_initials"/>
-                            <Binding Path="Text"         ElementName="frm_comment"/>
+                            <Binding Path="SelectedDate" ElementName="StartDate"/>
+                            <Binding Path="SelectedDate" ElementName="EndDate"/>
+                            <Binding Path="IsChecked"    ElementName="HasNoEnd"/>
+                            <Binding Path="Text"         ElementName="EditorInitials"/>
+                            <Binding Path="Text"         ElementName="Comment"/>
                         </MultiBinding>
-                    </Button.CommandParameter>
+                    </Button.CommandParameter>-->
                 </Button>
                 
             </Grid>
