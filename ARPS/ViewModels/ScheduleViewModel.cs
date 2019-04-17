@@ -137,6 +137,11 @@ namespace ARPS.ViewModels
         /// </summary>
         public string Comment { get; set; }
 
+        /// <summary>
+        /// Fehlermeldungen die beim absenden des Forms auftreten
+        /// </summary>
+        public string FormErrorMessage { get; set; }
+
         #endregion
 
         #region User and Group Lists
@@ -370,7 +375,7 @@ namespace ARPS.ViewModels
             ClearSearchGroupCommand = new RelayCommand(ClearSearchGroup);
             AddGroupToPlanCommand = new RelayCommand<GroupPrincipal>(AddGroupToPlan);
             RemoveGroupFromPlanCommand = new RelayCommand<GroupPrincipal>(RemoveGroupFromPlan);
-            SubmitPlanningFormCommand = new RelayCommand<object>(SubmitPlanningForm);
+            SubmitPlanningFormCommand = new RelayCommand(SubmitPlanningForm);
 
             // Liest alle User udn Gruppen aus und speichert sie in den Listen
             AllUsers = GetAllADUsers();
@@ -382,9 +387,26 @@ namespace ARPS.ViewModels
 
         #endregion
 
-        public void SubmitPlanningForm (object param)
+        /// <summary>
+        /// Methode die Ausgeführt wird sobald der Button zum Mitgliedschaft plannen geklickt wird
+        /// </summary>
+        public void SubmitPlanningForm ()
         {
-            var values = (object[])param;
+            // Löscht die Fehlermeldung
+            FormErrorMessage = String.Empty;
+
+            // Geht über alle Formularfelder und überprüft sie.
+            foreach (var formProperty in ValidatedProperties)
+            {
+                // Falls bei einer Validationsprüfung eine Fehlermeldung zurück kommt wird folgende Nachricht ausgegeben
+                if (GetValidationError(formProperty) != null)
+                {
+                    FormErrorMessage = "Bitte füllen Sie erst alle Felder richtig aus.";
+                    return;
+                }
+            }
+
+
         }
 
         #region PlannedGroup
@@ -578,9 +600,7 @@ namespace ARPS.ViewModels
             // find all matches
             foreach (var found in srch.FindAll())
             {
-                UserPrincipal user = found as UserPrincipal;
-
-                if (user != null)
+                if (found is UserPrincipal user)
                 {
                     if (user.Enabled.Value)
                         lst.Add(user);
@@ -606,9 +626,7 @@ namespace ARPS.ViewModels
             // find all matches
             foreach (var found in srch.FindAll())
             {
-                GroupPrincipal grp = found as GroupPrincipal;
-
-                if (grp != null)
+                if (found is GroupPrincipal grp)
                     lst.Add(grp);
             }
             lst.Sort((x, y) => x.Name.CompareTo(y.Name));

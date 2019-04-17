@@ -31,10 +31,5 @@ namespace ARPS.Views
 
         #endregion
 
-        #region DateTime Check
-
-        
-
-        #endregion
     }
 }

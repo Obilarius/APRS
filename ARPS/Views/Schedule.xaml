@@ -214,6 +214,7 @@
                     <RowDefinition Height="Auto" />
                     <RowDefinition Height="Auto" />
                     <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
                 </Grid.RowDefinitions>
                 
                 <Label>Start:</Label>
@@ -237,23 +238,16 @@
                 <TextBox x:Name="Comment" Grid.Row="4" Grid.Column="1" Margin="0,0,0,10" 
                          Text="{Binding Comment, ValidatesOnDataErrors=True, UpdateSourceTrigger=PropertyChanged}"/>
 
+                <!-- Form Error Message -->
+                <Label Grid.Row="5" Grid.ColumnSpan="2" Foreground="Firebrick" Content="{Binding FormErrorMessage}"/>
+
                 <!-- Button FormSubmit -->
-                <Button Grid.Row="5" 
+                <Button Grid.Row="6" 
                         Grid.ColumnSpan="2" 
                         Height="50" 
                         Content="MITGLIEDSCHAFT PLANNEN"
-                        Command="{Binding SubmitPlanningFormCommand}">
-                    <!--<Button.CommandParameter>
-                        <MultiBinding Converter="{StaticResource SubmitPlanningFormConverter}">
-                            <Binding Path="SelectedDate" ElementName="StartDate"/>
-                            <Binding Path="SelectedDate" ElementName="EndDate"/>
-                            <Binding Path="IsChecked"    ElementName="HasNoEnd"/>
-                            <Binding Path="Text"         ElementName="EditorInitials"/>
-                            <Binding Path="Text"         ElementName="Comment"/>
-                        </MultiBinding>
-                    </Button.CommandParameter>-->
-                </Button>
-                
+                        Command="{Binding SubmitPlanningFormCommand}"/>
+
             </Grid>
         </Grid>
 
