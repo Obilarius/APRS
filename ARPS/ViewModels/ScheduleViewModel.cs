@@ -7,6 +7,7 @@ using System.Data.SqlClient;
 using System.DirectoryServices.AccountManagement;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Input;
 
@@ -15,6 +16,7 @@ namespace ARPS.ViewModels
     /// <summary>
     /// 
     /// IDataErrorInfo - Validierung - Video[https://www.youtube.com/watch?v=OOHDie8BdGI]
+    /// ASYNC / AWAIT - Video[https://www.youtube.com/watch?v=6_GTdR0gBVE]
     /// </summary>
     public class ScheduleViewModel : BaseViewModel, IDataErrorInfo
     {
@@ -388,15 +390,50 @@ namespace ARPS.ViewModels
             RemoveGroupFromPlanCommand = new RelayCommand<GroupPrincipal>(RemoveGroupFromPlan);
             SubmitPlanningFormCommand = new RelayCommand(SubmitPlanningForm);
 
-            // Liest alle User und Gruppen aus und speichert sie in den Listen
-            AllUsers = GetAllADUsers();
-            UsersFiltered = new ObservableCollection<UserPrincipal>(AllUsers);
+            // Erstellt die beiden Listen für die User
+            AllUsers = new List<UserPrincipal>();
+            UsersFiltered = new ObservableCollection<UserPrincipal>();
 
-            AllGroups = GetAllADGroups();
-            GroupsFiltered = new ObservableCollection<GroupPrincipal>(AllGroups);
+            // Erstellt die beiden Listen für die Gruppen
+            AllGroups = new List<GroupPrincipal>();
+            GroupsFiltered = new ObservableCollection<GroupPrincipal>();
+
+            AsyncLoadedAllUsers();
+            AsyncLoadedAllGroups();
 
             // Hollt sich die geplanten Mitgliedschaften aus der Dantenbank
-            HistoryLog = new ObservableCollection<HistoryLogEntry>(GetPlanFromMSSQL(1000));
+            HistoryLog = new ObservableCollection<HistoryLogEntry>();
+            AsyncLoadedHistoryLog(100);
+        }
+
+
+
+        #endregion
+
+        #region Async Function Calls
+
+        /// <summary>
+        /// Ruft async alle User ab
+        /// </summary>
+        private async void AsyncLoadedAllUsers()
+        {
+            await GetAllADUsers();
+        }
+
+        /// <summary>
+        /// Ruft async alle Gruppen ab
+        /// </summary>
+        private async void AsyncLoadedAllGroups()
+        {
+            await GetAllADGroups();
+        }
+
+        /// <summary>
+        /// Ruft async die History Logs aus der Datenbank ab
+        /// </summary>
+        private async void AsyncLoadedHistoryLog(int showCount)
+        {
+            await GetPlanFromMSSQL(showCount);
         }
 
         #endregion
@@ -644,91 +681,131 @@ namespace ARPS.ViewModels
         /// Liest das AD aus und gibt eine Liste mit allen aktivien Usern zurück
         /// </summary>
         /// <returns></returns>
-        List<UserPrincipal> GetAllADUsers()
+        private Task GetAllADUsers()
         {
-            // create your domain context
-            PrincipalContext ctx = new PrincipalContext(ContextType.Domain);
-            // define a "query-by-example" principal - here, we search for a UserPrincipal 
-            UserPrincipal qbeUser = new UserPrincipal(ctx);
-            // create your principal searcher passing in the QBE principal    
-            PrincipalSearcher srch = new PrincipalSearcher(qbeUser);
-
-            List<UserPrincipal> lst = new List<UserPrincipal>();
-            // find all matches
-            foreach (var found in srch.FindAll())
+            return Task.Factory.StartNew(() =>
             {
-                if (found is UserPrincipal user)
+                // create your domain context
+                PrincipalContext ctx = new PrincipalContext(ContextType.Domain);
+                // define a "query-by-example" principal - here, we search for a UserPrincipal 
+                UserPrincipal qbeUser = new UserPrincipal(ctx);
+
+                // Erstellt den Eintrag der während des Ladens angezeigt wird
+                UserPrincipal loading = new UserPrincipal(ctx)
                 {
-                    if (user.Enabled.Value)
-                        lst.Add(user);
+                    Name = "loading ..."
+                };
+
+                // Fügt den Lade User der Liste hinzu die angezeigt wird
+                UsersFiltered = new ObservableCollection<UserPrincipal>
+                {
+                    loading
+                };
+
+                // create your principal searcher passing in the QBE principal    
+                PrincipalSearcher srch = new PrincipalSearcher(qbeUser);
+
+                List<UserPrincipal> lst = new List<UserPrincipal>();
+                // find all matches
+                foreach (var found in srch.FindAll())
+                {
+                    if (found is UserPrincipal user)
+                    {
+                        if (user.Enabled.Value)
+                            AllUsers.Add(user);
+                    }
                 }
-            }
-            lst.Sort( (x,y)=>x.Name.CompareTo(y.Name) );
-            return lst;
+                // Sortiert die Liste Aller User
+                AllUsers.Sort((x, y) => x.Name.CompareTo(y.Name));
+
+                // Kopiert zum Start alle User in die gefilterte Liste
+                UsersFiltered = new ObservableCollection<UserPrincipal>(AllUsers);
+            });
         }
 
         /// <summary>
         /// Liest das AD aus und gibt eine Liste mit allen Gruppen zurück
         /// </summary>
         /// <returns></returns>
-        List<GroupPrincipal> GetAllADGroups()
+        private Task GetAllADGroups()
         {
-            // create your domain context
-            PrincipalContext ctx = new PrincipalContext(ContextType.Domain);
-            GroupPrincipal qbeGrp = new GroupPrincipal(ctx);
-            // create your principal searcher passing in the QBE principal    
-            PrincipalSearcher srch = new PrincipalSearcher(qbeGrp);
-
-            List<GroupPrincipal> lst = new List<GroupPrincipal>();
-            // find all matches
-            foreach (var found in srch.FindAll())
+            return Task.Factory.StartNew(() =>
             {
-                if (found is GroupPrincipal grp)
-                    lst.Add(grp);
-            }
-            lst.Sort((x, y) => x.Name.CompareTo(y.Name));
-            return lst;
+                // create your domain context
+                PrincipalContext ctx = new PrincipalContext(ContextType.Domain);
+                GroupPrincipal qbeGrp = new GroupPrincipal(ctx);
+
+                // Erstellt den Eintrag der während des Ladens angezeigt wird
+                GroupPrincipal loading = new GroupPrincipal(ctx)
+                {
+                    Name = "loading ..."
+                };
+
+                // Fügt die Lade Gruppe der Liste hinzu die angezeigt wird
+                GroupsFiltered = new ObservableCollection<GroupPrincipal>
+                {
+                    loading
+                };
+
+                // create your principal searcher passing in the QBE principal    
+                PrincipalSearcher srch = new PrincipalSearcher(qbeGrp);
+
+                List<GroupPrincipal> lst = new List<GroupPrincipal>();
+                // find all matches
+                foreach (var found in srch.FindAll())
+                {
+                    if (found is GroupPrincipal grp)
+                        AllGroups.Add(grp);
+                }
+                // Sortiert die Liste mit alles Gruppen
+                AllGroups.Sort((x, y) => x.Name.CompareTo(y.Name));
+
+                // Kopiert zum Start alle Gruppen in die gefilterte Liste
+                GroupsFiltered = new ObservableCollection<GroupPrincipal>(AllGroups);
+            });
         }
 
         #endregion
 
-        private ObservableCollection<HistoryLogEntry> GetPlanFromMSSQL(int showCount)
+        #region History Log
+        private Task GetPlanFromMSSQL(int showCount)
         {
-            ObservableCollection<HistoryLogEntry> retList = new ObservableCollection<HistoryLogEntry>();
-
-            var mssql = new MsSql();
-            mssql.Open();
-
-            string sql = $"SELECT TOP(@showcount) * FROM schedule";
-            SqlCommand cmd = new SqlCommand(sql, mssql.Con);
-
-            cmd.Parameters.AddWithValue("@showcount", showCount);
-
-            using (SqlDataReader reader = cmd.ExecuteReader())
+            return Task.Factory.StartNew(() =>
             {
-                while (reader.Read())
-                { 
-                    Console.WriteLine(reader["Username"].ToString());
+                var mssql = new MsSql();
+                mssql.Open();
 
-                    retList.Add(new HistoryLogEntry
+                string sql = $"SELECT TOP(@showcount) * FROM schedule";
+                SqlCommand cmd = new SqlCommand(sql, mssql.Con);
+
+                cmd.Parameters.AddWithValue("@showcount", showCount);
+
+                using (SqlDataReader reader = cmd.ExecuteReader())
+                {
+                    while (reader.Read())
                     {
-                        ID = (int)reader["ID"],
-                        Username = reader["Username"].ToString(),
-                        UserSid = reader["UserSid"].ToString(),
-                        Groupname = reader["Groupname"].ToString(),
-                        GroupSid = reader["GroupSid"].ToString(),
-                        StartDate = ((DateTime)reader["StartDate"]).ToShortDateString(),
-                        EndDate = ((DateTime)reader["EndDate"]).ToShortDateString(),
-                        Status = reader["Status"].ToString(),
-                        Creator = reader["Creator"].ToString(),
-                        Comment = reader["Comment"].ToString()
-                    });
-                } 
-            }
+                        Console.WriteLine(reader["Username"].ToString());
 
-            mssql.Close();
+                        HistoryLog.Add(new HistoryLogEntry
+                        {
+                            ID = (int)reader["ID"],
+                            Username = reader["Username"].ToString(),
+                            UserSid = reader["UserSid"].ToString(),
+                            Groupname = reader["Groupname"].ToString(),
+                            GroupSid = reader["GroupSid"].ToString(),
+                            StartDate = ((DateTime)reader["StartDate"]).ToShortDateString(),
+                            EndDate = ((DateTime)reader["EndDate"]).ToShortDateString(),
+                            Status = reader["Status"].ToString(),
+                            Creator = reader["Creator"].ToString(),
+                            Comment = reader["Comment"].ToString()
+                        });
+                    }
+                }
 
-            return retList;
+                mssql.Close();
+            });
         }
+
+        #endregion
     }
 }

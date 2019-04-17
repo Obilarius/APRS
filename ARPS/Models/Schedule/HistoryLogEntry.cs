@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Windows.Media;
 
 namespace ARPS
 {
@@ -14,5 +15,7 @@ namespace ARPS
         public string Status { get; set; }
         public string Creator { get; set; }
         public string Comment { get; set; }
+
+        public Brush Color { get; set; } = new SolidColorBrush(Colors.Red);
     }
 }

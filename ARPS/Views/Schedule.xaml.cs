@@ -23,10 +23,21 @@ namespace ARPS.Views
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        private void UserInfos_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        private void DataGrid_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             var dg = sender as DataGrid;
             dg.UnselectAllCells();
+        }
+
+        /// <summary>
+        /// Vehindert das Selectieren eines Eintrags
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void ListView_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            var dg = sender as ListView;
+            dg.UnselectAll();
         }
 
         #endregion

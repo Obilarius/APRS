@@ -61,7 +61,7 @@
                             </TextBox.InputBindings>
                         </TextBox>
                     </DockPanel>
-                    <ListView DockPanel.Dock="Top" ItemsSource="{Binding GroupsFiltered}" SelectionMode="Multiple" BorderThickness="0">
+                    <ListView DockPanel.Dock="Top" ItemsSource="{Binding GroupsFiltered}" BorderThickness="0">
                         <ListView.ItemTemplate>
                             <DataTemplate>
                                 <WrapPanel VerticalAlignment="Center">
@@ -105,7 +105,7 @@
                     AutoGenerateColumns="False" 
                     HeadersVisibility="None" 
                     BorderThickness="0"
-                    SelectionChanged="UserInfos_SelectionChanged">
+                    SelectionChanged="DataGrid_SelectionChanged">
 
                         <DataGrid.RowStyle>
                             <Style TargetType="DataGridRow">
@@ -134,7 +134,7 @@
                     AutoGenerateColumns="False" 
                     HeadersVisibility="None" 
                     BorderThickness="0"
-                    SelectionChanged="UserInfos_SelectionChanged"
+                    SelectionChanged="DataGrid_SelectionChanged"
                     MaxHeight="300">
 
                         <DataGrid.RowStyle>
@@ -164,7 +164,7 @@
                     AutoGenerateColumns="False" 
                     HeadersVisibility="None" 
                     BorderThickness="0"
-                    SelectionChanged="UserInfos_SelectionChanged"
+                    SelectionChanged="DataGrid_SelectionChanged"
                     >
 
                         <DataGrid.RowStyle>
@@ -256,7 +256,7 @@
 
         <!-- Spalte 3 -->
         <Grid Grid.Column="4">
-            <ListView ItemsSource="{Binding HistoryLog}">
+            <ListView ItemsSource="{Binding HistoryLog}" SelectionChanged="ListView_SelectionChanged">
                 <ListView.View>
                     <GridView>
                         <GridViewColumn Header="User" Width="auto" DisplayMemberBinding="{Binding Username}"/>
@@ -268,6 +268,13 @@
                         <GridViewColumn Header="Kommentar" Width="auto" DisplayMemberBinding="{Binding Comment}"/>
                     </GridView>
                 </ListView.View>
+                <ListView.Resources>
+                    <Style TargetType="{x:Type ListViewItem}">
+                        <Setter Property="Background" Value="Red" />
+                        <!--<Setter Property="Margin" Value="0 -1 0 -1"/>
+                        <Setter Property="Padding" Value="50"/>-->
+                    </Style>
+                </ListView.Resources>
             </ListView>
         </Grid>
         
