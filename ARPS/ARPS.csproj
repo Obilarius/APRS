@@ -82,6 +82,7 @@
     <Compile Include="Models\Directory\ViewModel\DirectoryItemViewModel.cs" />
     <Compile Include="Models\Directory\Data\DirectoryStructure.cs" />
     <Compile Include="Models\RelayCommand.cs" />
+    <Compile Include="Models\Schedule\HistoryLogEntry.cs" />
     <Compile Include="Models\Schedule\SubmitPlanningFormConverter.cs" />
     <Compile Include="Models\Schedule\UserInfoEntry.cs" />
     <Compile Include="ViewModels\BaseViewModel.cs" />

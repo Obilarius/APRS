@@ -254,5 +254,22 @@
         <!-- Splitter -->
         <GridSplitter Grid.Column="3" Width="5" Background="{StaticResource ArgesGrauBlau_hell}" HorizontalAlignment="Stretch"/>
 
+        <!-- Spalte 3 -->
+        <Grid Grid.Column="4">
+            <ListView ItemsSource="{Binding HistoryLog}">
+                <ListView.View>
+                    <GridView>
+                        <GridViewColumn Header="User" Width="auto" DisplayMemberBinding="{Binding Username}"/>
+                        <GridViewColumn Header="Gruppe" Width="auto" DisplayMemberBinding="{Binding Groupname}"/>
+                        <GridViewColumn Header="Start" Width="auto" DisplayMemberBinding="{Binding StartDate}"/>
+                        <GridViewColumn Header="Ende" Width="auto" DisplayMemberBinding="{Binding EndDate}"/>
+                        <GridViewColumn Header="Status" Width="auto" DisplayMemberBinding="{Binding Status}"/>
+                        <GridViewColumn Header="Ersteller" Width="auto" DisplayMemberBinding="{Binding Creator}"/>
+                        <GridViewColumn Header="Kommentar" Width="auto" DisplayMemberBinding="{Binding Comment}"/>
+                    </GridView>
+                </ListView.View>
+            </ListView>
+        </Grid>
+        
     </Grid>
 </UserControl>

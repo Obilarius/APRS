@@ -106,6 +106,11 @@ namespace ARPS.ViewModels
         /// </summary>
         public ObservableCollection<GroupPrincipal> PlannedGroups { get; set; }
 
+        /// <summary>
+        /// Die Liste aller geplanten Gruppenmitgliedschaften aus der Datenbank
+        /// </summary>
+        public ObservableCollection<HistoryLogEntry> HistoryLog { get; set; }
+
         #region Form Properties
 
         /// <summary>
@@ -383,12 +388,15 @@ namespace ARPS.ViewModels
             RemoveGroupFromPlanCommand = new RelayCommand<GroupPrincipal>(RemoveGroupFromPlan);
             SubmitPlanningFormCommand = new RelayCommand(SubmitPlanningForm);
 
-            // Liest alle User udn Gruppen aus und speichert sie in den Listen
+            // Liest alle User und Gruppen aus und speichert sie in den Listen
             AllUsers = GetAllADUsers();
             UsersFiltered = new ObservableCollection<UserPrincipal>(AllUsers);
 
             AllGroups = GetAllADGroups();
             GroupsFiltered = new ObservableCollection<GroupPrincipal>(AllGroups);
+
+            // Hollt sich die geplanten Mitgliedschaften aus der Dantenbank
+            HistoryLog = new ObservableCollection<HistoryLogEntry>(GetPlanFromMSSQL(1000));
         }
 
         #endregion
@@ -683,5 +691,44 @@ namespace ARPS.ViewModels
         }
 
         #endregion
+
+        private ObservableCollection<HistoryLogEntry> GetPlanFromMSSQL(int showCount)
+        {
+            ObservableCollection<HistoryLogEntry> retList = new ObservableCollection<HistoryLogEntry>();
+
+            var mssql = new MsSql();
+            mssql.Open();
+
+            string sql = $"SELECT TOP(@showcount) * FROM schedule";
+            SqlCommand cmd = new SqlCommand(sql, mssql.Con);
+
+            cmd.Parameters.AddWithValue("@showcount", showCount);
+
+            using (SqlDataReader reader = cmd.ExecuteReader())
+            {
+                while (reader.Read())
+                { 
+                    Console.WriteLine(reader["Username"].ToString());
+
+                    retList.Add(new HistoryLogEntry
+                    {
+                        ID = (int)reader["ID"],
+                        Username = reader["Username"].ToString(),
+                        UserSid = reader["UserSid"].ToString(),
+                        Groupname = reader["Groupname"].ToString(),
+                        GroupSid = reader["GroupSid"].ToString(),
+                        StartDate = ((DateTime)reader["StartDate"]).ToShortDateString(),
+                        EndDate = ((DateTime)reader["EndDate"]).ToShortDateString(),
+                        Status = reader["Status"].ToString(),
+                        Creator = reader["Creator"].ToString(),
+                        Comment = reader["Comment"].ToString()
+                    });
+                } 
+            }
+
+            mssql.Close();
+
+            return retList;
+        }
     }
 }
