@@ -69,10 +69,21 @@ namespace ARPS.ViewModels
         /// </summary>
         public ICommand SubmitPlanningFormCommand { get; set; }
 
+        #region HistoryLog
+        /// <summary>
+        /// Command zum sotieren des HistoryLogs nach Header
+        /// </summary>
+        public ICommand HistoryLogHeaderClickCommand { get; set; }
+
+        /// <summary>
+        /// Command zum Löschen eines HistoryLogEntrys
+        /// </summary>
+        public ICommand RemoveHistoryLogEntryCommand { get; set; }
+        #endregion
+
         #endregion
 
         #region Propertys
-
         /// <summary>
         /// Der selektierte User
         /// </summary>
@@ -112,6 +123,15 @@ namespace ARPS.ViewModels
         /// Die Liste aller geplanten Gruppenmitgliedschaften aus der Datenbank
         /// </summary>
         public ObservableCollection<HistoryLogEntry> HistoryLog { get; set; }
+
+        /// <summary>
+        /// Nach welcher Spalte wurde sortiert
+        /// </summary>
+        private string SortedHeader { get; set; }
+        /// <summary>
+        /// Welche Richtung wurde sortiert ASC (1) oder DESC (-1)
+        /// </summary>
+        private int SortedDirection { get; set; }
 
         #region Form Properties
 
@@ -375,7 +395,6 @@ namespace ARPS.ViewModels
         #endregion
 
         #region Constructor
-
         /// <summary>
         /// Standard Konstruktor
         /// </summary>
@@ -389,6 +408,8 @@ namespace ARPS.ViewModels
             AddGroupToPlanCommand = new RelayCommand<GroupPrincipal>(AddGroupToPlan);
             RemoveGroupFromPlanCommand = new RelayCommand<GroupPrincipal>(RemoveGroupFromPlan);
             SubmitPlanningFormCommand = new RelayCommand(SubmitPlanningForm);
+            HistoryLogHeaderClickCommand = new RelayCommand<string>(HistoryLogHeaderClick);
+            RemoveHistoryLogEntryCommand = new RelayCommand<HistoryLogEntry>(RemoveHistoryLogEntry);
 
             // Erstellt die beiden Listen für die User
             AllUsers = new List<UserPrincipal>();
@@ -403,12 +424,11 @@ namespace ARPS.ViewModels
 
             // Hollt sich die geplanten Mitgliedschaften aus der Dantenbank
             HistoryLog = new ObservableCollection<HistoryLogEntry>();
+            // Ruft die übergeben Anzahl an Eiträgen ab
             AsyncLoadedHistoryLog(100);
         }
-
-
-
         #endregion
+
 
         #region Async Function Calls
 
@@ -499,6 +519,9 @@ namespace ARPS.ViewModels
 
             // Schliest die Datenbankverbindung
             mssql.Close();
+
+            // Lädt die HistoryLogs neu
+            AsyncLoadedHistoryLog(100);
         }
 
         #endregion
@@ -768,6 +791,11 @@ namespace ARPS.ViewModels
         #endregion
 
         #region History Log
+        /// <summary>
+        /// Holt sich alle Einträge aus der Datenbank und speichert sie in der Liste "HistoryLog"
+        /// </summary>
+        /// <param name="showCount">Wie viele Einträge sollen angezeigt werden</param>
+        /// <returns></returns>
         private Task GetPlanFromMSSQL(int showCount)
         {
             return Task.Factory.StartNew(() =>
@@ -782,11 +810,12 @@ namespace ARPS.ViewModels
 
                 using (SqlDataReader reader = cmd.ExecuteReader())
                 {
+                    // Beim auslesen der Liste wird erst eine leere Liste erstellt
+                    HistoryLog = new ObservableCollection<HistoryLogEntry>();
+
                     while (reader.Read())
                     {
-                        Console.WriteLine(reader["Username"].ToString());
-
-                        HistoryLog.Add(new HistoryLogEntry
+                        HistoryLog.Insert(0, new HistoryLogEntry
                         {
                             ID = (int)reader["ID"],
                             Username = reader["Username"].ToString(),
@@ -806,6 +835,61 @@ namespace ARPS.ViewModels
             });
         }
 
+        /// <summary>
+        /// Bei einem Klick auf einen Header wird die Liste sortiert. Abwechselnd ASC und DESC.
+        /// </summary>
+        /// <param name="sortBy">Das HistoryLogEntry Property nach dem sortiert werden soll</param>
+        private void HistoryLogHeaderClick(string sortBy)
+        {
+            // Falls nach einer neuen Spalte sortiert wird, wird die Richtung nicht beachtet
+            if (SortedHeader != sortBy)
+                SortedDirection = 0;
+
+            // Sortiert ASC
+            if (SortedDirection != 1)
+            {
+                HistoryLog = new ObservableCollection<HistoryLogEntry>(HistoryLog.OrderBy(x => x.GetType().GetProperty(sortBy).GetValue(x, null) ));
+                SortedDirection = 1;
+            }
+            // Sortiert DESC
+            else
+            {
+                HistoryLog = new ObservableCollection<HistoryLogEntry>(HistoryLog.OrderByDescending(x => x.GetType().GetProperty(sortBy).GetValue(x, null) ));
+                SortedDirection = -1;
+            }
+
+            // Speichert den Header nach dem Sortiert ist
+            SortedHeader = sortBy;
+        }
+
+        /// <summary>
+        /// Setzt den übergebenen HistoryLogEntry auf 'deleted' und schreibt das in die Datenbank
+        /// </summary>
+        /// <param name="HLE">Der übergebene HistoryLogEntry der aus der Tabelle kommt</param>
+        private void RemoveHistoryLogEntry(HistoryLogEntry HLE)
+        {
+            // Erstellt eine Datenbankverbindung
+            var mssql = new MsSql();
+            // Öffnet die Datenbankverbindung
+            mssql.Open();
+
+            // Der Update SQL Befehl
+            string sql = $"UPDATE schedule SET Status = 'deleted' WHERE ID = @id";
+
+            SqlCommand cmd = new SqlCommand(sql, mssql.Con);
+
+            // Hängt die ID als Parameter an
+            cmd.Parameters.AddWithValue("@id", HLE.ID);
+
+            // Führt die Query aus
+            cmd.ExecuteNonQuery();
+
+            // Schliest die Datenbankverbindung
+            mssql.Close();
+
+            // Lädt die HistoryLogs neu
+            AsyncLoadedHistoryLog(100);
+        }
         #endregion
     }
 }

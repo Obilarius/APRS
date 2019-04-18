@@ -93,7 +93,7 @@
                 <RowDefinition Height="Auto"/>
             </Grid.RowDefinitions>
 
-            <!-- UserInfos -->
+            <!-- UserInfos und Gruppen -->
             <DockPanel  Grid.Row="0" LastChildFill="True" VerticalAlignment="Stretch">
                 <!-- User Infos -->
                 <Expander DockPanel.Dock="Top" IsExpanded="True" BorderThickness="0" Padding="0" Header="User Info">
@@ -257,24 +257,69 @@
         <!-- Spalte 3 -->
         <Grid Grid.Column="4">
             <ListView ItemsSource="{Binding HistoryLog}" SelectionChanged="ListView_SelectionChanged">
+                <ListView.ItemContainerStyle>
+                    <Style TargetType="{x:Type ListViewItem}">
+                        <Style.Triggers>
+                            <DataTrigger Binding="{Binding Status}" Value="planned">
+                                <Setter Property="Background" Value="Transparent" />
+                            </DataTrigger>
+                            <DataTrigger Binding="{Binding Status}" Value="set">
+                                <Setter Property="Background" Value="LightGreen" />
+                            </DataTrigger>
+                            <DataTrigger Binding="{Binding Status}" Value="terminate">
+                                <Setter Property="Background" Value="DarkGray" />
+                            </DataTrigger>
+                            <DataTrigger Binding="{Binding Status}" Value="deleted">
+                                <Setter Property="Background" Value="DarkGray" />
+                                <Setter Property="Foreground" Value="Gray"/>
+                            </DataTrigger>
+                        </Style.Triggers>
+                        <Setter Property="Margin" Value="0 -1"/>
+                        <Setter Property="Height" Value="25"/>
+                    </Style>
+                </ListView.ItemContainerStyle>
                 <ListView.View>
                     <GridView>
-                        <GridViewColumn Header="User" Width="auto" DisplayMemberBinding="{Binding Username}"/>
-                        <GridViewColumn Header="Gruppe" Width="auto" DisplayMemberBinding="{Binding Groupname}"/>
-                        <GridViewColumn Header="Start" Width="auto" DisplayMemberBinding="{Binding StartDate}"/>
-                        <GridViewColumn Header="Ende" Width="auto" DisplayMemberBinding="{Binding EndDate}"/>
-                        <GridViewColumn Header="Status" Width="auto" DisplayMemberBinding="{Binding Status}"/>
-                        <GridViewColumn Header="Ersteller" Width="auto" DisplayMemberBinding="{Binding Creator}"/>
-                        <GridViewColumn Header="Kommentar" Width="auto" DisplayMemberBinding="{Binding Comment}"/>
+                        <GridViewColumn Width="30" >
+                            <GridViewColumn.CellTemplate>
+                                <DataTemplate>
+                                    <Button
+                                        Command="{Binding RelativeSource={RelativeSource AncestorType={x:Type ListView}}, Path=DataContext.RemoveHistoryLogEntryCommand}"
+                                        CommandParameter="{Binding}"
+                                        Background="Transparent"
+                                        Cursor="Hand">
+
+                                        <Image Source="{StaticResource ButtonMinus}" Height="15" Margin="0"/>
+                                    </Button>
+                                </DataTemplate>
+                            </GridViewColumn.CellTemplate>
+                        </GridViewColumn>
+                        <GridViewColumn Width="auto" DisplayMemberBinding="{Binding ID}">
+                            <GridViewColumnHeader Content="ID" CommandParameter="ID" Command="{Binding HistoryLogHeaderClickCommand}"/>
+                        </GridViewColumn>
+                        <GridViewColumn Width="auto" DisplayMemberBinding="{Binding Username}">
+                            <GridViewColumnHeader Content="User" CommandParameter="Username" Command="{Binding HistoryLogHeaderClickCommand}"/>
+                        </GridViewColumn>
+                        <GridViewColumn Width="auto" DisplayMemberBinding="{Binding Groupname}">
+                            <GridViewColumnHeader Content="Gruppe" CommandParameter="Groupname" Command="{Binding HistoryLogHeaderClickCommand}"/>
+                        </GridViewColumn>
+                        <GridViewColumn Width="auto" DisplayMemberBinding="{Binding StartDate}">
+                            <GridViewColumnHeader Content="Start" CommandParameter="StartDate" Command="{Binding HistoryLogHeaderClickCommand}"/>
+                        </GridViewColumn>
+                        <GridViewColumn Width="auto" DisplayMemberBinding="{Binding EndDate}">
+                            <GridViewColumnHeader Content="Ende" CommandParameter="EndDate" Command="{Binding HistoryLogHeaderClickCommand}"/>
+                        </GridViewColumn>
+                        <GridViewColumn Width="auto" DisplayMemberBinding="{Binding Status}">
+                            <GridViewColumnHeader Content="Status" CommandParameter="Status" Command="{Binding HistoryLogHeaderClickCommand}"/>
+                        </GridViewColumn>
+                        <GridViewColumn Width="auto" DisplayMemberBinding="{Binding Creator}">
+                            <GridViewColumnHeader Content="Ersteller" CommandParameter="Creator" Command="{Binding HistoryLogHeaderClickCommand}"/>
+                        </GridViewColumn>
+                        <GridViewColumn Width="auto" DisplayMemberBinding="{Binding Comment}">
+                            <GridViewColumnHeader Content="Kommentar" CommandParameter="Comment" Command="{Binding HistoryLogHeaderClickCommand}"/>
+                        </GridViewColumn>
                     </GridView>
                 </ListView.View>
-                <ListView.Resources>
-                    <Style TargetType="{x:Type ListViewItem}">
-                        <Setter Property="Background" Value="Red" />
-                        <!--<Setter Property="Margin" Value="0 -1 0 -1"/>
-                        <Setter Property="Padding" Value="50"/>-->
-                    </Style>
-                </ListView.Resources>
             </ListView>
         </Grid>
         
