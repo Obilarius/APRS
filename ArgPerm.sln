@@ -11,6 +11,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ArgPermDeamon", "ArgPermDea
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ARPS", "ARPS\ARPS.csproj", "{28F4DC88-DE72-498B-8B46-147D4E9598E4}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ARPSScheduleDeamon", "ARPSScheduleDeamon\ARPSScheduleDeamon.csproj", "{12D45F78-9ED2-478E-9AE4-E7C323D666EE}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -33,6 +35,10 @@ Global
 		{28F4DC88-DE72-498B-8B46-147D4E9598E4}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{28F4DC88-DE72-498B-8B46-147D4E9598E4}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{28F4DC88-DE72-498B-8B46-147D4E9598E4}.Release|Any CPU.Build.0 = Release|Any CPU
+		{12D45F78-9ED2-478E-9AE4-E7C323D666EE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{12D45F78-9ED2-478E-9AE4-E7C323D666EE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{12D45F78-9ED2-478E-9AE4-E7C323D666EE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{12D45F78-9ED2-478E-9AE4-E7C323D666EE}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

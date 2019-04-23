@@ -6,14 +6,14 @@ using System.Data;
 using System.Data.SqlClient;
 using System.DirectoryServices.AccountManagement;
 using System.Linq;
-using System.Text;
-using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Input;
 
 namespace ARPS.ViewModels
 {
     /// <summary>
+    /// Das ViewModel der Schedule View
+    /// Die Klasse beinhaltet die Logik zur Schedule Seite des UI
     /// 
     /// IDataErrorInfo - Validierung - Video[https://www.youtube.com/watch?v=OOHDie8BdGI]
     /// ASYNC / AWAIT - Video[https://www.youtube.com/watch?v=6_GTdR0gBVE]
@@ -138,7 +138,7 @@ namespace ARPS.ViewModels
         /// <summary>
         /// Startdatum
         /// </summary>
-        public DateTime StartDate { get; set; } = DateTime.Now;
+        public DateTime StartDate { get; set; } = DateTime.Today;
 
         /// <summary>
         /// Enddatum
@@ -370,7 +370,8 @@ namespace ARPS.ViewModels
             // Falls false wird das Enddatum wieder auf Morgen gesetzt
             else
             {
-                EndDate = DateTime.Now.AddDays(1);
+                if (EndDate == DateTime.MaxValue)
+                    EndDate = DateTime.Now.AddDays(1);
                 EndDateEnabled = true;
             }
 
