@@ -4,7 +4,7 @@ namespace ARPS
     /// <summary>
     /// Jedes Infopaar über den User
     /// </summary>
-    public class UserInfoEntry
+    public struct UserInfoEntry
     {
         public string Name { get; set; }
         public string Prop { get; set; }

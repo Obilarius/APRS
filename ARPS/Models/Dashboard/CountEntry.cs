@@ -9,7 +9,7 @@ namespace ARPS
     /// <summary>
     /// Jede Zeile am Dashboard besteht aus dieser Klasse
     /// </summary>
-    public class CountEnrty
+    public struct CountEnrty
     {
         public string Name { get; set; }
         public string Count { get; set; }

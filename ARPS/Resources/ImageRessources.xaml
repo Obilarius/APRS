@@ -4,16 +4,16 @@
                     xmlns:system="clr-namespace:System;assembly=mscorlib">
 
     <!-- TREEVIEW -->
-    <BitmapImage x:Key="Img_Folder" UriSource="pack://siteoforigin:,,,/Resources/Images/treeview/Folder_32x.png"/>
-    <BitmapImage x:Key="Img_SharedFolder" UriSource="pack://siteoforigin:,,,/Resources/Images/treeview/FolderShared_32x.png"/>
-    <BitmapImage x:Key="Img_Server" UriSource="pack://siteoforigin:,,,/Resources/Images/treeview/LocalServer_32x.png"/>
+    <BitmapImage x:Key="Img_Folder" UriSource="pack://application:,,,/Resources/Images/treeview/Folder_32x.png"/>
+    <BitmapImage x:Key="Img_SharedFolder" UriSource="pack://application:,,,/Resources/Images/treeview/FolderShared_32x.png"/>
+    <BitmapImage x:Key="Img_Server" UriSource="pack://application:,,,/Resources/Images/treeview/LocalServer_32x.png"/>
 
     <!-- LOGOS -->
-    <BitmapImage x:Key="ArgesLogoBig" UriSource="pack://siteoforigin:,,,/Resources/Images/logos/ARGES_logo.png"/>
+    <BitmapImage x:Key="ArgesLogoBig" UriSource="pack://application:,,,/Resources/Images/logos/ARGES_logo.png"/>
     
     <!-- BUTTON -->
-    <BitmapImage x:Key="ButtonPlus" UriSource="pack://siteoforigin:,,,/Resources/Images/button/plus_24x.png"/>
-    <BitmapImage x:Key="ButtonMinus" UriSource="pack://siteoforigin:,,,/Resources/Images/button/minus_24x.png"/>
-    <BitmapImage x:Key="ButtonTrash" UriSource="pack://siteoforigin:,,,/Resources/Images/button/waste-bin.png"/>
+    <BitmapImage x:Key="ButtonPlus" UriSource="pack://application:,,,/Resources/Images/button/plus_24x.png"/>
+    <BitmapImage x:Key="ButtonMinus" UriSource="pack://application:,,,/Resources/Images/button/minus_24x.png"/>
+    <BitmapImage x:Key="ButtonTrash" UriSource="pack://application:,,,/Resources/Images/button/waste-bin.png"/>
 
 </ResourceDictionary>
