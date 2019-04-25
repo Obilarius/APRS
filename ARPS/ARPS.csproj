@@ -31,7 +31,7 @@
     <InstallUrl>\\FILER\Install\Anwendungen\Arges\ARPS\ARPS\</InstallUrl>
     <ProductName>ARPS</ProductName>
     <PublisherName>Arges GmbH</PublisherName>
-    <ApplicationRevision>11</ApplicationRevision>
+    <ApplicationRevision>23</ApplicationRevision>
     <ApplicationVersion>0.0.1.%2a</ApplicationVersion>
     <UseApplicationTrust>false</UseApplicationTrust>
     <PublishWizardCompleted>true</PublishWizardCompleted>

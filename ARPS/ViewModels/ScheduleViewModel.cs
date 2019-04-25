@@ -133,6 +133,8 @@ namespace ARPS.ViewModels
         /// </summary>
         private int SortedDirection { get; set; }
 
+        public bool FormEnabled { get; private set; } = true;
+
         #region Form Properties
 
         /// <summary>
@@ -438,7 +440,14 @@ namespace ARPS.ViewModels
         /// </summary>
         private async void AsyncLoadedAllUsers()
         {
-            await GetAllADUsers();
+            try
+            {
+                await GetAllADUsers();
+            }
+            catch (Exception ex)
+            {
+                NoConnectionToAD(ex);
+            }
         }
 
         /// <summary>
@@ -446,7 +455,14 @@ namespace ARPS.ViewModels
         /// </summary>
         private async void AsyncLoadedAllGroups()
         {
-            await GetAllADGroups();
+            try
+            {
+                await GetAllADGroups();
+            }
+            catch (Exception ex)
+            {
+                NoConnectionToAD(ex);
+            }
         }
 
         /// <summary>
@@ -891,6 +907,16 @@ namespace ARPS.ViewModels
             // Lädt die HistoryLogs neu
             AsyncLoadedHistoryLog(100);
         }
+        #endregion
+
+        #region Error Handling
+
+        private void NoConnectionToAD(Exception ex)
+        {
+            FormErrorMessage = "KEINE VERBINDUNG ZUM AD!";
+            FormEnabled = false;
+        }
+
         #endregion
     }
 }

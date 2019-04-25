@@ -24,7 +24,9 @@ namespace ARPS.ViewModels
         public List<CountEnrty> OU { get; set; }
 
 
-
+        /// <summary>
+        /// Standard Konstruktor
+        /// </summary>
         public DashboardViewModel()
         {
             UserAndOtherAccounts = new UserAndOtherAccounts().Entrys;

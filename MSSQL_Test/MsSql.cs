@@ -1,11 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Data.SqlClient;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
-namespace ARPS
+namespace MSSQL_Test
 {
     public class MsSql
     {
@@ -19,15 +15,17 @@ namespace ARPS
         /// </summary>
         public MsSql()
         {
+            Console.WriteLine("Versuche MSSQL Vebindung aufzubauen");
             // Erstellt die Verbindung zum MsSQL Server
             //Con = new SqlConnection(@"Data Source=PC-W10-SW\MSSQLSERVER_DEV;Initial Catalog=ArgesPerm;Integrated Security=True;MultipleActiveResultSets=True");
             try
             {
                 Con = new SqlConnection(@"Data Source=8MAN\SQLEXPRESS;Initial Catalog=ARPS;User Id=LokalArps;Password=nopasswd;MultipleActiveResultSets=True");
+                Console.WriteLine("Verbindung aufgebaut");
             }
             catch (Exception ex)
             {
-                throw new Exception("Es konnte keine Vebindung zum MSSQL Server hergestellt werden! /n/r" + ex.Message);
+                Console.WriteLine("Es konnte keine Vebindung zum MSSQL Server hergestellt werden! /n/r" + ex.Message);
             }
         }
 
@@ -36,7 +34,20 @@ namespace ARPS
         /// </summary>
         public void Open ()
         {
-            Con.Open();
+            Console.WriteLine("Versuche MSSQL Vebindung zu öffnen");
+
+            try
+            {
+                Con.Open();
+                Console.WriteLine("Verbindung offen");
+
+            }
+            catch (Exception)
+            {
+
+                Console.WriteLine("Fehler");
+            }
+
         }
 
         /// <summary>
@@ -45,6 +56,7 @@ namespace ARPS
         public void Close ()
         {
             Con.Close();
+            Console.WriteLine("Verbindung wurde geschlossen");
         }
     }
 }

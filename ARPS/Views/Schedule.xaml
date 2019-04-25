@@ -246,7 +246,8 @@
                         Grid.ColumnSpan="2" 
                         Height="50" 
                         Content="MITGLIEDSCHAFT PLANNEN"
-                        Command="{Binding SubmitPlanningFormCommand}"/>
+                        Command="{Binding SubmitPlanningFormCommand}"
+                        IsEnabled="{Binding FormEnabled}"/>
 
             </Grid>
         </Grid>

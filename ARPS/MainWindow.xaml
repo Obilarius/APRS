@@ -39,11 +39,13 @@
             <views:Schedule DataContext="{Binding}"/>
         </DataTemplate>
     </Window.Resources>
+
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="70"/>
             <RowDefinition Height="5"/>
-            <RowDefinition/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="25"/>
         </Grid.RowDefinitions>
         <Grid Grid.Row="0">
             <Grid.ColumnDefinitions>
@@ -58,6 +60,17 @@
             <Button x:Name="btn_schedule" Content="{DynamicResource DE_Schedule}" Grid.Column="3" Click="Button_Schedule_Click"/>
         </Grid>
         <Rectangle Grid.Row="1" Fill="{DynamicResource ArgesGelb}" />
+        
+        <!-- CONTENT -->
         <ContentControl Grid.Row="2" Content="{Binding}"/>
+        
+        <!-- STATUSBAR -->
+        <StatusBar Grid.Row="3">
+            <StatusBarItem>
+                <TextBlock Text="wiefjowifho" Foreground="{StaticResource ArgesBlau}"/>
+            </StatusBarItem>
+        </StatusBar>
     </Grid>
+    
+    
 </controls:MetroWindow>
