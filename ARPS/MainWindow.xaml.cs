@@ -28,6 +28,12 @@ namespace ARPS
             DataContext = new DashboardViewModel();
         }
 
+        /// <summary>
+        /// Klick auf den Dashboard Button in der Menüleiste.
+        /// Sorgt dafür das die View für das Dashboard angezeigt wird.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void Button_Dashboard_Click(object sender, RoutedEventArgs e)
         {
             DataContext = new DashboardViewModel();
@@ -35,6 +41,12 @@ namespace ARPS
             btn_dashboard.Background = (Brush)Application.Current.FindResource("ArgesGrauBlau_mittel");
         }
 
+        /// <summary>
+        /// Klick auf den Ressources Button in der Menüleiste.
+        /// Sorgt dafür das die View Ressources angezeigt wird.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void Button_Ressources_Click(object sender, RoutedEventArgs e)
         {
             DataContext = new ResourcesViewModel();
@@ -42,6 +54,12 @@ namespace ARPS
             btn_ressources.Background = (Brush)Application.Current.FindResource("ArgesGrauBlau_mittel");
         }
 
+        /// <summary>
+        /// Klick auf den Permission Button in der Menüleiste.
+        /// Sorgt dafür das die View Permissions angezeigt wird.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void Button_Permissions_Click(object sender, RoutedEventArgs e)
         {
             DataContext = new PermissionsViewModel();
@@ -49,6 +67,12 @@ namespace ARPS
             btn_permissions.Background = (Brush)Application.Current.FindResource("ArgesGrauBlau_mittel");
         }
 
+        /// <summary>
+        /// Klick auf den Schedule Button in der Menüleiste.
+        /// Sorgt dafür das die View Schedule angezeigt wird.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void Button_Schedule_Click(object sender, RoutedEventArgs e)
         {
             DataContext = new ScheduleViewModel();
@@ -56,6 +80,9 @@ namespace ARPS
             btn_schedule.Background = (Brush)Application.Current.FindResource("ArgesGrauBlau_mittel");
         }
 
+        /// <summary>
+        /// Setzt die Hintergrundfarbe der Buttons wieder zurück auf Standard
+        /// </summary>
         private void ResetButtonColor()
         {
             btn_dashboard.Background = (Brush)Application.Current.FindResource("ArgesGrauBlau_dunkel");

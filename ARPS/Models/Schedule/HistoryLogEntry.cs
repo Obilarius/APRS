@@ -3,7 +3,7 @@ using System.Windows.Media;
 
 namespace ARPS
 {
-    public struct HistoryLogEntry
+    public class HistoryLogEntry
     {
         public int ID { get; set; }
         public string Username { get; set; }
