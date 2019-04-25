@@ -20,8 +20,8 @@ namespace ARPS
         public MsSql()
         {
             // Erstellt die Verbindung zum MsSQL Server
-            Con = new SqlConnection(@"Data Source=PC-W10-SW\MSSQLSERVER_DEV;Initial Catalog=ArgesPerm;Integrated Security=True;MultipleActiveResultSets=True");
-            //Con = new SqlConnection(@"Data Source=8MAN\SQLEXPRESS;Initial Catalog=ARPS;User Id=ARGES\arps;Password=dkvm4#2;Integrated Security=True;MultipleActiveResultSets=True");
+            //Con = new SqlConnection(@"Data Source=PC-W10-SW\MSSQLSERVER_DEV;Initial Catalog=ArgesPerm;Integrated Security=True;MultipleActiveResultSets=True");
+            Con = new SqlConnection(@"Data Source=8MAN\SQLEXPRESS;Initial Catalog=ARPS;User Id=LokalArps;Password=nopasswd;Integrated Security=True;MultipleActiveResultSets=True");
         }
 
         /// <summary>
