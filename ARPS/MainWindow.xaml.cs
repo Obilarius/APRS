@@ -26,7 +26,13 @@ namespace ARPS
         {
             InitializeComponent();
             DataContext = new DashboardViewModel();
+
+            var statusBar = new StatusBarViewModel();
+            StatusBarNote = statusBar.StatusBarText;
+            StatusBarTextBlock.Text = StatusBarNote;
         }
+
+        #region HeaderButtons
 
         /// <summary>
         /// Klick auf den Dashboard Button in der Menüleiste.
@@ -80,6 +86,8 @@ namespace ARPS
             btn_schedule.Background = (Brush)Application.Current.FindResource("ArgesGrauBlau_mittel");
         }
 
+        #endregion
+
         /// <summary>
         /// Setzt die Hintergrundfarbe der Buttons wieder zurück auf Standard
         /// </summary>
@@ -90,5 +98,7 @@ namespace ARPS
             btn_ressources.Background = (Brush)Application.Current.FindResource("ArgesGrauBlau_dunkel");
             btn_schedule.Background = (Brush)Application.Current.FindResource("ArgesGrauBlau_dunkel");
         }
+
+        public string StatusBarNote { get; set; }
     }
 }

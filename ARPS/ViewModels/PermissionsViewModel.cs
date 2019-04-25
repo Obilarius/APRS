@@ -6,7 +6,11 @@ using System.Threading.Tasks;
 
 namespace ARPS.ViewModels
 {
-    public class PermissionsViewModel
+    public class PermissionsViewModel : BaseViewModel
     {
+        public PermissionsViewModel()
+        {
+            
+        }
     }
 }
