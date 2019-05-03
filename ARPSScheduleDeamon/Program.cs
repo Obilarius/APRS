@@ -39,7 +39,9 @@ namespace ARPSScheduleDeamon
                     string GroupSid = reader["GroupSid"].ToString();
                     DateTime StartDate = (DateTime)reader["StartDate"];
                     DateTime EndDate = (DateTime)reader["EndDate"];
-                    DateTime EndDatePlus1 = EndDate.AddDays(1);
+
+                    DateTime EndDatePlus1 = (EndDate != DateTime.MaxValue) ? EndDate : EndDate.AddDays(1);
+
                     string Status = reader["Status"].ToString();
                     string Creator = reader["Creator"].ToString();
                     string Comment = reader["Comment"].ToString();
