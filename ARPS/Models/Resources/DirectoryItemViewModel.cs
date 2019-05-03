@@ -1,4 +1,5 @@
 ﻿using ARPS.ViewModels;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Windows.Input;
@@ -9,30 +10,9 @@ namespace ARPS
     {
         #region Public Propertys
 
-        /// <summary>
-        /// Die ID (aus der MSSQL Datenbank) des Items
-        /// </summary>
-        public int Id { get; set; }
+        public DirectoryItem Item { get; set; }
 
-        /// <summary>
-        /// Der absolute Pfad zum diesem Item
-        /// </summary>
-        public string FullPath { get; set; }
-
-        /// <summary>
-        /// Das ist der Name des Items
-        /// </summary>
-        public string Name { get { return DirectoryStructure.GetFolderName(this.FullPath); } }
-
-        /// <summary>
-        /// Der Typ des Items
-        /// </summary>
-        public DirectoryItemType Type { get; set; }
-
-        /// <summary>
-        /// Dei SID des Besitzers
-        /// </summary>
-        public string Owner { get; set; }
+        public string Name { get { return Item.Name; } }
 
         /// <summary>
         /// Eine Liste mit allen Kindelementen (Unterordnern) von diesem Item
@@ -42,7 +22,7 @@ namespace ARPS
         /// <summary>
         /// Sagt uns ob das aktuelle Element Kinder hat und dammit aufgeklappt werden kann
         /// </summary>
-        public bool CanExpand { get { return DirectoryStructure.HasChild(this.Id); } }
+        public bool CanExpand { get { return Item.HasChildren; } }
 
         /// <summary>
         /// Sagt uns ob das aktuelle Item aufgeklappt ist oder nicht
@@ -51,7 +31,7 @@ namespace ARPS
         {
             get
             {
-                return this.Children?.Count(f => f != null) > 0;
+                return Children?.Count(f => f != null) > 0;
             }
             set
             {
@@ -131,20 +111,18 @@ namespace ARPS
         /// <summary>
         /// Default Constructor
         /// </summary>
-        public DirectoryItemViewModel(int id, string fullPath, DirectoryItemType type, string owner)
+        public DirectoryItemViewModel(DirectoryItem item)
         {
             // Erstelle Commands
             this.ExpandCommand = new RelayCommand(Expand);
 
             // Setze Propertys
-            this.Id = id;
-            this.FullPath = fullPath;
-            this.Type = type;
-            this.Owner = owner;
+            this.Item = item;
 
-            if (CanExpand || this.Type == DirectoryItemType.Server)
+            // Falls der Ordner aufgeklappt werden kann wird ein Dummy Element als Child gesetzt
+            if (CanExpand)
             {
-                this.Children = new ObservableCollection<DirectoryItemViewModel>
+                Children = new ObservableCollection<DirectoryItemViewModel>
                 {
                     null
                 };
@@ -162,10 +140,10 @@ namespace ARPS
         private void ClearChildren()
         {
             // Prüft ob das aktuelle Item aktuell Kinder hat
-            bool hasChilds = (this.Children.Count() > 0) ? true : false;
+            bool hasChilds = (Children.Count() > 0) ? true : false;
 
             // Löscht alle Items aus der Liste
-            this.Children = new ObservableCollection<DirectoryItemViewModel>();
+            Children = new ObservableCollection<DirectoryItemViewModel>();
 
             // Fügt ein Dummy Item hinzu, falls das Item vorher Kinder hatte
             if(hasChilds)
@@ -180,13 +158,14 @@ namespace ARPS
         private void Expand()
         {
             // Item hat keine Kinder und kann daher nicht aufgeklappt werden
-            if (this.CanExpand == false)
+            if (CanExpand == false)
                 return;
 
             // Finde alle Kinder
-            var children = (this.Id < 0) ? DirectoryStructure.GetChildren(this.FullPath) : DirectoryStructure.GetChildren(this.Id);
-            this.Children = new ObservableCollection<DirectoryItemViewModel>(
-                children.Select(c => new DirectoryItemViewModel(c.Id, c.FullPath, c.Type, c.Owner)));
+            List<DirectoryItem> children = (Item.Type == DirectoryItemType.Server) ? 
+                DirectoryStructure.GetChildren(Item.FullPath) : DirectoryStructure.GetChildren(Item.Id);
+            Children = new ObservableCollection<DirectoryItemViewModel>(
+                children.Select(c => new DirectoryItemViewModel(c)));
         }
     }
 }

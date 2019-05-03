@@ -9,6 +9,8 @@ namespace ARPS.ViewModels
     /// </summary>
     public class ResourcesViewModel : BaseViewModel
     {
+        public ObservableCollection<DirectoryItemViewModel> Items { get; set; }
+
 
         #region Constructor
 
@@ -17,12 +19,13 @@ namespace ARPS.ViewModels
         /// </summary>
         public ResourcesViewModel()
         {
-            // Erstelle eine Liste mit Servernamen die angezeigt werden sollen
-            var servers = new List<string>
-            {
-                "Apollon"
-            };
+            Items = new ObservableCollection<DirectoryItemViewModel>();
+            List<DirectoryItem> servers = DirectoryStructure.GetServers();
 
+            foreach (DirectoryItem server in servers)
+            {
+                Items.Add(new DirectoryItemViewModel(server));
+            }
         }
 
         #endregion

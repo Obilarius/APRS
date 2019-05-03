@@ -13,21 +13,51 @@ namespace ARPS
         /// </summary>
         /// <param name="serverNames"></param>
         /// <returns></returns>
-        public static List<DirectoryItem> GetServers(List<string> serverNames)
+        public static List<DirectoryItem> GetServers()
         {
-            // Erstellt eine leere Liste die später zurück gegeben werden kann
+            // erstellt eine MSSQL Verbindung und öffnet Sie
+            var mssql = new MsSql();
+            mssql.Open();
+
+            // Der SQL Befehl um alle Ordner abzurufen die root sind
+            string sql = $"SELECT _path_name FROM {mssql.TBL_Dirs} WHERE _is_root = 1";
+
+            // Sendet den SQL Befehl an den SQL Server
+            SqlCommand cmd = new SqlCommand(sql, mssql.Con);
+
+            List<string> ListOfServers = new List<string>();
+
+            // Benutzt den SQL Reader um über alle Zeilen der Abfrage zu gehen
+            using (SqlDataReader reader = cmd.ExecuteReader())
+            {
+                while (reader.Read())
+                {
+                    // Liest der Wert der SQL abfrage und gibt den Servernamen zurück
+                    string serverName = GetServerName(reader.GetString(0));
+
+                    if (!ListOfServers.Contains(serverName))
+                        ListOfServers.Add(serverName);
+
+                    
+
+                }
+            }
+
+            // Schließt die MSSQL verbindung
+            mssql.Close();
+
             List<DirectoryItem> retList = new List<DirectoryItem>();
 
-            // Geht über alle übergebenen ServerNamen
-            foreach (var server in serverNames)
+            foreach (var serverName in ListOfServers)
             {
-                // Fügt ein neues DirectoryItem hinzu
+                //Erstellt ein neues DirectoryItem und fügt es der Liste hinzu
                 retList.Add(new DirectoryItem
                 {
                     Id = -1,
-                    FullPath = $"\\\\{server.Substring(0,1).ToUpper() + server.Substring(1)}",
-                    Owner = "no Owner",
-                    Type = DirectoryItemType.Server
+                    FullPath = $"\\\\{serverName}",
+                    Owner = "Kein Besitzer gefunden",
+                    Type = DirectoryItemType.Server,
+                    HasChildren = true
                 });
             }
 
@@ -232,46 +262,6 @@ namespace ARPS
 
         #endregion
 
-        #region Checks
-
-        /// <summary>
-        /// Prüft ob das übergebene Item Kinder (Unterordner) besitzt
-        /// </summary>
-        /// <param name="item">Das Elternelement das überprüft werden soll</param>
-        /// <returns></returns>
-        public static bool HasChild(int parentId)
-        {
-            // Wenn -1 als Id übergeben wird ist es ein Server der immer Kinder hat
-            if(parentId == -1)
-                return true;
-
-            // erstellt eine MSSQL Verbindung und öffnet Sie
-            var mssql = new MsSql();
-            mssql.Open();
-
-            // Der SQL Befehl um die Anzahl der Unterordner zu bekommen
-            string sql = $"SELECT Count(*) FROM dirs WHERE ParentID = @parentId";
-
-            // Sendet den SQL Befehl an den SQL Server
-            SqlCommand cmd = new SqlCommand(sql, mssql.Con);
-
-            // Erstellt die Id des Elternitems als Parameter
-            var parentIdParam = new SqlParameter("parentId", System.Data.SqlDbType.Int)
-            {
-                Value = parentId
-            };
-
-            // Bindet den Parameter an die Abfrage
-            cmd.Parameters.Add(parentIdParam);
-
-            // Führt die Abfrage aus und speichert den Count der Unterordner
-            int count = (int)cmd.ExecuteScalar();
-
-            // Gibt true zurück wenn es mehr als 0 Kinder gibt, ansonsten false
-            return (count > 0) ? true : false;
-        }
-
-        #endregion
 
         #region Helper
 
@@ -297,6 +287,84 @@ namespace ARPS
             return path.Substring(lastIndex + 1);
         }
 
+        /// <summary>
+        /// Gibt nur den Servernamen eines vollen Pfades zurück
+        /// </summary>
+        /// <param name="path">Der volle Pfad</param>
+        /// <returns></returns>
+        public static string GetServerName(string path)
+        {
+            // Wenn wir keinen Pfad bekommen gib empty zurück
+            if (string.IsNullOrEmpty(path))
+                return string.Empty;
+
+            // Schneider die führenden \ ab
+            path = path.TrimStart('\\');
+
+            // Findet das erste Backslash im Pfad
+            var index = path.IndexOf('\\');
+
+            // Wenn wir kein Backslash finden, gib den ganzen Pfad zurück
+            if (index <= 0)
+                return path;
+
+            // Return der Namen nach dem letzten Backslash
+            return path.Substring(0, 1).ToUpper() + path.Substring(1, index -1);
+        }
+
+
+        /// <summary>
+        /// Returns the human-readable file size for an arbitrary, 64-bit file size 
+        /// The default format is "0.### XB", e.g. "4.2 KB" or "1.434 GB"
+        /// </summary>
+        /// <param name="i">Wert in Bytes der Umgerechnet werden soll</param>
+        /// <returns></returns>
+        static string GetBytesReadable(long i)
+        {
+            // Get absolute value
+            long absolute_i = (i < 0 ? -i : i);
+            // Determine the suffix and readable value
+            string suffix;
+            double readable;
+            if (absolute_i >= 0x1000000000000000) // Exabyte
+            {
+                suffix = "EB";
+                readable = (i >> 50);
+            }
+            else if (absolute_i >= 0x4000000000000) // Petabyte
+            {
+                suffix = "PB";
+                readable = (i >> 40);
+            }
+            else if (absolute_i >= 0x10000000000) // Terabyte
+            {
+                suffix = "TB";
+                readable = (i >> 30);
+            }
+            else if (absolute_i >= 0x40000000) // Gigabyte
+            {
+                suffix = "GB";
+                readable = (i >> 20);
+            }
+            else if (absolute_i >= 0x100000) // Megabyte
+            {
+                suffix = "MB";
+                readable = (i >> 10);
+            }
+            else if (absolute_i >= 0x400) // Kilobyte
+            {
+                suffix = "KB";
+                readable = i;
+            }
+            else
+            {
+                return i.ToString("0 B"); // Byte
+            }
+            // Divide by 1024 to get fractional value
+            readable = (readable / 1024);
+            // Return formatted number with suffix
+            return readable.ToString("0.### ") + suffix;
+        }
 
         #endregion
     }

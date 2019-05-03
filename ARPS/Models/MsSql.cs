@@ -9,6 +9,8 @@ namespace ARPS
 {
     public class MsSql
     {
+        public string TBL_Dirs { get { return "fs.dirs"; } }
+
         /// <summary>
         /// Hält die MSSQL Vebindung
         /// </summary>
@@ -23,7 +25,7 @@ namespace ARPS
             //Con = new SqlConnection(@"Data Source=PC-W10-SW\MSSQLSERVER_DEV;Initial Catalog=ArgesPerm;Integrated Security=True;MultipleActiveResultSets=True");
             try
             {
-                Con = new SqlConnection(@"Data Source=8MAN\SQLEXPRESS;Initial Catalog=ARPS;User Id=LokalArps;Password=nopasswd;MultipleActiveResultSets=True");
+                Con = new SqlConnection(@"Data Source=8MAN\SQLEXPRESS;Initial Catalog=ARPS_Test;User Id=LokalArps;Password=nopasswd;MultipleActiveResultSets=True");
             }
             catch (Exception ex)
             {
@@ -47,4 +49,5 @@ namespace ARPS
             Con.Close();
         }
     }
+
 }
