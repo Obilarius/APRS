@@ -2,7 +2,7 @@
 using System.DirectoryServices.AccountManagement;
 using System.Security.Principal;
 
-namespace ArgPermDeamon
+namespace ARPSDeamon
 {
     class ADWorker
     {

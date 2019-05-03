@@ -13,7 +13,7 @@ using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
-namespace ArgPermDeamon
+namespace ARPSDeamon
 {
     class Program
     {
