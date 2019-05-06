@@ -303,7 +303,7 @@ namespace ARPS
         /// </summary>
         /// <param name="i">Wert in Bytes der Umgerechnet werden soll</param>
         /// <returns></returns>
-        static string GetBytesReadable(long i)
+        public static string GetBytesReadable(long i)
         {
             // Get absolute value
             long absolute_i = (i < 0 ? -i : i);
@@ -347,7 +347,50 @@ namespace ARPS
             // Divide by 1024 to get fractional value
             readable = (readable / 1024);
             // Return formatted number with suffix
-            return readable.ToString("0.### ") + suffix;
+            return readable.ToString("0.## ") + suffix;
+        }
+
+        public static string GetUserNameAndPricipalName(string sid)
+        {
+            // erstellt eine MSSQL Verbindung und öffnet Sie
+            var mssql = new MsSql();
+            mssql.Open();
+
+            // Der SQL Befehl um alle Ordner abzurufen die root sind
+            string sql = $"SELECT * FROM (" +
+                $"SELECT SID, DisplayName name, UserPrincipalName secName FROM {mssql.TBL_ADUsers} " +
+                $"UNION ALL " +
+                $"SELECT SID, Name name, SamAccountName secName " +
+                $"FROM {mssql.TBL_ADGroups}) as UsersAndGroups " +
+                $"WHERE SID = @Sid";
+
+            // Sendet den SQL Befehl an den SQL Server
+            SqlCommand cmd = new SqlCommand(sql, mssql.Con);
+
+            //Parameter anhängen
+            cmd.Parameters.AddWithValue("Sid", sid);
+
+            
+
+            // Benutzt den SQL Reader um über alle Zeilen der Abfrage zu gehen
+            using (SqlDataReader reader = cmd.ExecuteReader())
+            {
+                while (reader.Read())
+                {
+                    string name = reader["name"].ToString();
+                    string secName = reader["secName"].ToString();
+
+                    // Schließt die MSSQL verbindung
+                    mssql.Close();
+
+                    return $"{name} ({secName})";
+                }
+            }
+
+            // Schließt die MSSQL verbindung
+            mssql.Close();
+
+            return "";
         }
 
         #endregion

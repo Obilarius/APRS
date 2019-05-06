@@ -11,9 +11,27 @@ namespace ARPS
     {
         #region Public Propertys
 
+        /// <summary>
+        /// Das DirectoryItem das hinter dem ViewModel steht
+        /// </summary>
         public DirectoryItem Item { get; set; }
 
+        /// <summary>
+        /// Der Name des Ordners
+        /// </summary>
         public string Name { get { return Item.Name; } }
+
+        public string OwnerNameWithPricipal => DirectoryStructure.GetUserNameAndPricipalName(Item.Owner);
+
+        public string ReadableSize {
+            get
+            {
+                if (Item.Type == DirectoryItemType.Server)
+                    return "";
+                
+                return DirectoryStructure.GetBytesReadable(Item.Size);
+            }
+        }
 
         /// <summary>
         /// Eine Liste mit allen Kindelementen (Unterordnern) von diesem Item
@@ -153,6 +171,8 @@ namespace ARPS
             if(hasChilds)
                 this.Children.Add(null);
         }
+
+
 
         #endregion
 

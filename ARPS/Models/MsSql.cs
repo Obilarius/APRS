@@ -10,6 +10,8 @@ namespace ARPS
     public class MsSql
     {
         public string TBL_Dirs { get { return "fs.dirs"; } }
+        public string TBL_ADUsers { get { return "dbo.adusers"; } }
+        public string TBL_ADGroups { get { return "dbo.adgroups"; } }
 
         /// <summary>
         /// Hält die MSSQL Vebindung

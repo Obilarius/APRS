@@ -10,11 +10,11 @@
 
     <Grid Background="White">
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="400"/>
-            <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="1*"/>
+            <ColumnDefinition Width="2*"/>
         </Grid.ColumnDefinitions>
 
-        <TreeView x:Name="treeView_Directorys" Grid.Column="0" ItemsSource="{Binding Items}" BorderThickness="0" Margin="0 0 7 0" Padding="0 10" Background="Pink">
+        <TreeView x:Name="treeView_Directorys" Grid.Column="0" ItemsSource="{Binding Items}" BorderThickness="0" Margin="0 0 7 0" Padding="0 10">
             <TreeView.ItemContainerStyle>
                 <Style TargetType="{x:Type TreeViewItem}">
                     <Setter Property="IsExpanded" Value="{Binding IsExpanded, Mode=TwoWay}"/>
@@ -75,15 +75,15 @@
                         <Image Width="20" Margin="2" Source="{Binding Item.Type, Converter={x:Static local:HeaderToImageConverter.Instance}}"/>
                         <TextBlock VerticalAlignment="Center" Margin="0 0 20 0" Text="{Binding Name}" Background="Aqua" HorizontalAlignment="Right"/>
                     </StackPanel>-->
-                    <Grid Background="Beige" MouseLeftButtonUp="ListView_MouseLeftButtonUp">
+                    <Grid MouseLeftButtonUp="ListView_MouseLeftButtonUp" Margin="0 0 20 0">
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="20"/>
                             <ColumnDefinition Width="*"/>
-                            <ColumnDefinition Width="150"/>
+                            <ColumnDefinition Width="*"/>
                         </Grid.ColumnDefinitions>
                         <Image Grid.Column="0" Width="20" Margin="2" Source="{Binding Item.Type, Converter={x:Static local:HeaderToImageConverter.Instance}}"/>
-                        <TextBlock Grid.Column="1" Background="Aquamarine" VerticalAlignment="Center" Margin="0 0 20 0" Text="{Binding Name}"/>
-                        <TextBlock Grid.Column="2" Text="{Binding Item.Size}" Background="PowderBlue" VerticalAlignment="Center"/>
+                        <TextBlock Grid.Column="1" VerticalAlignment="Center" Margin="0 0 20 0" Text="{Binding Name}"/>
+                        <TextBlock Grid.Column="2" Text="{Binding ReadableSize}" VerticalAlignment="Center" HorizontalAlignment="Right" />
                     </Grid>
                 </HierarchicalDataTemplate>
             </TreeView.ItemTemplate>
@@ -108,7 +108,27 @@
                 </StackPanel>
             </Grid>
 
-            <TextBox DockPanel.Dock="Top"/>
+            <Border DockPanel.Dock="Top" BorderThickness="2" BorderBrush="{StaticResource ArgesGelb}" />
+
+            <!-- 2. Row - Owner -->
+            <Grid DockPanel.Dock="Top">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="100"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+                <Label Grid.Column="0" Content="Besitzer" HorizontalAlignment="Left" VerticalAlignment="Center" 
+                       FontWeight="Bold" Foreground="{StaticResource ArgesBlau}"/>
+                <Grid Grid.Column="1">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="16"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+                    <Image Grid.Column="0" x:Name="img_OwnerIcon" Height="16" Width="16"/>
+                    <Label Grid.Column="1" x:Name="lbl_OwnerName" Content="{Binding SelectedItem.OwnerNameWithPricipal, FallbackValue=Besitzer}" HorizontalAlignment="Left"/>
+                </Grid>
+            </Grid>
+
+            <Border DockPanel.Dock="Top" Background="DimGray"/>
         </DockPanel>
     </Grid>
 
