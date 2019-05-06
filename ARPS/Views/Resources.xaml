@@ -4,11 +4,11 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:ARPS"
+             xmlns:viewModels="clr-namespace:ARPS.ViewModels"
              mc:Ignorable="d" 
              d:DesignHeight="600" d:DesignWidth="1000">
 
-
-    <Grid>
+    <Grid Background="White">
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="400"/>
             <ColumnDefinition Width="*"/>
@@ -24,12 +24,20 @@
             <TreeView.ItemTemplate>
                 <HierarchicalDataTemplate ItemsSource="{Binding Children}">
                     <StackPanel Orientation="Horizontal">
-                        <Image Width="20" Margin="2" Source="{Binding Type, Converter={x:Static local:HeaderToImageConverter.Instance}}"/>
+                        <Image Width="20" Margin="2" Source="{Binding Item.Type, Converter={x:Static local:HeaderToImageConverter.Instance}}"/>
                         <TextBlock VerticalAlignment="Center" Margin="0 0 20 0" Text="{Binding Name}"/>
                     </StackPanel>
                 </HierarchicalDataTemplate>
             </TreeView.ItemTemplate>
         </TreeView>
+
+
+        <StackPanel Grid.Column="1">
+            <TextBlock Text="{Binding Items.Count, FallbackValue=CountAusgabe}"/>
+            <TextBlock Text="{Binding SelectedItem.Name, FallbackValue=Ordner}"/>
+        </StackPanel>
     </Grid>
+
     
+
 </UserControl>

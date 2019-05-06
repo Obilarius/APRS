@@ -45,6 +45,8 @@ namespace ARPS
             }
         }
 
+        #endregion
+
         #region Selected Item
 
         private bool _isSelected;
@@ -90,10 +92,8 @@ namespace ARPS
         /// </summary>
         private void OnSelectedItemChanged()
         {
-            
+           // ResourcesViewModel.selectedChange(Item);
         }
-
-        #endregion
 
         #endregion
 

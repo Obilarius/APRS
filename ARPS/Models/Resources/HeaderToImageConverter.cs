@@ -16,6 +16,8 @@ namespace ARPS
     {
         public static HeaderToImageConverter Instance = new HeaderToImageConverter();
 
+
+
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
             // Standartmäßiges Bild
@@ -35,6 +37,8 @@ namespace ARPS
 
             return image;
         }
+
+
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
         {

@@ -150,22 +150,16 @@ namespace ARPS
             mssql.Open();
 
             // Der SQL Befehl um alle Ordner abzurufen die die übergebene ParentID besitzen
-            string sql = $"SELECT ID, Directory, Owner, ParentID " +
-                $"FROM dirs " +
-                $"WHERE ParentID = @parentId " +
-                $"ORDER BY Directory ";
+            string sql = $"SELECT * " +
+                $"FROM {mssql.TBL_Dirs} " +
+                $"WHERE _parent_path_id = @parentId " +
+                $"ORDER BY _path_name";
 
             // Sendet den SQL Befehl an den SQL Server
             SqlCommand cmd = new SqlCommand(sql, mssql.Con);
 
             // Erstellt die ParentId als Parameter
-            var parentIdParam = new SqlParameter("parentId", System.Data.SqlDbType.Int)
-            {
-                Value = Id
-            };
-
-            // Bindet den Parameter an die Abfrage
-            cmd.Parameters.Add(parentIdParam);
+            cmd.Parameters.AddWithValue("parentId", Id);
 
             // Erstellt eine leere Liste die später zurück gegeben werden kann
             List<DirectoryItem> retList = new List<DirectoryItem>();
@@ -175,20 +169,18 @@ namespace ARPS
             {
                 while (reader.Read())
                 {
-                    // Liest aus der jeweiligen Zeile die einzelnen Werte aus
-                    var id = reader.GetInt32(0);
-                    var dir = reader.GetString(1);
-                    var owner = reader.GetString(2);
-                    var parentId = reader.GetInt32(3);
-
                     // Erstellt ein neues DirectoryItem und fügt es der Liste hinzu
                     retList.Add(new DirectoryItem
                     {
-                        Id = id,
-                        FullPath = dir,
-                        Owner = owner,
+                        Id = (int)reader["_path_id"],
+                        FullPath = reader["_path_name"].ToString(),
+                        Owner = reader["_owner_sid"].ToString(),
                         Type = DirectoryItemType.Folder,
-                        ParentID = parentId
+                        ParentID = (int)reader["_parent_path_id"],
+                        IsRoot = (bool)reader["_is_root"],
+                        HasChildren = (bool)reader["_has_children"],
+                        ScanDeepth = (int)reader["_scan_deepth"],
+                        Size = (long)reader["_size"]
                     });
 
                 }
@@ -202,7 +194,7 @@ namespace ARPS
         }
 
         /// <summary>
-        /// Gibt eine Liste mit allen Unterordnern die die übergebene ID als ParentID besitzen
+        /// Gibt eine Liste mit allen Unterordnern des übergebenen Pfades zurück
         /// </summary>
         /// <param name="fullPath">Der volle Pfad</param>
         /// <returns></returns>
@@ -213,22 +205,16 @@ namespace ARPS
             mssql.Open();
 
             // Der SQL Befehl um alle Ordner abzurufen die mit dem Pfad beginnen
-            string sql = $"SELECT ID, Directory, Owner " +
-                $"FROM dirs " +
-                $"WHERE ParentID IS NULL AND Directory LIKE @fullPath " +
-                $"ORDER BY Directory";
+            string sql = $"SELECT * " +
+                $"FROM {mssql.TBL_Dirs} " +
+                $"WHERE _is_root = 1 AND _path_name LIKE @fullPath " +
+                $"ORDER BY _path_name";
 
             // Sendet den SQL Befehl an den SQL Server
             SqlCommand cmd = new SqlCommand(sql, mssql.Con);
 
             // Erstellt den vollen Pfad als Parameter
-            var fullPathParam = new SqlParameter("fullPath", System.Data.SqlDbType.NVarChar)
-            {
-                Value = fullPath + "\\%"
-            };
-
-            // Bindet den Parameter an die Abfrage
-            cmd.Parameters.Add(fullPathParam);
+            cmd.Parameters.AddWithValue("fullPath", fullPath + "\\%");
 
             // Erstellt eine leere Liste die später zurück gegeben werden kann
             List<DirectoryItem> retList = new List<DirectoryItem>();
@@ -238,20 +224,18 @@ namespace ARPS
             {
                 while (reader.Read())
                 {
-                    // Liest aus der jeweiligen Zeile die einzelnen Werte aus
-                    int id = reader.GetInt32(0);
-                    string dir = reader.GetString(1);
-                    string owner = reader.GetString(2);
-                    int parentId = -1;
-
                     // Erstellt ein neues DirectoryItem und fügt es der Liste hinzu
                     retList.Add(new DirectoryItem
                     {
-                        Id = id,
-                        FullPath = dir,
-                        Owner = owner,
+                        Id = (int)reader["_path_id"],
+                        FullPath = reader["_path_name"].ToString(),
+                        Owner = reader["_owner_sid"].ToString(),
                         Type = DirectoryItemType.SharedFolder,
-                        ParentID = parentId
+                        ParentID = (int)reader["_parent_path_id"],
+                        IsRoot = (bool)reader["_is_root"],
+                        HasChildren = (bool)reader["_has_children"],
+                        ScanDeepth = (int)reader["_scan_deepth"],
+                        Size = (long)reader["_size"]
                     });
 
                 }
