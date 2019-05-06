@@ -1,4 +1,5 @@
-﻿using Prism.Mvvm;
+﻿using Prism.Events;
+using Prism.Mvvm;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -20,11 +21,15 @@ namespace ARPS.ViewModels
         public ObservableCollection<DirectoryItemViewModel> Items { get; set; }
 
 
-        private static DirectoryItem selectedItem;
+        private readonly IEventAggregator eventAggregator;
+
+
+        private DirectoryItemViewModel selectedItem;
+
         /// <summary>
         /// Das ausgewählte Item
         /// </summary>
-        public static DirectoryItem SelectedItem {
+        public DirectoryItemViewModel SelectedItem {
             get => selectedItem;
             set
             {
@@ -33,38 +38,46 @@ namespace ARPS.ViewModels
         }
 
 
-
         #region Constructor
 
         /// <summary>
         /// Default Constructor
         /// </summary>
-        public ResourcesViewModel()
+        public ResourcesViewModel(IEventAggregator eventAggregator)
         {
             Items = new ObservableCollection<DirectoryItemViewModel>();
             List<DirectoryItem> servers = DirectoryStructure.GetServers();
 
             foreach (DirectoryItem server in servers)
             {
-                Items.Add(new DirectoryItemViewModel(server));
-                SelectedItem = server;
+                var newItem = new DirectoryItemViewModel(server, eventAggregator);
+                Items.Add(newItem);
+                SelectedItem = newItem;
             }
 
-            //SelectedItemChangeEvent event = EventAggregator.Instance.GetEvent<SelectedItemChangeEvent>();
-            //event.Subscribe(selectedChange);
+            this.eventAggregator = eventAggregator;
 
-            
+            // Abboniert das Event wenn sich das SelectedItem ändert
+            eventAggregator.GetEvent<PubSubEvent<DirectoryItemViewModel>>().Subscribe(SelectedItemChange);
+
         }
 
         #endregion
 
         /// <summary>
-        /// Diese Funktion wird aufgerufen wenn sich das Selectierte Item ändert
+        /// Wird ausgeführ wenn ein neues Item Selektiert wird
         /// </summary>
-        /// <param name="item"></param>
-        protected virtual void selectedChange(object sender, EventArgs e)
+        /// <param name="newSelectedItem"></param>
+        private void SelectedItemChange(DirectoryItemViewModel newSelectedItem)
         {
-            
+            // Falls das neue Item dem alten entspricht wird nichts gemacht
+            if (newSelectedItem == null || newSelectedItem == SelectedItem)
+                return;
+
+            // Setzt das Selected Item auf das neue Item
+            SelectedItem = newSelectedItem;
         }
+
+
     }
 }

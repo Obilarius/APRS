@@ -13,6 +13,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 using ARPS.ViewModels;
+using ARPS.Views;
 using MahApps.Metro.Controls;
 
 namespace ARPS
@@ -55,7 +56,7 @@ namespace ARPS
         /// <param name="e"></param>
         private void Button_Ressources_Click(object sender, RoutedEventArgs e)
         {
-            DataContext = new ResourcesViewModel();
+            DataContext = new Resources();
             ResetButtonColor();
             btn_ressources.Background = (Brush)Application.Current.FindResource("ArgesGrauBlau_mittel");
         }

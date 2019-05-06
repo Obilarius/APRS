@@ -1,4 +1,5 @@
 ﻿using ARPS.ViewModels;
+using Prism.Events;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
@@ -108,16 +109,19 @@ namespace ARPS
 
         #region Constructor
 
+        private readonly IEventAggregator eventAggregator;
+
         /// <summary>
         /// Default Constructor
         /// </summary>
-        public DirectoryItemViewModel(DirectoryItem item)
+        public DirectoryItemViewModel(DirectoryItem item, IEventAggregator eventAggregator)
         {
             // Erstelle Commands
             this.ExpandCommand = new RelayCommand(Expand);
 
             // Setze Propertys
             this.Item = item;
+            this.eventAggregator = eventAggregator;
 
             // Falls der Ordner aufgeklappt werden kann wird ein Dummy Element als Child gesetzt
             if (CanExpand)
@@ -165,7 +169,7 @@ namespace ARPS
             List<DirectoryItem> children = (Item.Type == DirectoryItemType.Server) ? 
                 DirectoryStructure.GetChildren(Item.FullPath) : DirectoryStructure.GetChildren(Item.Id);
             Children = new ObservableCollection<DirectoryItemViewModel>(
-                children.Select(c => new DirectoryItemViewModel(c)));
+                children.Select(c => new DirectoryItemViewModel(c, eventAggregator)));
         }
     }
 }
