@@ -1,4 +1,4 @@
-# Project Title
+# ARPS
 
 A program to view the access rights of server shares. Lists the AD groups and users and the associated rights.
 
