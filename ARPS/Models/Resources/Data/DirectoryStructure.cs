@@ -1,4 +1,5 @@
 ﻿
+using System;
 using System.Collections.Generic;
 using System.Data.SqlClient;
 
@@ -20,7 +21,7 @@ namespace ARPS
             mssql.Open();
 
             // Der SQL Befehl um alle Ordner abzurufen die root sind
-            string sql = $"SELECT _path_name FROM {mssql.TBL_Dirs} WHERE _is_root = 1";
+            string sql = $"SELECT _path_name FROM {mssql.TBL_FS_Dirs} WHERE _is_root = 1";
 
             // Sendet den SQL Befehl an den SQL Server
             SqlCommand cmd = new SqlCommand(sql, mssql.Con);
@@ -151,7 +152,7 @@ namespace ARPS
 
             // Der SQL Befehl um alle Ordner abzurufen die die übergebene ParentID besitzen
             string sql = $"SELECT * " +
-                $"FROM {mssql.TBL_Dirs} " +
+                $"FROM {mssql.TBL_FS_Dirs} " +
                 $"WHERE _parent_path_id = @parentId " +
                 $"ORDER BY _path_name";
 
@@ -206,7 +207,7 @@ namespace ARPS
 
             // Der SQL Befehl um alle Ordner abzurufen die mit dem Pfad beginnen
             string sql = $"SELECT * " +
-                $"FROM {mssql.TBL_Dirs} " +
+                $"FROM {mssql.TBL_FS_Dirs} " +
                 $"WHERE _is_root = 1 AND _path_name LIKE @fullPath " +
                 $"ORDER BY _path_name";
 
@@ -350,6 +351,11 @@ namespace ARPS
             return readable.ToString("0.## ") + suffix;
         }
 
+        /// <summary>
+        /// Gibt den Usernamen und in Klammern dahinter den Pricipal zu eine übergebenen SID zurück
+        /// </summary>
+        /// <param name="sid">Die SID des Benutzers</param>
+        /// <returns></returns>
         public static string GetUserNameAndPricipalName(string sid)
         {
             // erstellt eine MSSQL Verbindung und öffnet Sie
@@ -358,10 +364,10 @@ namespace ARPS
 
             // Der SQL Befehl um alle Ordner abzurufen die root sind
             string sql = $"SELECT * FROM (" +
-                $"SELECT SID, DisplayName name, UserPrincipalName secName FROM {mssql.TBL_ADUsers} " +
+                $"SELECT SID, DisplayName name, UserPrincipalName secName FROM {mssql.TBL_AD_Users} " +
                 $"UNION ALL " +
                 $"SELECT SID, Name name, SamAccountName secName " +
-                $"FROM {mssql.TBL_ADGroups}) as UsersAndGroups " +
+                $"FROM {mssql.TBL_AD_Groups}) as UsersAndGroups " +
                 $"WHERE SID = @Sid";
 
             // Sendet den SQL Befehl an den SQL Server
@@ -390,7 +396,70 @@ namespace ARPS
             // Schließt die MSSQL verbindung
             mssql.Close();
 
-            return "";
+            return "Keinen Besitzer gefunden";
+        }
+
+
+        public static List<DirectoryACEs> GetACEs(int _path_id)
+        {
+            // erstellt eine MSSQL Verbindung und öffnet Sie
+            var mssql = new MsSql();
+            mssql.Open();
+
+            // Der SQL Befehl um alle Ordner abzurufen die root sind
+            string sql = $"SELECT " +
+                    $"ug._is_group, ug._identity_name, ug._distinguished_name " +
+                    $", aces._ace_id, aces._sid, aces._rights, aces._type, aces._fsr, aces._is_inherited, aces._inheritance_flags, aces._propagation_flags " +
+                $"FROM {mssql.TBL_FS_Dirs} dirs " +
+                $"JOIN {mssql.TBL_FS_ACLs} acls " +
+                $"ON dirs._path_id = acls._path_id " +
+                $"JOIN {mssql.TBL_FS_ACEs} aces " +
+                $"ON aces._ace_id = acls._ace_id " +
+                $"JOIN( " +
+                    $"SELECT 0 as _is_group, SID _sid, DisplayName _identity_name, DistinguishedName _distinguished_name " +
+                    $"FROM {mssql.TBL_AD_Users} " +
+                    $"UNION ALL " +
+                    $"SELECT 1, SID, Name, DistinguishedName " +
+                    $"FROM {mssql.TBL_AD_Groups}) ug " +
+                $"ON aces._sid = ug._sid " +
+                $"WHERE dirs._path_id = @PathId";
+
+            // Sendet den SQL Befehl an den SQL Server
+            SqlCommand cmd = new SqlCommand(sql, mssql.Con);
+
+            //Parameter anhängen
+            cmd.Parameters.AddWithValue("@PathId", _path_id);
+
+            //Erstellt Liste die zurückgegeben wird
+            List<DirectoryACEs> aceList = new List<DirectoryACEs>();
+
+            // Benutzt den SQL Reader um über alle Zeilen der Abfrage zu gehen
+            using (SqlDataReader reader = cmd.ExecuteReader())
+            {
+                while (reader.Read())
+                {
+                    bool _is_group = Convert.ToBoolean(reader["_is_group"]);
+                    string _identity_name = reader["_identity_name"].ToString();
+                    string _distinguished_name = reader["_distinguished_name"].ToString();
+                    int _ace_id = (int)reader["_ace_id"];
+                    string _sid = reader["_sid"].ToString();
+                    int _rights = (int)reader["_rights"];
+                    bool _type = Convert.ToBoolean(reader["_type"]);
+                    string _fsr = reader["_fsr"].ToString();
+                    bool _is_inherited = Convert.ToBoolean(reader["_is_inherited"]);
+                    int _inheritance_flags = (int)reader["_inheritance_flags"];
+                    int _propagation_flags = (int)reader["_propagation_flags"];
+
+                    aceList.Add(
+                        new DirectoryACEs(_is_group, _identity_name, _distinguished_name, _ace_id, _sid, _rights, _type, _fsr, _is_inherited, _inheritance_flags, _propagation_flags));
+
+                }
+            }
+
+            // Schließt die MSSQL verbindung
+            mssql.Close();
+
+            return aceList;
         }
 
         #endregion

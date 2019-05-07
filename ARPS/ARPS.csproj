@@ -129,6 +129,8 @@
     <Compile Include="Models\Dashboard\OU.cs" />
     <Compile Include="Models\Dashboard\Groups.cs" />
     <Compile Include="Models\Dashboard\UserAndOtherAccounts.cs" />
+    <Compile Include="Models\Resources\Data\DirectoryACEs.cs" />
+    <Compile Include="Models\Resources\Data\DirectoryInfoItem.cs" />
     <Compile Include="Models\Resources\Data\DirectoryItem.cs" />
     <Compile Include="Models\Resources\Data\DirectoryItemType.cs" />
     <Compile Include="Models\Resources\HeaderToImageConverter.cs" />

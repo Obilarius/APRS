@@ -20,22 +20,15 @@ namespace ARPS.ViewModels
         /// </summary>
         public ObservableCollection<DirectoryItemViewModel> Items { get; set; }
 
-
+        /// <summary>
+        /// Der Event Aggregator
+        /// </summary>
         private readonly IEventAggregator eventAggregator;
-
-
-        private DirectoryItemViewModel selectedItem;
 
         /// <summary>
         /// Das ausgewählte Item
         /// </summary>
-        public DirectoryItemViewModel SelectedItem {
-            get => selectedItem;
-            set
-            {
-                selectedItem = value;
-            }
-        }
+        public DirectoryItemViewModel SelectedItem { get; set; }
 
 
         #region Constructor
@@ -71,7 +64,7 @@ namespace ARPS.ViewModels
         private void SelectedItemChange(DirectoryItemViewModel newSelectedItem)
         {
             // Falls das neue Item dem alten entspricht wird nichts gemacht
-            if (newSelectedItem == null || newSelectedItem == SelectedItem)
+            if (newSelectedItem == null || newSelectedItem.Item.Id == SelectedItem.Item.Id)
                 return;
 
             // Setzt das Selected Item auf das neue Item
