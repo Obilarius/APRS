@@ -139,7 +139,9 @@
             <Border DockPanel.Dock="Top" BorderThickness="2" BorderBrush="{StaticResource ArgesGelb}"></Border>
 
             <!-- Account with permissions -->
+            <DataGrid DockPanel.Dock="Top" ItemsSource="{Binding SelectedItem.ACEs}" AutoGenerateColumns="True" IsReadOnly="True">
 
+            </DataGrid>
 
 
 

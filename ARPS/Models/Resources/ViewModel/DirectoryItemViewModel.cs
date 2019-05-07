@@ -12,6 +12,11 @@ namespace ARPS
         #region Public Propertys
 
         /// <summary>
+        /// Alle ACEs des Ordners
+        /// </summary>
+        public List<DirectoryACEs> ACEs { get; private set; }
+
+        /// <summary>
         /// Das DirectoryItem das hinter dem ViewModel steht
         /// </summary>
         public DirectoryItem Item { get; set; }
@@ -155,6 +160,8 @@ namespace ARPS
                     null
                 };
             }
+
+            ACEs = new List<DirectoryACEs>(DirectoryStructure.GetACEs(this.Item.Id));
                 
         }
 

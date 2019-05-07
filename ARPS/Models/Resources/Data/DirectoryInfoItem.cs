@@ -6,14 +6,8 @@ using System.Threading.Tasks;
 
 namespace ARPS
 {
-    class DirectoryInfoItem : DirectoryItem
+    public class DirectoryRights
     {
-        public List<DirectoryACEs> ACEs {
-            get
-            {
-                return DirectoryStructure.GetACEs(this.Id);
-            }
-        }
 
 
     }
