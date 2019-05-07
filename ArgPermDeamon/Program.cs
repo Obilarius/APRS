@@ -17,6 +17,8 @@ namespace ARPSDeamon
 {
     class Program
     {
+        static readonly string ConString = @"Data Source=8MAN\SQLEXPRESS;Initial Catalog=ARPS_Test;User Id=LokalArps;Password=nopasswd;MultipleActiveResultSets=True";
+
         public static int Count { get; set; }
         public static int Index { get; set; }
 
@@ -100,7 +102,7 @@ namespace ARPSDeamon
             }
 
             //baut eine SQL Verbindung auf
-            SqlConnection con = new SqlConnection(@"Data Source=8MAN\SQLEXPRESS;Initial Catalog=ARPS_Test;User Id=LokalArps;Password=nopasswd;MultipleActiveResultSets=True");
+            SqlConnection con = new SqlConnection(ConString);
 
             // Der volle Pfad
             string _path_name = dInfo.FullName;
@@ -185,9 +187,10 @@ namespace ARPSDeamon
 
             // Liest die Infos über den Besitzer aus
             string _owner_sid = "0";
+            DirectorySecurity dSecurity = null;
             try
             {
-                DirectorySecurity dSecurity = dInfo.GetAccessControl();
+                dSecurity = dInfo.GetAccessControl();
                 IdentityReference owner = dSecurity.GetOwner(typeof(SecurityIdentifier));  // FÜR SID
                 _owner_sid = owner.Value;
             } catch (Exception) { }
@@ -254,6 +257,10 @@ namespace ARPSDeamon
                 con.Close();
             }
 
+            // Ruft die ACL zum jeweiligen Ordner ab und schreib diese in die Datenbank
+            if (dSecurity != null)
+                GetACEs(dSecurity, (int)_path_id);
+
             // Geht über alle Unterordner (Kinder) und ruft die Funktion rekursiv auf
             foreach (DirectoryInfo child in childs)
             {
@@ -261,6 +268,129 @@ namespace ARPSDeamon
             }
 
         }
+
+        /// <summary>
+        /// Liest die ACEs des übergebenen Ordners durch und schreib diese in die beiden Datenbanken aces und acls
+        /// </summary>
+        /// <param name="dSecurity">Das DirecrotySecurity Objekt des Ordners</param>
+        /// <param name="_path_id">Die ID des Ordnerelements aus der dirs Datenbank</param>
+        static void GetACEs(DirectorySecurity dSecurity, int _path_id)
+        {
+            AuthorizationRuleCollection acl = dSecurity.GetAccessRules(true, true, typeof(SecurityIdentifier)); // FÜR SID
+            //AuthorizationRuleCollection acl = dSecurity.GetAccessRules(true, true, typeof(NTAccount));        // FÜR NAMEN (ARGES/walzenbach)
+            
+            //baut eine SQL Verbindung auf
+            SqlConnection con = new SqlConnection(ConString);
+
+            foreach (FileSystemAccessRule ace in acl)
+            {
+                //if (dirId == -1)
+                //    return;
+
+                //Liest die einzelnen Values aus dem ACE aus
+                string _sid = ace.IdentityReference.Value;
+                string _fsr = ace.FileSystemRights.ToString();
+                int _rights = (int)ace.FileSystemRights;
+                int _type = (int)ace.AccessControlType;
+                int _is_inherited = ace.IsInherited ? 1 : 0;
+                int _inheritance_flags = (int)ace.InheritanceFlags;
+                int _propagation_flags = (int)ace.PropagationFlags;
+                string _ace_hash = Hash(_sid + _rights + _type + _is_inherited + _inheritance_flags + _propagation_flags);
+
+
+                #region Prüfung ob schon vorhanden ist
+                // Der SQL Befehl zum überprüfen ob der jeweilige Eintrag schon vorhanden ist
+                string sql = $"SELECT _ace_id FROM fs.aces WHERE _ace_hash = @AceHash";
+                SqlCommand cmd = new SqlCommand(sql, con);
+                // Der Hash wird als Parameter an den SQL Befehl gehängt
+                cmd.Parameters.AddWithValue("@AceHash", _ace_hash);
+
+                // Öffnet die SQL Verbindung, führt die Abfrage durch und schließt die Verbindung wieder
+                con.Open();
+                // Falls es den abgefragten Datensatz schon gibt, bekommt man in index die ID des Datensatzen, sonnst null
+                var _ace_id = cmd.ExecuteScalar();
+                con.Close();
+                #endregion
+
+
+                // ACE Hash ist noch nicht vorhanden
+                if (_ace_id == null)
+                {
+                    // Der SQL Befehl zum INSERT in die Datenbank
+                    sql = $"INSERT INTO fs.aces(_sid, _fsr, _rights, _type, _is_inherited, _inheritance_flags, _propagation_flags, _ace_hash) " +
+                          $"OUTPUT INSERTED._ace_id " +
+                          $"VALUES (@Sid, @Fsr, @Rights, @Type, @IsInherited, @InheritanceFlags, @PropagationFlags, @AceHash) ";
+
+                    cmd = new SqlCommand(sql, con);
+
+                    // Hängt die Parameter an
+                    cmd.Parameters.AddWithValue("@Sid", _sid);
+                    cmd.Parameters.AddWithValue("@Fsr", _fsr);
+                    cmd.Parameters.AddWithValue("@Rights", _rights);
+                    cmd.Parameters.AddWithValue("@Type", _type);
+                    cmd.Parameters.AddWithValue("@IsInherited", _is_inherited);
+                    cmd.Parameters.AddWithValue("@InheritanceFlags", _inheritance_flags);
+                    cmd.Parameters.AddWithValue("@PropagationFlags", _propagation_flags);
+                    cmd.Parameters.AddWithValue("@AceHash", _ace_hash);
+
+                    // Öffnet die SQL Verbindung
+                    con.Open();
+                    // Führt die Query aus
+                    _ace_id = (int)cmd.ExecuteScalar();
+
+                    //Schließt die Verbindung
+                    con.Close();
+                }
+                // Hash ist noch nicht vorhanden
+                else
+                {
+                    // SQL Befehl zum Updaten des Eintrags
+                    sql = $"UPDATE fs.aces " +
+                          $"SET _sid = @Sid, _fsr = @Fsr, _rights = @Rights, _type = @Type, _is_inherited = @IsInherited, " +
+                          $"_inheritance_flags = @InheritanceFlags, _propagation_flags = @PropagationFlags, _ace_hash = @AceHash " +
+                          $"WHERE _ace_id = @AceId";
+
+                    cmd = new SqlCommand(sql, con);
+
+                    // Hängt die Parameter an
+                    cmd.Parameters.AddWithValue("@Sid", _sid);
+                    cmd.Parameters.AddWithValue("@Fsr", _fsr);
+                    cmd.Parameters.AddWithValue("@Rights", _rights);
+                    cmd.Parameters.AddWithValue("@Type", _type);
+                    cmd.Parameters.AddWithValue("@IsInherited", _is_inherited);
+                    cmd.Parameters.AddWithValue("@InheritanceFlags", _inheritance_flags);
+                    cmd.Parameters.AddWithValue("@PropagationFlags", _propagation_flags);
+                    cmd.Parameters.AddWithValue("@AceHash", _ace_hash);
+                    cmd.Parameters.AddWithValue("@AceId", (int)_ace_id);
+
+                    // Öffnet die SQL Verbindung
+                    con.Open();
+                    // Führt die Query aus
+                    cmd.ExecuteNonQuery();
+                    //Schließt die Verbindung
+                    con.Close();
+                }
+
+
+                #region Eintragung in die ACL Datenbank
+                sql = $"INSERT INTO fs.acls (_path_id, _ace_id) SELECT @PathId, @AceId " +
+                    $"WHERE NOT EXISTS(SELECT * FROM fs.acls WHERE _path_id = @PathId AND _ace_id = @AceId)";
+
+                cmd = new SqlCommand(sql, con);
+
+                // Die Ids werden als Parameter an den SQL Befehl gehängt
+                cmd.Parameters.AddWithValue("@PathId", _path_id);
+                cmd.Parameters.AddWithValue("@AceId", _ace_id);
+
+                // Öffnet die SQL Verbindung, führt die Abfrage durch und schließt die Verbindung wieder
+                con.Open();
+                cmd.ExecuteNonQuery();
+                con.Close();
+                #endregion
+            }
+        }
+
+
 
         static void BACKUP_GetDirectorySecurity(string dir, int levels, int curLevel = 0)
         {
