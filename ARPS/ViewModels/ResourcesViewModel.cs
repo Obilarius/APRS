@@ -67,6 +67,8 @@ namespace ARPS.ViewModels
             if (newSelectedItem == null || newSelectedItem.Item.Id == SelectedItem.Item.Id)
                 return;
 
+            newSelectedItem.FillAccountWithPermissons();
+
             // Setzt das Selected Item auf das neue Item
             SelectedItem = newSelectedItem;
         }

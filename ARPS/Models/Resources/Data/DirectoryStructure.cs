@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Data.SqlClient;
+using System.Diagnostics;
 
 namespace ARPS
 {
@@ -297,7 +298,6 @@ namespace ARPS
             return path.Substring(0, 1).ToUpper() + path.Substring(1, index -1);
         }
 
-
         /// <summary>
         /// Returns the human-readable file size for an arbitrary, 64-bit file size 
         /// The default format is "0.### XB", e.g. "4.2 KB" or "1.434 GB"
@@ -399,8 +399,12 @@ namespace ARPS
             return "Keinen Besitzer gefunden";
         }
 
-
-        public static List<DirectoryACEs> GetACEs(int _path_id)
+        /// <summary>
+        /// Gibt alle direkten ACEs des Ordners zurück
+        /// </summary>
+        /// <param name="_path_id">Die PfadId des Ordners</param>
+        /// <returns></returns>
+        public static List<DirectoryACE> GetACEs(int _path_id)
         {
             // erstellt eine MSSQL Verbindung und öffnet Sie
             var mssql = new MsSql();
@@ -431,7 +435,7 @@ namespace ARPS
             cmd.Parameters.AddWithValue("@PathId", _path_id);
 
             //Erstellt Liste die zurückgegeben wird
-            List<DirectoryACEs> aceList = new List<DirectoryACEs>();
+            List<DirectoryACE> aceList = new List<DirectoryACE>();
 
             // Benutzt den SQL Reader um über alle Zeilen der Abfrage zu gehen
             using (SqlDataReader reader = cmd.ExecuteReader())
@@ -451,7 +455,7 @@ namespace ARPS
                     int _propagation_flags = (int)reader["_propagation_flags"];
 
                     aceList.Add(
-                        new DirectoryACEs(_is_group, _identity_name, _distinguished_name, _ace_id, _sid, _rights, _type, _fsr, _is_inherited, _inheritance_flags, _propagation_flags));
+                        new DirectoryACE(_is_group, _identity_name, _distinguished_name, _ace_id, _sid, _rights, _type, _fsr, _is_inherited, _inheritance_flags, _propagation_flags));
 
                 }
             }
@@ -460,6 +464,124 @@ namespace ARPS
             mssql.Close();
 
             return aceList;
+        }
+
+        /// <summary>
+        /// Get die direkten ACEs durch und gibt alle User zurück die dadurch berechtigt sind. Gruppen werden zu Usern aufgelöst.
+        /// </summary>
+        /// <param name="aces">Die Liste der direkten ACEs</param>
+        /// <returns></returns>
+        public static List<DirectoryACE> GetAllAuthorizedUser(List<DirectoryACE> aces)
+        {
+            List<DirectoryACE> retACEs = new List<DirectoryACE>();
+
+            foreach (DirectoryACE ace in aces)
+            {
+                // Der ACE gilt nur für Unterordner und zählt hier also nicht als Recht auf diesen Ordner
+                if (ace.PropagationFlags == 2)
+                    continue;
+
+                // Wenn User
+                if (ace.IsGroup == false)
+                {
+                    Debug.WriteLine(ace.IdentityName);
+                    retACEs.Add(ace);
+                }
+                // Wenn Gruppe dann wird die Funktion GetMemberInGroup aufgerufen die alle User die über diese Gruppe berechtigt sind abgerufen
+                else
+                {
+                    retACEs.AddRange(GetMemberInGroup(ace));
+                }
+            }
+
+            return retACEs;
+        }
+
+        /// <summary>
+        /// Hilfsfunktion die alle Member einer Gruppe ausliest. Falls Gruppen in Gruppen sind wir diese Funktion auch rekursiv aufgerufen
+        /// </summary>
+        /// <param name="groupAce">Das ACE der Gruppe die ausgelesen werden soll</param>
+        /// <returns></returns>
+        private static List<DirectoryACE> GetMemberInGroup(DirectoryACE groupAce)
+        {
+
+            List<DirectoryACE> retList = new List<DirectoryACE>();
+
+            // erstellt eine MSSQL Verbindung und öffnet Sie
+            var mssql = new MsSql();
+            mssql.Open();
+
+            // Der SQL Befehl um alle Ordner abzurufen die root sind
+            string sql = $"SELECT gu.userSID, CASE WHEN u.SID IS NULL THEN 1 ELSE 0 END as _is_group, u.* " +
+                $"FROM ARPS_Test.dbo.adgroups g " +
+                $"JOIN ARPS_Test.dbo.grp_user gu " +
+                $"ON g.SID = gu.grpSID " +
+                $"LEFT JOIN ARPS_Test.dbo.adusers u " +
+                $"ON u.SID = gu.userSID " +
+                $"WHERE g.SID = @GroupSid ";
+
+            // Sendet den SQL Befehl an den SQL Server
+            SqlCommand cmd = new SqlCommand(sql, mssql.Con);
+
+            //Parameter anhängen
+            cmd.Parameters.AddWithValue("@GroupSid", groupAce.SID);
+
+            // Benutzt den SQL Reader um über alle Zeilen der Abfrage zu gehen
+            using (SqlDataReader reader = cmd.ExecuteReader())
+            {
+                while (reader.Read())
+                {
+                    bool isGroup = Convert.ToBoolean(reader["_is_group"]);
+                    string sid = reader["userSID"].ToString();
+
+                    // Wenn die aktuelle Zeile eine Gruppe ist wird die Funktion Rekursiv aufgerufen
+                    if (isGroup)
+                    {
+                        // Fügt die Rückgabewert der rekursiven Funktion an die Liste an
+                        retList.AddRange(GetMemberInGroup(new DirectoryACE(
+                            sid, 
+                            groupAce.Rights, 
+                            groupAce.Type, 
+                            groupAce.FileSystemRight, 
+                            groupAce.IsInherited, 
+                            groupAce.InheritanceFlags, 
+                            groupAce.PropagationFlags)));
+                    }
+                    else
+                    // Falls die Zeile ein User ist wir aus dem User ein PseudoACE erstellt und an die Liste angehängt
+                    {
+                        // Speichert die Daten des Readers in einzelne Variablen
+                        string displayName = reader["DisplayName"].ToString();
+                        string samAccountName = reader["SamAccountName"].ToString();
+                        string distinguishedName = reader["DistinguishedName"].ToString();
+                        string userPrincipalName = reader["UserPrincipalName"].ToString();
+                        bool enabled = Convert.ToBoolean(reader["Enabled"]);
+
+                        // erstellt den User falls er aktiv ist
+                        if (enabled)
+                        {
+                            retList.Add(new DirectoryACE(
+                                false,
+                                displayName + " (" + userPrincipalName + ")",
+                                userPrincipalName,
+                                -1,
+                                sid,
+                                groupAce.Rights,
+                                groupAce.Type,
+                                groupAce.FileSystemRight,
+                                groupAce.IsInherited,
+                                groupAce.InheritanceFlags,
+                                groupAce.PropagationFlags));
+                        }
+
+                    }
+                }
+            }
+
+            // Schließt die MSSQL verbindung
+            mssql.Close();
+
+            return retList;
         }
 
         #endregion

@@ -67,7 +67,7 @@
         <!-- STATUSBAR -->
         <StatusBar Grid.Row="3">
             <StatusBarItem>
-                <TextBlock x:Name="StatusBarTextBlock" Text="{Binding StatusBarNote}" Foreground="{StaticResource ArgesBlau}"/>
+                <TextBlock x:Name="StatusBarTextBlock" Text="{Binding StatusBarNote}" Foreground="{StaticResource ArgesGrauBlau_hell}"/>
             </StatusBarItem>
         </StatusBar>
     </Grid>

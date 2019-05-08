@@ -11,10 +11,20 @@ namespace ARPS
     {
         #region Public Propertys
 
+        #region ACEs
         /// <summary>
         /// Alle ACEs des Ordners
         /// </summary>
-        public List<DirectoryACEs> ACEs { get; private set; }
+        public List<DirectoryACE> ACEs { get; private set; }
+
+        /// <summary>
+        /// Alle berechtigten User des Ordners. Die berechtigten Gruppen werden rekursiv ausgelesen bis nur noch User in der Liste sind
+        /// </summary>
+        public List<DirectoryACE> AllAuthorizedUserACE { get; private set; }
+
+        public List<AccountWithPermissions> AccountsWithPermission { get; private set; }
+
+        #endregion
 
         /// <summary>
         /// Das DirectoryItem das hinter dem ViewModel steht
@@ -160,8 +170,6 @@ namespace ARPS
                     null
                 };
             }
-
-            ACEs = new List<DirectoryACEs>(DirectoryStructure.GetACEs(this.Item.Id));
                 
         }
 
@@ -185,10 +193,66 @@ namespace ARPS
                 this.Children.Add(null);
         }
 
+        /// <summary>
+        /// Ruft die ACEs ab und speichert sie im ACEs Property
+        /// </summary>
+        public void FillACEs()
+        {
+            ACEs = new List<DirectoryACE>(DirectoryStructure.GetACEs(Item.Id));
+        }
+
+        /// <summary>
+        /// Ruft die ACEs der User ab (aufgelöste Gruppen) und speichert sie
+        /// </summary>
+        public void FillAllAuthorizedUserACE()
+        {
+            //Prüft ob die ACEs schon gefüllt sind
+            if (ACEs == null)
+                FillACEs();
+
+            AllAuthorizedUserACE = new List<DirectoryACE>(DirectoryStructure.GetAllAuthorizedUser(ACEs));
+        }
+
+        /// <summary>
+        /// Füllt das Property AccountsWithPermissions mit einer Zusammenfassung der User die Berechtigt sind.
+        /// Beinhaltet Count (Wie oft idt der User berechtigt) und InheritedCount (Wie oft ist ein User durch Vererbung berechtigt)
+        /// </summary>
+        public void FillAccountWithPermissons()
+        {
+            // Falls die ACE nocht nicht vorhanden sind werden diese gefüllt
+            if (AllAuthorizedUserACE == null)
+                FillAllAuthorizedUserACE();
+
+            // Fragt die ACE ab und Gruppiert und sortiert die Liste
+            var ret = from ul in AllAuthorizedUserACE
+                      group ul by new
+                      {
+                          ul.IdentityName,
+                          ul.SID
+                      } into gul
+                      orderby gul.Key.IdentityName
+                      select new
+                      {
+                          gul.Key.SID,
+                          gul.Key.IdentityName,
+                          Count = gul.Count(),
+                          InheritedCount = gul.Sum(p => (p.IsInherited) ? 1 : 0)
+                      };
+
+            // Legt für das Property eine leere Liste an
+            this.AccountsWithPermission = new List<AccountWithPermissions>();
+
+            // geht über alle Einträge in der gefilterten und sortierten Liste und fügt sie dem Property hinzu.
+            foreach (var user in ret)
+            {
+                this.AccountsWithPermission.Add(new AccountWithPermissions(UserType.User, user.IdentityName, user.Count, user.InheritedCount, user.SID));
+            }
+        }
 
 
         #endregion
 
+        #region Expand
         /// <summary>
         /// Klappt das Verzeichnis auf und findet alle Kinder
         /// </summary>
@@ -204,5 +268,6 @@ namespace ARPS
             Children = new ObservableCollection<DirectoryItemViewModel>(
                 children.Select(c => new DirectoryItemViewModel(c, eventAggregator)));
         }
+        #endregion
     }
 }

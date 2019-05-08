@@ -8,7 +8,7 @@
              mc:Ignorable="d" 
              d:DesignHeight="600" d:DesignWidth="1000">
 
-    <Grid Background="White">
+    <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="1*"/>
             <ColumnDefinition Width="2*"/>
@@ -114,7 +114,7 @@
             <Border DockPanel.Dock="Top" BorderThickness="2" BorderBrush="{StaticResource ArgesGelb}" />
 
             <!-- 2. Row - Owner -->
-            <Grid DockPanel.Dock="Top">
+            <Grid DockPanel.Dock="Top" Margin="0 0 0 10">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="100"/>
                     <ColumnDefinition Width="*"/>
@@ -135,17 +135,57 @@
             <!-- TODO -->
 
             <!-- 4. Row - Accounts with permissions -->
-            <Label DockPanel.Dock="Top" Content="Konten mit Berechtigung" FontWeight="Bold" Foreground="{StaticResource ArgesBlau}" FontSize="18"/>
+            <Grid DockPanel.Dock="Top">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="auto"/>
+                    <ColumnDefinition Width="auto"/>
+                </Grid.ColumnDefinitions>
+
+                <Label Grid.Column="0" Content="Konten mit Berechtigung" FontWeight="Bold" Foreground="{StaticResource ArgesBlau}" FontSize="18"/>
+                <Label Grid.Column="1" Margin="0 0 0 0" Content="Anzahl Berechtigungen" Foreground="{StaticResource ArgesBlau}" VerticalAlignment="Bottom"/>
+                <Label Grid.Column="2" Margin="0 0 20 0" Content="{Binding SelectedItem.AllAuthorizedUserACE.Count}" Foreground="{StaticResource ArgesBlau}" VerticalAlignment="Bottom"/>
+            </Grid>
+
+
+
             <Border DockPanel.Dock="Top" BorderThickness="2" BorderBrush="{StaticResource ArgesGelb}"></Border>
 
             <!-- Account with permissions -->
-            <DataGrid DockPanel.Dock="Top" ItemsSource="{Binding SelectedItem.ACEs}" AutoGenerateColumns="True" IsReadOnly="True">
+            <DataGrid DockPanel.Dock="Top" ItemsSource="{Binding SelectedItem.AccountsWithPermission}" 
+                      AutoGenerateColumns="False" IsReadOnly="True" GridLinesVisibility="Horizontal">
+                <DataGrid.Columns>
+                    <DataGridTemplateColumn Header="" SortMemberPath="UserType" Width="30">
+                        <DataGridTemplateColumn.CellTemplate>
+                            <DataTemplate>
+                                <Image Width="20" Source="{Binding UserType, Converter={x:Static local:UserTypeToImageConverter.Instance}}"/>
+                            </DataTemplate>
+                        </DataGridTemplateColumn.CellTemplate>
+                    </DataGridTemplateColumn>
+                    
+                    <DataGridTextColumn Binding="{Binding IdentityName}" Header="Name"/>
+                    
+                    <DataGridTemplateColumn Header="Wie oft Berechtigt" SortMemberPath="Count">
+                        <DataGridTemplateColumn.CellTemplate>
+                            <DataTemplate>
+                                <TextBlock Text="{Binding Count}" HorizontalAlignment="Center"/>
+                            </DataTemplate>
+                        </DataGridTemplateColumn.CellTemplate>
+                    </DataGridTemplateColumn>
 
+                    <DataGridTemplateColumn Header="Vererbt" SortMemberPath="InheritedCount">
+                        <DataGridTemplateColumn.CellTemplate>
+                            <DataTemplate>
+                                <TextBlock Text="{Binding InheritedCount}" HorizontalAlignment="Center"/>
+                            </DataTemplate>
+                        </DataGridTemplateColumn.CellTemplate>
+                    </DataGridTemplateColumn>
+
+                </DataGrid.Columns>
             </DataGrid>
 
 
 
-            <Border DockPanel.Dock="Top" Background="DimGray"/>
         </DockPanel>
     </Grid>
 
