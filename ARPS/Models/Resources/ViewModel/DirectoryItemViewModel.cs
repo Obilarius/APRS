@@ -39,7 +39,7 @@ namespace ARPS
         /// <summary>
         /// Der Name des Owners mit dem Pricipal oder SamAccountName in Klammern
         /// </summary>
-        public string OwnerNameWithPricipal => DirectoryStructure.GetUserNameAndPricipalName(Item.Owner);
+        public ADElement OwnerNameWithPricipal => ADStructure.GetADUser(Item.Owner);
 
         /// <summary>
         /// Die Größe des Ordners in der jeweilig besten lesbaren Größe (TB, GB, MB, KB, Byte)

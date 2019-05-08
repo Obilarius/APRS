@@ -484,7 +484,6 @@ namespace ARPS
                 // Wenn User
                 if (ace.IsGroup == false)
                 {
-                    Debug.WriteLine(ace.IdentityName);
                     retACEs.Add(ace);
                 }
                 // Wenn Gruppe dann wird die Funktion GetMemberInGroup aufgerufen die alle User die über diese Gruppe berechtigt sind abgerufen

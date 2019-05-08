@@ -16,7 +16,7 @@ namespace ARPS
         public string FullPath { get; set; }
 
         /// <summary>
-        /// Dei SID des Besitzers
+        /// Die SID des Besitzers
         /// </summary>
         public string Owner { get; set; }
 
