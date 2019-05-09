@@ -135,8 +135,22 @@
             </Grid>
 
             <!-- 3. Row - NTFS Access rights -->
-            <!-- TODO -->
+            <Expander DockPanel.Dock="Top" Header="Zugriffsberechtigung" Background="White" Foreground="{StaticResource ArgesBlau}">
+                <Expander.HeaderTemplate>
+                    <DataTemplate>
+                        <TextBlock Text="Zugriffsberechtigung" FontWeight="Bold" FontSize="18" Foreground="{StaticResource ArgesBlau}"/>
+                    </DataTemplate>
+                </Expander.HeaderTemplate>
 
+                
+
+            </Expander>
+            
+            
+
+            
+            
+            
             <!-- 4. Row - Accounts with permissions -->
             <Grid DockPanel.Dock="Top">
                 <Grid.ColumnDefinitions>
@@ -150,8 +164,6 @@
                 <Label Grid.Column="2" Margin="0 0 20 0" Content="{Binding SelectedItem.AllAuthorizedUserACE.Count, FallbackValue=-}" 
                        Foreground="{StaticResource ArgesBlau}" VerticalAlignment="Bottom"/>
             </Grid>
-
-
 
             <Border DockPanel.Dock="Top" BorderThickness="2" BorderBrush="{StaticResource ArgesGelb}"></Border>
 
