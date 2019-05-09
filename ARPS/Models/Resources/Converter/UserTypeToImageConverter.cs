@@ -3,7 +3,6 @@ using System;
 using System.Globalization;
 using System.Windows.Data;
 using System.Windows.Media.Imaging;
-using System.Windows.Controls;
 using System.Windows;
 
 namespace ARPS

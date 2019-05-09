@@ -15,6 +15,7 @@
     <BitmapImage x:Key="Img_Computer" UriSource="pack://application:,,,/Resources/Images/icons8-workstation-50-2.png"/>
     
     <BitmapImage x:Key="Img_Warning" UriSource="pack://application:,,,/Resources/Images/icons8-error-50-2.png"/>
+    <BitmapImage x:Key="Img_Checkmark" UriSource="pack://application:,,,/Resources/Images/icons8-checkmark-50.png"/>
 
     <!-- LOGOS -->
     <BitmapImage x:Key="ArgesLogoBig" UriSource="pack://application:,,,/Resources/Images/logos/ARGES_logo.png"/>

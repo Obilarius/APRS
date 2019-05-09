@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Data.SqlClient;
 using System.Diagnostics;
+using System.Security.AccessControl;
 
 namespace ARPS
 {
@@ -447,7 +448,7 @@ namespace ARPS
                     string _distinguished_name = reader["_distinguished_name"].ToString();
                     int _ace_id = (int)reader["_ace_id"];
                     string _sid = reader["_sid"].ToString();
-                    int _rights = (int)reader["_rights"];
+                    FileSystemRights _rights = (FileSystemRights)reader["_rights"];
                     bool _type = Convert.ToBoolean(reader["_type"]);
                     string _fsr = reader["_fsr"].ToString();
                     bool _is_inherited = Convert.ToBoolean(reader["_is_inherited"]);

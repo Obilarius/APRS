@@ -1,5 +1,6 @@
 ﻿using ARPS.ViewModels;
 using Prism.Events;
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
@@ -22,6 +23,17 @@ namespace ARPS
         /// </summary>
         public List<DirectoryACE> AllAuthorizedUserACE { get; private set; }
 
+        public List<DirectoryACE> NTFSRights
+        {
+            get
+            {
+                return AllAuthorizedUserACE.Distinct().ToList();
+            }
+        }
+
+        /// <summary>
+        /// AccountsWithPermission die in der gleichnamigen Tabelle angezeigt werden
+        /// </summary>
         public List<AccountWithPermissions> AccountsWithPermission { get; private set; }
 
         #endregion
@@ -226,6 +238,7 @@ namespace ARPS
 
             AllAuthorizedUserACE = new List<DirectoryACE>(DirectoryStructure.GetAllAuthorizedUser(ACEs));
         }
+
 
         /// <summary>
         /// Füllt das Property AccountsWithPermissions mit einer Zusammenfassung der User die Berechtigt sind.

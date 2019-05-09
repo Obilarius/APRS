@@ -131,17 +131,19 @@
     <Compile Include="Models\Dashboard\Groups.cs" />
     <Compile Include="Models\Dashboard\UserAndOtherAccounts.cs" />
     <Compile Include="Models\AD\ADElement.cs" />
+    <Compile Include="Models\Resources\Converter\SIDToImageConverter.cs" />
     <Compile Include="Models\Resources\Data\DirectoryACE.cs" />
     <Compile Include="Models\Resources\Data\DirectoryInfoItem.cs" />
     <Compile Include="Models\Resources\Data\DirectoryItem.cs" />
     <Compile Include="Models\AD\UserType.cs" />
     <Compile Include="Models\Resources\Data\DirectoryItemType.cs" />
-    <Compile Include="Models\Resources\UserTypeToImageConverter.cs" />
-    <Compile Include="Models\Resources\HeaderToImageConverter.cs" />
+    <Compile Include="Models\Resources\Converter\UserTypeToImageConverter.cs" />
+    <Compile Include="Models\Resources\Converter\HeaderToImageConverter.cs" />
     <Compile Include="Models\Resources\Data\AccountWithPermissions.cs" />
     <Compile Include="Models\Resources\ViewModel\DirectoryItemViewModel.cs" />
     <Compile Include="Models\Resources\Data\DirectoryStructure.cs" />
     <Compile Include="Models\RelayCommand.cs" />
+    <Compile Include="Models\Resources\Data\NTFSEntry.cs" />
     <Compile Include="Models\Schedule\HistoryLogEntry.cs" />
     <Compile Include="Models\Schedule\SubmitPlanningFormConverter.cs" />
     <Compile Include="Models\Schedule\UserInfoEntry.cs" />
@@ -336,6 +338,10 @@
   </ItemGroup>
   <ItemGroup>
     <Resource Include="Resources\Images\admin.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\Images\icons8-checkmark-50-2.png" />
+    <Resource Include="Resources\Images\icons8-checkmark-50.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="..\packages\Fody.4.2.1\build\Fody.targets" Condition="Exists('..\packages\Fody.4.2.1\build\Fody.targets')" />
