@@ -36,10 +36,23 @@ namespace ARPS
         /// </summary>
         public string Name { get { return Item.Name; } }
 
+        public ADElement Owner { get; set; }
+
         /// <summary>
         /// Der Name des Owners mit dem Pricipal oder SamAccountName in Klammern
         /// </summary>
-        public ADElement OwnerNameWithPricipal => ADStructure.GetADUser(Item.Owner);
+        public string OwnerNameWithPricipal
+        {
+            get
+            {
+                if (Owner == null)
+                    return null;
+
+                return (Owner.Type == ADElementType.User || Owner.Type == ADElementType.Administrator)
+                    ? $"{Owner.Name} ({Owner.PricipalName})"
+                    : $"{Owner.Name} ({Owner.SamAccountName})";
+            }
+        }
 
         /// <summary>
         /// Die Größe des Ordners in der jeweilig besten lesbaren Größe (TB, GB, MB, KB, Byte)
@@ -170,7 +183,8 @@ namespace ARPS
                     null
                 };
             }
-                
+
+            Owner = ADStructure.GetADElement(Item.Owner);
         }
 
         #endregion
@@ -245,7 +259,11 @@ namespace ARPS
             // geht über alle Einträge in der gefilterten und sortierten Liste und fügt sie dem Property hinzu.
             foreach (var user in ret)
             {
-                this.AccountsWithPermission.Add(new AccountWithPermissions(UserType.User, user.IdentityName, user.Count, user.InheritedCount, user.SID));
+                // Prüft ob User Administrator ist
+                bool isAdmin = ADStructure.IsUserAdmin(user.SID);
+                ADElementType type = (isAdmin) ? ADElementType.Administrator : ADElementType.User;
+
+                this.AccountsWithPermission.Add(new AccountWithPermissions(type, user.IdentityName, user.Count, user.InheritedCount, user.SID));
             }
         }
 

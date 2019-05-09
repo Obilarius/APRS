@@ -126,8 +126,11 @@
                         <ColumnDefinition Width="16"/>
                         <ColumnDefinition Width="*"/>
                     </Grid.ColumnDefinitions>
-                    <Image Grid.Column="0" x:Name="img_OwnerIcon" Height="16" Width="16"/>
-                    <Label Grid.Column="1" x:Name="lbl_OwnerName" Content="{Binding SelectedItem.OwnerNameWithPricipal, FallbackValue='Keinen Besitzer gefunden'}" HorizontalAlignment="Left"/>
+                    <Image Grid.Column="0" x:Name="img_OwnerIcon" Height="16" Width="16" 
+                           Source="{Binding SelectedItem.Owner.Type, Converter={x:Static local:UserTypeToImageConverter.Instance}}"/>
+                    
+                    <Label Grid.Column="1" x:Name="lbl_OwnerName" Content="{Binding SelectedItem.OwnerNameWithPricipal, FallbackValue='Keinen Besitzer gefunden'}" 
+                           HorizontalAlignment="Left"/>
                 </Grid>
             </Grid>
 
@@ -144,7 +147,8 @@
 
                 <Label Grid.Column="0" Content="Konten mit Berechtigung" FontWeight="Bold" Foreground="{StaticResource ArgesBlau}" FontSize="18"/>
                 <Label Grid.Column="1" Margin="0 0 0 0" Content="Anzahl Berechtigungen:" Foreground="{StaticResource ArgesBlau}" VerticalAlignment="Bottom"/>
-                <Label Grid.Column="2" Margin="0 0 20 0" Content="{Binding SelectedItem.AllAuthorizedUserACE.Count, FallbackValue=-}" Foreground="{StaticResource ArgesBlau}" VerticalAlignment="Bottom"/>
+                <Label Grid.Column="2" Margin="0 0 20 0" Content="{Binding SelectedItem.AllAuthorizedUserACE.Count, FallbackValue=-}" 
+                       Foreground="{StaticResource ArgesBlau}" VerticalAlignment="Bottom"/>
             </Grid>
 
 

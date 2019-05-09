@@ -9,9 +9,11 @@ namespace ARPS
 {
     public class MsSql
     {
-        public string TBL_FS_Dirs { get { return "fs.dirs"; } }
         public string TBL_AD_Users { get { return "dbo.adusers"; } }
         public string TBL_AD_Groups { get { return "dbo.adgroups"; } }
+        public string TBL_AD_Computers { get { return "dbo.adcomputers"; } }
+
+        public string TBL_FS_Dirs { get { return "fs.dirs"; } }
         public string TBL_FS_ACLs { get { return "fs.acls"; } }
         public string TBL_FS_ACEs { get { return "fs.aces"; } }
 

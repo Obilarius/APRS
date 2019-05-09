@@ -11,7 +11,7 @@ namespace ARPS
     /// <summary>
     /// Konvertiert einen UserType zu einem bestimmten Icon
     /// </summary>
-    [ValueConversion(typeof(UserType), typeof(BitmapImage))]
+    [ValueConversion(typeof(ADElementType), typeof(BitmapImage))]
     public class UserTypeToImageConverter : IValueConverter
     {
         public static UserTypeToImageConverter Instance = new UserTypeToImageConverter();
@@ -22,13 +22,16 @@ namespace ARPS
             // Standartmäßiges Bild
             var image = Application.Current.FindResource("Img_User");
 
-            switch ((UserType)value)
+            switch ((ADElementType)value)
             {
-                case UserType.Group:
+                case ADElementType.Group:
                     image = Application.Current.FindResource("Img_Group");
                     break;
-                case UserType.Administrator:
+                case ADElementType.Administrator:
                     image = Application.Current.FindResource("Img_Administrator");
+                    break;
+                case ADElementType.Computer:
+                    image = Application.Current.FindResource("Img_Computer");
                     break;
                 default:
                     break;

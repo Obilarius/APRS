@@ -10,7 +10,10 @@
 
     <!-- IMAGES -->
     <BitmapImage x:Key="Img_User" UriSource="pack://application:,,,/Resources/Images/icons8-person-50-2.png"/>
+    <BitmapImage x:Key="Img_Administrator" UriSource="pack://application:,,,/Resources/Images/admin.png"/>
     <BitmapImage x:Key="Img_Group" UriSource="pack://application:,,,/Resources/Images/icons8-user-groups-50-2.png"/>
+    <BitmapImage x:Key="Img_Computer" UriSource="pack://application:,,,/Resources/Images/icons8-workstation-50-2.png"/>
+    
     <BitmapImage x:Key="Img_Warning" UriSource="pack://application:,,,/Resources/Images/icons8-error-50-2.png"/>
 
     <!-- LOGOS -->

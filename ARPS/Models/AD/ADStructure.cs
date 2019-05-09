@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Data.SqlClient;
+using System.DirectoryServices.AccountManagement;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -9,6 +10,11 @@ namespace ARPS
 {
     public static class ADStructure
     {
+        /// <summary>
+        /// Fragt die Datenbank nach der übergebenen sid ab und gibt ein ADElement zurück
+        /// </summary>
+        /// <param name="sid"></param>
+        /// <returns></returns>
         public static ADElement GetADUser(string sid)
         {
             // erstellt eine MSSQL Verbindung und öffnet Sie
@@ -39,7 +45,7 @@ namespace ARPS
                     bool enabled = Convert.ToBoolean(reader["Enabled"]);
 
                     bool isAdmin = IsUserAdmin(sid);
-                    UserType type = (isAdmin) ? UserType.Administrator : UserType.User;
+                    ADElementType type = (isAdmin) ? ADElementType.Administrator : ADElementType.User;
 
                     // Schließt die MSSQL verbindung
                     mssql.Close();
@@ -55,12 +61,172 @@ namespace ARPS
         }
 
         /// <summary>
+        /// Fragt die Datenbank nach der übergebenen sid ab und gibt ein ADElement zurück
+        /// </summary>
+        /// <param name="sid"></param>
+        /// <returns></returns>
+        public static ADElement GetADGroup(string sid)
+        {
+            // erstellt eine MSSQL Verbindung und öffnet Sie
+            var mssql = new MsSql();
+            mssql.Open();
+
+            // Der SQL Befehl um alle Ordner abzurufen die root sind
+            string sql = $"SELECT * " +
+                $"FROM {mssql.TBL_AD_Groups} " +
+                $"WHERE SID = @Sid";
+
+            // Sendet den SQL Befehl an den SQL Server
+            SqlCommand cmd = new SqlCommand(sql, mssql.Con);
+
+            //Parameter anhängen
+            cmd.Parameters.AddWithValue("Sid", sid);
+
+            // Benutzt den SQL Reader um über alle Zeilen der Abfrage zu gehen
+            using (SqlDataReader reader = cmd.ExecuteReader())
+            {
+                while (reader.Read())
+                {
+                    // Speichert die Daten des Readers in einzelne Variablen
+                    string name = reader["Name"].ToString();
+                    string samAccountName = reader["SamAccountName"].ToString();
+                    string distinguishedName = reader["DistinguishedName"].ToString();
+                    string description = reader["Description"].ToString();
+                    bool isSecurityGroup = Convert.ToBoolean(reader["IsSecurityGroup"]);
+                    string groupScopeString = reader["GroupScope"].ToString();
+                    GroupScope groupScope;
+
+                    switch (groupScopeString)
+                    {
+                        case "Global":
+                            groupScope = GroupScope.Global;
+                            break;
+                        case "Local":
+                            groupScope = GroupScope.Local;
+                            break;
+                        default:
+                            groupScope = GroupScope.Universal;
+                            break;
+                    }
+
+                    // Schließt die MSSQL verbindung
+                    mssql.Close();
+
+                    return new ADElement(sid, name, samAccountName, distinguishedName, description, isSecurityGroup, groupScope);
+                }
+            }
+
+            // Schließt die MSSQL verbindung
+            mssql.Close();
+
+            return null;
+        }
+
+        /// <summary>
+        /// Fragt die Datenbank nach der übergebenen sid ab und gibt ein ADElement zurück
+        /// </summary>
+        /// <param name="sid"></param>
+        /// <returns></returns>
+        public static ADElement GetADComputer(string sid)
+        {
+            // erstellt eine MSSQL Verbindung und öffnet Sie
+            var mssql = new MsSql();
+            mssql.Open();
+
+            // Der SQL Befehl um alle Ordner abzurufen die root sind
+            string sql = $"SELECT * " +
+                $"FROM {mssql.TBL_AD_Computers} " +
+                $"WHERE SID = @Sid";
+
+            // Sendet den SQL Befehl an den SQL Server
+            SqlCommand cmd = new SqlCommand(sql, mssql.Con);
+
+            //Parameter anhängen
+            cmd.Parameters.AddWithValue("Sid", sid);
+
+            // Benutzt den SQL Reader um über alle Zeilen der Abfrage zu gehen
+            using (SqlDataReader reader = cmd.ExecuteReader())
+            {
+                while (reader.Read())
+                {
+                    // Speichert die Daten des Readers in einzelne Variablen
+                    string name = reader["Name"].ToString();
+                    string samAccountName = reader["SamAccountName"].ToString();
+                    string distinguishedName = reader["DistinguishedName"].ToString();
+                    string description = reader["Description"].ToString();
+                    bool enabled = Convert.ToBoolean(reader["Enabled"]);
+                    DateTime lastLogon = Convert.ToDateTime(reader["LastLogon"]);
+                    DateTime lastPasswordSet = Convert.ToDateTime(reader["LastPasswordSet"]);
+
+                    // Schließt die MSSQL verbindung
+                    mssql.Close();
+
+                    return new ADElement(sid, name, samAccountName, distinguishedName, description, enabled, lastLogon, lastPasswordSet);
+                }
+            }
+
+            // Schließt die MSSQL verbindung
+            mssql.Close();
+
+            return null;
+        }
+
+        /// <summary>
+        /// Gibt ein ADElement der angefragten SID zurück.
+        /// Überprüft alle User, Gruppen und Computer
+        /// </summary>
+        /// <param name="sid"></param>
+        /// <returns></returns>
+        public static ADElement GetADElement(string sid)
+        {
+            // Überprüft ob die übergebene SID ein User ist
+            ADElement returnElement = GetADUser(sid);
+
+            // Falls das Element gefunden wurde wird hier beendet und das Element zurückgegeben
+            if (returnElement != null)
+            {
+                bool isUserAdmin = IsUserAdmin(sid);
+
+                return returnElement;
+            }
+
+            // Überprüft ob die übergebene SID eine Gruppe ist
+            returnElement = GetADGroup(sid);
+
+            // Falls das Element gefunden wurde wird hier beendet und das Element zurückgegeben
+            if (returnElement != null)
+                return returnElement;
+
+            // Überprüft ob die übergebene SID ein Computer ist
+            returnElement = GetADComputer(sid);
+
+            // Falls das Element gefunden wurde wird hier beendet und das Element zurückgegeben
+            if (returnElement != null)
+                return returnElement;
+
+            // Falls kein Element gefunden wurde wird
+            return null;
+        }
+
+        /// <summary>
         /// Überprüft ob ein User Administrator ist
         /// </summary>
         /// <param name="sid">Die SID des Benutzers der überprüft werden soll</param>
         /// <returns></returns>
-        private static bool IsUserAdmin(string sid)
+        public static bool IsUserAdmin(string sid)
         {
+            // erstellt leere Liste in die alle Administratoren kommen
+            List<ADElement> allAdmins = new List<ADElement>();
+
+            allAdmins.AddRange(GetUserInGroup("S-1-5-32-544"));
+            allAdmins.AddRange(GetUserInGroup("S-1-5-21-3723797570-695524079-4101376058-512"));
+
+            foreach (var admin in allAdmins)
+            {
+                if (admin.SID == sid)
+                    return true;
+            }
+
             return false;
         }
 

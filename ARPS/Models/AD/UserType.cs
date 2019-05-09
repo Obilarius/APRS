@@ -3,10 +3,11 @@
     /// <summary>
     /// Der Typ eines Users
     /// </summary>
-    public enum UserType
+    public enum ADElementType
     {
         User,
         Group,
-        Administrator
+        Administrator,
+        Computer
     }
 }
