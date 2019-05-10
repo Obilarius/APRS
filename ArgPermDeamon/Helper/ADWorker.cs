@@ -1,23 +1,32 @@
-﻿using System.Data.SqlClient;
+﻿using ARPSMSSQL;
+using System.Data.SqlClient;
 using System.DirectoryServices.AccountManagement;
 using System.Security.Principal;
 
 namespace ARPSDeamon
 {
-    class ADWorker
+    /// <summary>
+    /// Bearbeitet alle Anfragen die gegen das AD gehen
+    /// </summary>
+    public static class ADWorker
     {
+        /// <summary>
+        /// Funktion liest alle User, Gruppen und Computer aus dem AD aus und speichert sie in der Datenbank
+        /// </summary>
         public static void ReadAD()
         {
-            //GetAllADUsers();
-            //GetAllADGroups();
-
+            GetAllADUsers();
+            GetAllADGroups();
             GetAllADComputer();
         }
 
+        /// <summary>
+        /// Liest alle User aus dem Ad und speicht sie in der Datenbank
+        /// </summary>
         static void GetAllADUsers()
         {
-            SqlConnection con = new SqlConnection(@"Data Source=PC-W10-SW\MSSQLSERVER_DEV;Initial Catalog=ArgesPerm;Integrated Security=True");
-            con.Open();
+            MsSql mssql = new MsSql();
+            mssql.Open();
 
             // create your domain context
             PrincipalContext ctx = new PrincipalContext(ContextType.Domain);
@@ -46,18 +55,21 @@ namespace ARPSDeamon
                                             $"Enabled = '{enabled}'" +
                                         $"WHERE SID = '{user.Sid}'";
 
-                    SqlCommand cmd = new SqlCommand(sql, con);
+                    SqlCommand cmd = new SqlCommand(sql, mssql.Con);
                     cmd.ExecuteNonQuery();
                 }
             }
 
-            con.Close();
+            mssql.Close();
         }
 
+        /// <summary>
+        /// Liest alle Gruppen aus der Datenbank aus und speichert sie in der Datenbank
+        /// </summary>
         static void GetAllADGroups()
         {
-            SqlConnection con = new SqlConnection(@"Data Source=PC-W10-SW\MSSQLSERVER_DEV;Initial Catalog=ArgesPerm;Integrated Security=True");
-            con.Open();
+            MsSql mssql = new MsSql();
+            mssql.Open();
 
             // create your domain context
             PrincipalContext ctx = new PrincipalContext(ContextType.Domain);
@@ -93,34 +105,43 @@ namespace ARPSDeamon
                                             $"GroupScope = '{grp.GroupScope}'" +
                                         $"WHERE SID = '{grp.Sid}'";
 
-                    SqlCommand cmd = new SqlCommand(sql, con);
+                    SqlCommand cmd = new SqlCommand(sql, mssql.Con);
                     cmd.ExecuteNonQuery();
 
                     // fill the Table grp_user with the users in this group
-                    GetAllUserInGroups(con, grp.Sid, grp.Members);
+                    GetAllUserInGroups(mssql.Con, grp);
                 }
             }
 
-            con.Close();
+            mssql.Close();
         }
 
-        static void GetAllUserInGroups(SqlConnection con, SecurityIdentifier grpSid, PrincipalCollection members)
+        /// <summary>
+        /// Liest aus alle User einer Gruppe aus und speichert das Matching in der Datenbank
+        /// </summary>
+        /// <param name="con">Bekommt eine bestehende SQL Verbindung übergeben</param>
+        /// <param name="grp">Das Pricipal der Gruppe</param>
+        static void GetAllUserInGroups(SqlConnection con, GroupPrincipal grp)
         {
-            foreach (var user in members)
+            foreach (var user in grp.Members)
             {
-                string sql = $"IF NOT EXISTS (SELECT * FROM grp_user WHERE userSID = '{user.Sid}' AND grpSID = '{grpSid}') " +
+                string sql = $"IF NOT EXISTS (SELECT * FROM grp_user WHERE userSID = '{user.Sid}' AND grpSID = '{grp.Sid}') " +
                                 $"INSERT INTO grp_user(userSID, grpSID) " +
-                                $"VALUES ('{user.Sid}', '{grpSid}')";
+                                $"VALUES ('{user.Sid}', '{grp.Sid}')";
 
                 SqlCommand cmd = new SqlCommand(sql, con);
                 cmd.ExecuteNonQuery();
             }
         }
 
+
+        /// <summary>
+        /// Liest alle Computer aus dem Ad uns spiecht diese in der Datenbank
+        /// </summary>
         static void GetAllADComputer()
         {
-            SqlConnection con = new SqlConnection(@"Data Source=PC-W10-SW\MSSQLSERVER_DEV;Initial Catalog=ArgesPerm;Integrated Security=True");
-            con.Open();
+            MsSql mssql = new MsSql();
+            mssql.Open();
 
             // create your domain context
             ComputerPrincipal ctx = new ComputerPrincipal(new PrincipalContext(ContextType.Domain));
@@ -150,12 +171,12 @@ namespace ARPSDeamon
                                             $"LastPasswordSet = '{computer.LastPasswordSet}'" +
                                         $"WHERE SID = '{computer.Sid}'";
 
-                    SqlCommand cmd = new SqlCommand(sql, con);
+                    SqlCommand cmd = new SqlCommand(sql, mssql.Con);
                     cmd.ExecuteNonQuery();
                 }
             }
 
-            con.Close();
+            mssql.Close();
         }
     }
 }

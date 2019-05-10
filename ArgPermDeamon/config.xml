@@ -1,0 +1,11 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<!--types: 1 = FileServer --> 
+<config>
+  <servers>
+    <server>
+      <name>Apollon</name>
+      <displayname>Filer</displayname>
+      <type>1</type>
+    </server>
+  </servers>
+</config>
