@@ -1,10 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Data.SqlClient;
+using System.IO;
 using System.Linq;
 using System.Security.AccessControl;
 using System.Text;
 using System.Threading.Tasks;
+using Trinet.Networking;
 
 namespace Test
 {
@@ -46,21 +48,32 @@ namespace Test
             //Console.WriteLine("Fertig");
             //Console.ReadKey();
 
-            FileSystemRights _r = (FileSystemRights)1179785;
 
-            Console.WriteLine("Überprüfe FileSystemRights von: " + _r);
-            Console.WriteLine();
 
-            //Console.WriteLine(_r.HasFlag(FileSystemRights.Read));
-
-            foreach (FileSystemRights f in (FileSystemRights[])Enum.GetValues(typeof(FileSystemRights)))
-            {
-                Console.WriteLine(f.ToString().PadLeft(28) + "  --  " + _r.HasFlag(f));
-            }
+            TestShares("filer", "filer");
 
             Console.ReadKey();
         }
 
+
+        static void TestShares(string server, string displayname)
+        {
+            // Enumerate shares on a remote computer;
+            if (server != null && server.Trim().Length > 0)
+            {
+                ShareCollection shi = ShareCollection.GetShares(server);
+                if (shi != null)
+                {
+                    foreach (Share si in shi)
+                    {
+                        Console.WriteLine("{0}: {1} [{2}] -- {3}", si.ShareType, si, si.Path, si.Remark);
+                    }
+                }
+            }
+
+
+            Console.ReadLine();
+        }
 
     }
 
