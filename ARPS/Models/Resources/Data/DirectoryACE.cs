@@ -1,8 +1,9 @@
-﻿using System.Security.AccessControl;
+﻿using System;
+using System.Security.AccessControl;
 
 namespace ARPS
 {
-    public class DirectoryACE
+    public class DirectoryACE : IEquatable<DirectoryACE>
     {
         public bool IsGroup { get; }
         public string IdentityName { get; }
@@ -117,10 +118,34 @@ namespace ARPS
         }
         #endregion
 
-
-        public override bool Equals(object obj)
+        public string Propagation
         {
-            return obj is DirectoryACE other &&
+            get
+            {
+                if (InheritanceFlags == 0 && PropagationFlags == 0)
+                    return "Nur dieser Ordner";
+                else if (InheritanceFlags == 3 && PropagationFlags == 0)
+                    return "Diesen Ordner, Unterordner und Dateien";
+                else if(InheritanceFlags == 1 && PropagationFlags == 0)
+                    return "Diesen Ordner, Unterordner";
+                else if(InheritanceFlags == 2 && PropagationFlags == 0)
+                    return "Diesen Ordner, Dateien";
+                else if(InheritanceFlags == 3 && PropagationFlags == 2)
+                    return "Nur Unterordner und Dateien";
+                else if(InheritanceFlags == 1 && PropagationFlags == 2)
+                    return "Nur Unterordner";
+                else if(InheritanceFlags == 2 && PropagationFlags == 2)
+                    return "Nur Dateien";
+
+                return "";
+            }
+        }
+
+
+        public bool Equals(DirectoryACE other)
+        {
+
+            return other != null &&
                    SID == other.SID &&
                    Rights == other.Rights &&
                    Type == other.Type &&

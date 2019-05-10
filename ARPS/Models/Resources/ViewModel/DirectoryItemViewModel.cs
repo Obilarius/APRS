@@ -27,7 +27,27 @@ namespace ARPS
         {
             get
             {
-                return AllAuthorizedUserACE.Distinct().ToList();
+                if (AllAuthorizedUserACE == null)
+                    return null;
+
+                var dis = AllAuthorizedUserACE.Distinct().ToList();
+
+                var dis2 = (
+                    from ace in AllAuthorizedUserACE
+                    orderby ace.IdentityName, ace.Rights descending
+                    group ace by new
+                    {
+                        ace.SID,
+                        ace.Rights,
+                        ace.Type,
+                        ace.IsInherited,
+                        ace.InheritanceFlags,
+                        ace.PropagationFlags
+                    } into aceg
+                    select aceg.First()
+                ).ToList();
+
+                return dis2;
             }
         }
 
