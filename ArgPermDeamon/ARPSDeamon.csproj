@@ -46,6 +46,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Config.cs" />
     <Compile Include="Helper\ADWorker.cs" />
     <Compile Include="ArgesPermDataSet.Designer.cs">
       <AutoGen>True</AutoGen>
