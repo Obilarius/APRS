@@ -1,11 +1,8 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
+<!--<server name="Apollon" displayname="Filer" type="1"/>-->
 <!--types: 1 = FileServer --> 
 <config>
   <servers>
-    <server>
-      <name>Apollon</name>
-      <displayname>Filer</displayname>
-      <type>1</type>
-    </server>
+    <server name="Apollon" displayname="Filer" type="1"/>
   </servers>
 </config>
