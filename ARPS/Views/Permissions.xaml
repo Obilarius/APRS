@@ -6,7 +6,50 @@
              xmlns:local="clr-namespace:ARPS.Views"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800">
-    <Grid Background="#AAFFAA">
-        <TextBlock VerticalAlignment="Center" HorizontalAlignment="Center" FontSize="20">Permisions</TextBlock> 
+    <Grid Background="White">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="1*"/>
+            <ColumnDefinition Width="2*"/>
+        </Grid.ColumnDefinitions>
+
+        <!-- User -->
+        <DockPanel Grid.Row="0" Margin="10">
+            <DockPanel LastChildFill="True" VerticalAlignment="Stretch">
+                <DockPanel DockPanel.Dock="Top" Margin="0 0 0 10">
+                    <TextBlock Text="User: " DockPanel.Dock="Left" Margin="5" VerticalAlignment="Center"/>
+                    <TextBox Width="Auto" Text="{Binding SearchTextUser, UpdateSourceTrigger=PropertyChanged}">
+                        <TextBox.InputBindings>
+                            <KeyBinding Command="{Binding ClearSearchUserCommand}" Key="Esc"/>
+                            <KeyBinding Command="{Binding SearchUserCommand}" Key="Return"/>
+                        </TextBox.InputBindings>
+                    </TextBox>
+                </DockPanel>
+                <ListView DockPanel.Dock="Top" ItemsSource="{Binding UsersFiltered}" SelectedItem="{Binding SelectedUser}" BorderThickness="0">
+                    <ListView.ItemTemplate>
+                        <DataTemplate>
+                            <WrapPanel>
+                                <Image Width="20">
+                                    <Image.Style>
+                                        <Style TargetType="Image">
+                                            <Style.Triggers>
+                                                <DataTrigger  Binding="{Binding Type}" Value="Administrator">
+                                                    <Setter Property="Source" Value="{StaticResource Img_Administrator}"/>
+                                                </DataTrigger >
+                                                <DataTrigger  Binding="{Binding Type}" Value="User">
+                                                    <Setter Property="Source" Value="{StaticResource Img_User}"/>
+                                                </DataTrigger >
+                                            </Style.Triggers>
+                                        </Style>
+                                    </Image.Style>
+                                </Image>
+                                <TextBlock Margin="10 0 0 0" Text="{Binding}" VerticalAlignment="Center"/>
+                            </WrapPanel>
+                        </DataTemplate>
+                    </ListView.ItemTemplate>
+                </ListView>
+            </DockPanel>
+        </DockPanel>
+
+        <TextBlock Grid.Column="1" Text="{Binding AllUsers.Count, FallbackValue=000}"/>
     </Grid>
 </UserControl>

@@ -6,6 +6,16 @@ namespace ARPS
     public class ADElement
     {
         /// <summary>
+        /// Konstruktor für DummyElement
+        /// </summary>
+        /// <param name="name"></param>
+        public ADElement(string name)
+        {
+            Name = name;
+        }
+
+
+        /// <summary>
         /// Konstruktor für User
         /// </summary>
         /// <param name="sID"></param>
@@ -97,8 +107,11 @@ namespace ARPS
         public string PricipalName { get; set; }
         #endregion
 
-        
 
+        public override string ToString()
+        {
+            return (String.IsNullOrEmpty(PricipalName)) ? Name : Name + " (" + PricipalName + ")";
+        }
     }
 
 

@@ -61,6 +61,55 @@ namespace ARPS
         }
 
         /// <summary>
+        /// Gibt alle AD User zurück die in der Datenbank stehen
+        /// </summary>
+        /// <returns></returns>
+        public static List<ADElement> GetAllADUsers(bool onlyEnabled = false)
+        {
+            // Erstellt leere Liste die mit den Rückgabewerten befüllt wird
+            List<ADElement> retList = new List<ADElement>();
+
+            // erstellt eine MSSQL Verbindung und öffnet Sie
+            var mssql = new MsSql();
+            mssql.Open();
+
+            // Der SQL Befehl um alle User abzurufen
+            string sql = $"SELECT * " +
+                $"FROM {mssql.TBL_AD_Users}";
+
+            if (onlyEnabled)
+                sql += $" WHERE Enabled = 1";
+
+            // Sendet den SQL Befehl an den SQL Server
+            SqlCommand cmd = new SqlCommand(sql, mssql.Con);
+
+            // Benutzt den SQL Reader um über alle Zeilen der Abfrage zu gehen
+            using (SqlDataReader reader = cmd.ExecuteReader())
+            {
+                while (reader.Read())
+                {
+                    // Speichert die Daten des Readers in einzelne Variablen
+                    string sid = reader["SID"].ToString();
+                    string displayName = reader["DisplayName"].ToString();
+                    string samAccountName = reader["SamAccountName"].ToString();
+                    string distinguishedName = reader["DistinguishedName"].ToString();
+                    string userPrincipalName = reader["UserPrincipalName"].ToString();
+                    bool enabled = Convert.ToBoolean(reader["Enabled"]);
+
+                    bool isAdmin = IsUserAdmin(sid);
+                    ADElementType type = (isAdmin) ? ADElementType.Administrator : ADElementType.User;
+
+                    retList.Add(new ADElement(sid, displayName, samAccountName, distinguishedName, userPrincipalName, enabled, type));
+                }
+            }
+
+            // Schließt die MSSQL verbindung
+            mssql.Close();
+
+            return retList;
+        }
+
+        /// <summary>
         /// Fragt die Datenbank nach der übergebenen sid ab und gibt ein ADElement zurück
         /// </summary>
         /// <param name="sid"></param>
