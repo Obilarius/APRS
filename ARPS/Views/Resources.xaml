@@ -82,8 +82,28 @@
                             <ColumnDefinition Width="*"/>
                         </Grid.ColumnDefinitions>
                         <Image Grid.Column="0" Width="20" Margin="2" Source="{Binding Item.Type, Converter={x:Static local:HeaderToImageConverter.Instance}}"/>
-                        <TextBlock Grid.Column="1" Margin="0 0 20 0" Text="{Binding Name}" VerticalAlignment="Stretch" Padding="5 4 0 0"/>
-                        <TextBlock Grid.Column="2" Text="{Binding ReadableSize}" VerticalAlignment="Center" HorizontalAlignment="Right" />
+                        <TextBlock Grid.Column="1" Margin="0 0 20 0" Text="{Binding Name}" VerticalAlignment="Stretch" Padding="5 4 0 0">
+                            <TextBlock.Style>
+                                <Style TargetType="TextBlock">
+                                    <Style.Triggers>
+                                        <DataTrigger Binding="{Binding Item.IsHidden}" Value="true">
+                                            <Setter Property="Foreground" Value="{StaticResource ArgesGrauBlau_dunkel}"/>
+                                        </DataTrigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </TextBlock.Style>
+                        </TextBlock>
+                        <TextBlock Grid.Column="2" Text="{Binding ReadableSize}" VerticalAlignment="Center" HorizontalAlignment="Right" >
+                            <TextBlock.Style>
+                                <Style TargetType="TextBlock">
+                                    <Style.Triggers>
+                                        <DataTrigger Binding="{Binding Item.IsHidden}" Value="true">
+                                            <Setter Property="Foreground" Value="{StaticResource ArgesGrauBlau_dunkel}"/>
+                                        </DataTrigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </TextBlock.Style>
+                        </TextBlock>
                     </Grid>
                 </HierarchicalDataTemplate>
             </TreeView.ItemTemplate>
@@ -103,11 +123,21 @@
                 </Grid.ColumnDefinitions>
                 <Image Grid.Column="0" Height="25" Source="{StaticResource Img_Folder}"/>
                 <StackPanel Grid.Column="1">
-                    <Label Content="{Binding SelectedItem.Item.Name, FallbackValue=Ordnername}" Padding="0" HorizontalAlignment="Left" VerticalAlignment="Top" 
+                    <StackPanel Orientation="Horizontal">
+                        <Label Content="{Binding SelectedItem.Item.Name, FallbackValue=Ordnername}" Padding="0" HorizontalAlignment="Left" VerticalAlignment="Top" 
                            FontSize="18" FontWeight="Bold" Foreground="{StaticResource ArgesBlau}"/>
-                    <Label Content="{Binding SelectedItem.Item.FullPath, FallbackValue=Pfad}" Padding="0" HorizontalAlignment="Left" VerticalAlignment="Bottom" Foreground="{StaticResource ArgesBlau}"/>
+                        <TextBlock Text="{Binding SelectedItem.Item.Remark, FallbackValue='', StringFormat=({0})}" Foreground="{StaticResource ArgesBlau}" 
+                           VerticalAlignment="Top" Margin="10 5 0 0"/>
+                    </StackPanel>
+
+                    <StackPanel Orientation="Horizontal">
+                        <Label Content="{Binding SelectedItem.Item.FullPath, FallbackValue=Pfad}" Padding="0" HorizontalAlignment="Left" VerticalAlignment="Bottom" Foreground="{StaticResource ArgesBlau}"/>
+                        <TextBlock Text="{Binding SelectedItem.Item.ServerPath, FallbackValue='', StringFormat=({0})}" Foreground="{StaticResource ArgesBlau}"
+                                   Margin="10 0 0 0"/>
+                    </StackPanel>
                 </StackPanel>
-                <TextBlock Grid.Column="2" Text="{Binding SelectedItem.ReadableSize, FallbackValue=''}" FontSize="20" 
+                
+                <TextBlock Grid.Column="3" Text="{Binding SelectedItem.ReadableSize, FallbackValue=''}" FontSize="20" 
                            HorizontalAlignment="Left" VerticalAlignment="Center" Margin="0 0 20 0" FontWeight="Bold" Foreground="{StaticResource ArgesBlau}"/>
             </Grid>
 
@@ -320,10 +350,6 @@
                 </DataGrid>
 
             </Expander>
-            
-            
-
-            
             
             
             <!-- 4. Row - Accounts with permissions -->

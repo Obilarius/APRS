@@ -23,7 +23,7 @@ namespace ARPS
             mssql.Open();
 
             // Der SQL Befehl um alle Ordner abzurufen die root sind
-            string sql = $"SELECT _path_name FROM {mssql.TBL_FS_Dirs} WHERE _is_root = 1";
+            string sql = $"SELECT _unc_path_name FROM {mssql.TBL_FS_Shares}";
 
             // Sendet den SQL Befehl an den SQL Server
             SqlCommand cmd = new SqlCommand(sql, mssql.Con);
@@ -40,9 +40,6 @@ namespace ARPS
 
                     if (!ListOfServers.Contains(serverName))
                         ListOfServers.Add(serverName);
-
-                    
-
                 }
             }
 
@@ -209,9 +206,9 @@ namespace ARPS
 
             // Der SQL Befehl um alle Ordner abzurufen die mit dem Pfad beginnen
             string sql = $"SELECT * " +
-                $"FROM {mssql.TBL_FS_Dirs} " +
-                $"WHERE _is_root = 1 AND _path_name LIKE @fullPath " +
-                $"ORDER BY _path_name";
+                $"FROM {mssql.TBL_FS_Shares} " +
+                $"WHERE _unc_path_name LIKE @fullPath " +
+                $"ORDER BY _unc_path_name";
 
             // Sendet den SQL Befehl an den SQL Server
             SqlCommand cmd = new SqlCommand(sql, mssql.Con);
@@ -231,14 +228,18 @@ namespace ARPS
                     retList.Add(new DirectoryItem
                     {
                         Id = (int)reader["_path_id"],
-                        FullPath = reader["_path_name"].ToString(),
+                        FullPath = reader["_unc_path_name"].ToString(),
                         Owner = reader["_owner_sid"].ToString(),
                         Type = DirectoryItemType.SharedFolder,
-                        ParentID = (int)reader["_parent_path_id"],
-                        IsRoot = (bool)reader["_is_root"],
+                        ParentID = -1,
+                        IsRoot = true,
                         HasChildren = (bool)reader["_has_children"],
-                        ScanDeepth = (int)reader["_scan_deepth"],
-                        Size = (long)reader["_size"]
+                        Size = (long)reader["_size"],
+                        IsHidden = (bool)reader["_hidden"],
+                        ServerPath = reader["_path_name"].ToString(),
+                        DisplayName = reader["_display_name"].ToString(),
+                        Remark = reader["_remark"].ToString(),
+                        ShareType = reader["_share_type"].ToString()
                     });
 
                 }
@@ -271,7 +272,7 @@ namespace ARPS
                 return path;
 
             // Return der Namen nach dem letzten Backslash
-            return path.Substring(lastIndex + 1);
+            return path.Substring(lastIndex + 1).TrimEnd('$');
         }
 
         /// <summary>

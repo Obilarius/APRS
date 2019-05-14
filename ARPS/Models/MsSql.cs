@@ -14,6 +14,7 @@ namespace ARPS
         public string TBL_AD_Computers { get { return "dbo.adcomputers"; } }
 
         public string TBL_FS_Dirs { get { return "fs.dirs"; } }
+        public string TBL_FS_Shares { get { return "fs.shares"; } }
         public string TBL_FS_ACLs { get { return "fs.acls"; } }
         public string TBL_FS_ACEs { get { return "fs.aces"; } }
 

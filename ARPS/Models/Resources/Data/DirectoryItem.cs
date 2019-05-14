@@ -50,6 +50,33 @@ namespace ARPS
         /// </summary>
         public DirectoryItemType Type { get; set; }
 
+        #region Nur bei Fregaben
+        /// <summary>
+        /// Ob das Element versteckt ist
+        /// </summary>
+        public bool IsHidden { get; set; }
+
+        /// <summary>
+        /// Der Pfad auf dem Server (zb. Y:\Install)
+        /// </summary>
+        public string ServerPath { get; set; }
+
+        /// <summary>
+        /// Der DNS Name für den Server (zb. Filer statt Apollon)
+        /// </summary>
+        public string DisplayName { get; set; }
+
+        /// <summary>
+        /// Beschreibung der Freigabe
+        /// </summary>
+        public string Remark { get; set; }
+
+        /// <summary>
+        /// Der Typ der Freigabe
+        /// </summary>
+        public string ShareType { get; set; }
+        #endregion
+
         /// <summary>
         /// Das ist der Name des Items
         /// </summary>
