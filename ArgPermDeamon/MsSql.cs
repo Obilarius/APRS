@@ -52,6 +52,8 @@ namespace ARPSMSSQL
         /// </summary>
         public void Open ()
         {
+            if (Con.State == System.Data.ConnectionState.Open)
+                return;
             Con.Open();
         }
 

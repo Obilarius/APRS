@@ -10,50 +10,59 @@ namespace ARPSDeamon
     {
         static void Main(string[] args)
         {
-            // Prüft ob ein Name für den Server übergeben wurde
-            if (name != null && name.Trim().Length > 0)
+            // Liest die Config ein
+            Config config = new Config();
+
+            // Läuft über jeden Server der Config
+            foreach (var server in config.Servers)
             {
                 // Switch über den Type um jeden Type anders zu behandeln
-                switch (type)
+                switch (server.Type)
                 {
                     // Type = FileServer
                     case ConfigType.FileServer:
-                        WorkFileServer(name, displayname, type);
+                        WorkOnFileServer(server);
                         break;
                     // Default
                     default:
                         break;
                 }
-
             }
 
-
-
-            //foreach (var path in paths)
-            //{
-            //DirectoryInfo dInfo = new DirectoryInfo(path);
-            //FSWorker.GetDirectorySecurity(dInfo, -1);
-            //}
-
-            //ADWorker.ReadAD();
-
+            // Arbeitet das AD ab. Liest User, Gruppen und Computer ein
+            WorkOnAD();
 
             Console.WriteLine("FERTIG");
             Console.ReadKey();
         }
 
 
-        
-
-        static void WorkFileServer(string name, string displayname, ConfigType type)
+        /// <summary>
+        /// Arbeitet das Active Directory ab
+        /// </summary>
+        static void WorkOnAD()
         {
-            ShareCollection shareColl = ShareCollection.GetShares(name);
-            if (shareColl != null)
+            ADWorker.ReadCompleteAD();
+        }
+        
+        /// <summary>
+        /// Arbeitet einen FileServer ab
+        /// </summary>
+        /// <param name="server"></param>
+        static void WorkOnFileServer(ConfigServer server)
+        {
+            // Liest die Shares des Servers aus
+            ShareCollection shareColl = ShareCollection.GetShares(server.Name);
+
+            // Wenn keine Shares gelesen werden konnten
+            if (shareColl == null)
+                return;
+
+            // Schleife über jede ausgelesene Freigabe 
+            foreach (Share share in shareColl)
             {
-                foreach (Share share in shareColl)
-                {
-                    FSWorker.GetSharesSecurity(share, displayname);
-                }
+                // Ruft alle Informationen ab und schreibt sie in die Datenbank
+                FSWorker.GetSharesSecurity(share, server.DisplayName);
             }
         }
 

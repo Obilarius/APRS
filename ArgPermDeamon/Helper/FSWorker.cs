@@ -14,6 +14,10 @@ namespace ARPSDeamon
 {
     public static class FSWorker
     {
+        private static int Index = 0;
+        private static int Count = 630000;
+
+
         /// <summary>
         /// Liest den jeweiligen Ordner und rekursive alle Unterordner ab und speichert die Informationen in der Datenbank
         /// </summary>
@@ -41,14 +45,14 @@ namespace ARPSDeamon
             int _scan_deepth = _path_name.TrimStart('\\').Split('\\').Count() - 1;
 
 
-            // Ausgabe: Alle Pafde bis zur 3. Ebene werden ausgegeben
-            //Index++;
-            //if (_scan_deepth <= 5)
-            //{
-            //    //Console.WriteLine(_path_name);
-            //    float percent = (float)Index / (float)Count * 100f;
-            //    Console.WriteLine(percent.ToString("n2") + $" % of {Count} -- {_path_name}");
-            //}
+            //Ausgabe: Alle Pafde bis zur 3.Ebene werden ausgegeben
+            Index++;
+            if (_scan_deepth <= 5)
+            {
+                //Console.WriteLine(_path_name);
+                float percent = (float)Index / (float)Count * 100f;
+                Console.WriteLine(percent.ToString("n2") + $" % of {Count} -- {_path_name}");
+            }
 
 
 
@@ -219,6 +223,8 @@ namespace ARPSDeamon
             // Ob es eine versteckte Freigabe ist oder nicht
             bool _hidden = CheckIsShareHidden(share);
 
+            Console.WriteLine("Share: " + share + " - " + share.Remark);
+
             #region Prüfung ob schon vorhanden ist
             // Der SQL Befehl zum überprüfen ob der jeweilige Eintrag schon vorhanden ist
             string sql = $"SELECT _path_id FROM {mssql.TBL_FS_Shares} WHERE _path_hash = @PathHash";
@@ -305,7 +311,7 @@ namespace ARPSDeamon
                 cmd.Parameters.AddWithValue("@PathName", _path_name);
                 cmd.Parameters.AddWithValue("@DisplayName", _display_name);
                 cmd.Parameters.AddWithValue("@Remark", _remark);
-                cmd.Parameters.AddWithValue("@ShareType", _share_type);
+                cmd.Parameters.AddWithValue("@ShareType", _share_type.ToString());
                 cmd.Parameters.AddWithValue("@Hidden", _hidden);
 
                 // Öffnet die SQL Verbindung

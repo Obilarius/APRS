@@ -13,7 +13,7 @@ namespace ARPSDeamon
         /// <summary>
         /// Funktion liest alle User, Gruppen und Computer aus dem AD aus und speichert sie in der Datenbank
         /// </summary>
-        public static void ReadAD()
+        public static void ReadCompleteAD()
         {
             GetAllADUsers();
             GetAllADGroups();

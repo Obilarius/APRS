@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Xml;
 
-namespace ArgPermDeamon
+namespace ARPSDeamon
 {
     public class Config
     {
@@ -48,7 +48,10 @@ namespace ArgPermDeamon
                     string displayname = xtr.GetAttribute(1);
                     ConfigType type = (ConfigType)(Convert.ToInt32(xtr.GetAttribute(2)));
 
-                    retList.Add(new ConfigServer(name, displayname, type));
+                    if (name != null && name.Trim().Length > 0)
+                    {
+                        retList.Add(new ConfigServer(name, displayname, type));
+                    }
                 }
             }
             return retList;
