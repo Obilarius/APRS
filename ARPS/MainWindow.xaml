@@ -67,7 +67,10 @@
         <!-- STATUSBAR -->
         <StatusBar Grid.Row="3">
             <StatusBarItem>
-                <TextBlock x:Name="StatusBarTextBlock" Text="{Binding StatusBarNote}" Foreground="{StaticResource ArgesGrauBlau_hell}"/>
+                <TextBlock x:Name="StatusBarTextBlock" Text="{Binding StatusBarNote, FallbackValue=Meldung}" Margin="10 0 0 0"/>
+            </StatusBarItem>
+            <StatusBarItem HorizontalAlignment="Right">
+                <TextBlock x:Name="StatusBarAppVersion" Text="{Binding AppVersion, FallbackValue=Version}" Margin="0 0 10 0"/>
             </StatusBarItem>
         </StatusBar>
     </Grid>

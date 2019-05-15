@@ -15,6 +15,7 @@ using System.Windows.Shapes;
 using ARPS.ViewModels;
 using ARPS.Views;
 using MahApps.Metro.Controls;
+using Prism.Mvvm;
 
 namespace ARPS
 {
@@ -31,6 +32,8 @@ namespace ARPS
             var statusBar = new StatusBarViewModel();
             StatusBarNote = statusBar.StatusBarText;
             StatusBarTextBlock.Text = StatusBarNote;
+
+            StatusBarAppVersion.Text = statusBar.AppVersion;
         }
 
         #region HeaderButtons
@@ -101,5 +104,6 @@ namespace ARPS
         }
 
         public string StatusBarNote { get; set; }
+        public string AppVersion { get; set; }
     }
 }
