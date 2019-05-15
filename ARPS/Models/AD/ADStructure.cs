@@ -283,7 +283,7 @@ namespace ARPS
         /// Gibt alle User einer Gruppe zurück. Geht auch rekursiv in alle Gruppen bis alle User aufgelöst sind
         /// </summary>
         /// <param name="grpSID">Die Gruppen SID von der man die User haben möchte</param>
-        private static List<ADElement> GetUserInGroup(string grpSID)
+        public static List<ADElement> GetUserInGroup(string grpSID)
         {
             List<ADElement> retList = new List<ADElement>();
 
@@ -337,6 +337,75 @@ namespace ARPS
                         }
 
                     }
+                }
+            }
+
+            // Schließt die MSSQL verbindung
+            mssql.Close();
+
+            return retList;
+        }
+
+        /// <summary>
+        /// Gibt alle Gruppen eines Users zurück. Geht auch rekursiv in alle Gruppen in Gruppen.
+        /// </summary>
+        /// <param name="userSID"></param>
+        /// <returns></returns>
+        public static List<ADElement> GetGroupsFromUser(string userSID)
+        {
+            List<ADElement> retList = new List<ADElement>();
+
+            // erstellt eine MSSQL Verbindung und öffnet Sie
+            var mssql = new MsSql();
+            mssql.Open();
+
+            // Der SQL Befehl um alle Gruppen eines 
+            string sql = $"SELECT g.* " +
+                $"FROM ARPS_Test.dbo.grp_user gu " +
+                $"LEFT JOIN ARPS_Test.dbo.adgroups g " +
+                $"ON gu.grpSID = g.SID " +
+                $"WHERE gu.userSID = @UserSID";
+
+            // Sendet den SQL Befehl an den SQL Server
+            SqlCommand cmd = new SqlCommand(sql, mssql.Con);
+
+            //Parameter anhängen
+            cmd.Parameters.AddWithValue("@UserSID", userSID);
+
+            // Benutzt den SQL Reader um über alle Zeilen der Abfrage zu gehen
+            using (SqlDataReader reader = cmd.ExecuteReader())
+            {
+                while (reader.Read())
+                {
+                    // Speichert die Daten des Readers in einzelne Variablen
+                    string sid = reader["SID"].ToString();
+                    string samAccountName = reader["SamAccountName"].ToString();
+                    string distinguishedName = reader["DistinguishedName"].ToString();
+                    string name = reader["Name"].ToString();
+                    string description = reader["Description"].ToString();
+                    bool isSecurityGroup = Convert.ToBoolean(reader["IsSecurityGroup"]);
+                    string gS = reader["GroupScope"].ToString();
+
+                    GroupScope groupScope;
+
+                    switch (gS)
+                    {
+                        case "Global":
+                            groupScope = GroupScope.Global;
+                            break;
+                        case "Local":
+                            groupScope = GroupScope.Local;
+                            break;
+                        default:
+                            groupScope = GroupScope.Universal;
+                            break;
+                    }
+
+                    // Fügt die Gruppe zur Liste hinzu
+                    retList.Add(new ADElement(sid, name, samAccountName, distinguishedName, description, isSecurityGroup, groupScope));
+
+                    // Ruft diese Funktion rekursiv auf und überprüft somit auch alle Gruppen in Gruppen
+                    retList.AddRange(GetGroupsFromUser(sid));
                 }
             }
 

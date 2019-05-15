@@ -24,7 +24,8 @@ namespace ARPS
         /// <param name="distinguishedName"></param>
         /// <param name="pricipalName"></param>
         /// <param name="enabled"></param>
-        public ADElement(string sid, string name, string samAccountName, string distinguishedName, string pricipalName, bool enabled, ADElementType type = ADElementType.User)
+        public ADElement(string sid, string name, string samAccountName, string distinguishedName, string pricipalName, 
+            bool enabled, ADElementType type = ADElementType.User)
         {
             SID = sid;
             Name = name;
@@ -45,7 +46,8 @@ namespace ARPS
         /// <param name="description"></param>
         /// <param name="isSecurityGroup"></param>
         /// <param name="groupScope"></param>
-        public ADElement(string sid, string name, string samAccountName, string distinguishedName, string description, bool isSecurityGroup, GroupScope groupScope)
+        public ADElement(string sid, string name, string samAccountName, string distinguishedName, string description, 
+            bool isSecurityGroup, GroupScope groupScope)
         {
             SID = sid;
             Name = name;
