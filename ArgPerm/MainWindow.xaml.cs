@@ -403,7 +403,7 @@ namespace ArgPerm
             }
         }
 
-        // TODO
+
         private void ShowAllDirectoriesWithPermissions_Click(object sender, RoutedEventArgs e)
         {
             var user = listView_AccountWithPermissions.SelectedItem as AccountWithPermissions;

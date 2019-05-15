@@ -1,5 +1,6 @@
 ﻿using ARPS.ViewModels;
 using Prism.Events;
+using Prism.Mvvm;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -8,7 +9,7 @@ using System.Windows.Input;
 
 namespace ARPS
 {
-    public class DirectoryItemViewModel : BaseViewModel
+    public class DirectoryItemViewModel : BindableBase
     {
         #region Public Propertys
 

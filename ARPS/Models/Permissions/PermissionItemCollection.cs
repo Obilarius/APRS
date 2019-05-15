@@ -12,16 +12,29 @@ namespace ARPS
 {
     public class PermissionItemCollection : BindableBase
     {
+        /// <summary>
+        /// Hällt die Items die angezeigt werden
+        /// </summary>
         public ObservableCollection<PermissionItem> Items { get; set; }
 
+        /// <summary>
+        /// Hällt alle Gruppen zum selektierten User
+        /// </summary>
         List<ADElement> AllGroups { get; set; }
 
+        /// <summary>
+        /// Konstruktor
+        /// </summary>
+        /// <param name="userSid"></param>
         public PermissionItemCollection(string userSid)
         {
             // Liest alle Gruppen des Users aus
             AllGroups = new List<ADElement>(ADStructure.GetGroupsFromUser(userSid));
         }
 
+        /// <summary>
+        /// Füllt die Shares in das Property Items
+        /// </summary>
         public void FillItemsWithShares()
         {
             Items = new ObservableCollection<PermissionItem>();
@@ -93,6 +106,23 @@ namespace ARPS
 
             // Schließt die MSSQL verbindung
             mssql.Close();
+        }
+
+        public void GroupItems()
+        {
+            List<PermissionItem> tempItems = new List<PermissionItem>();
+
+            foreach (var item in Items)
+            {
+                // Prüft ob das Recht auf diesen Ordner gewährt wird
+                if (item.InheritanceFlags == 0 && item.PropagationFlags == 0 ||
+                    item.InheritanceFlags == 3 && item.PropagationFlags == 0 ||
+                    item.InheritanceFlags == 1 && item.PropagationFlags == 0 ||
+                    item.InheritanceFlags == 2 && item.PropagationFlags == 0)
+                {
+                    // TODO: Vergleich ob Item schon vorhanden ist und in der Liste tempItems zusammenführen
+                }
+            }
         }
     }
 }

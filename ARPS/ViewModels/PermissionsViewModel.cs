@@ -11,7 +11,7 @@ using System.Windows.Input;
 
 namespace ARPS.ViewModels
 {
-    public class PermissionsViewModel : BaseViewModel
+    public class PermissionsViewModel : BindableBase
     {
         #region Commands
         /// <summary>
@@ -149,31 +149,6 @@ namespace ARPS.ViewModels
         {
             PermissionItemColl = new PermissionItemCollection(SelectedUser.SID);
             PermissionItemColl.FillItemsWithShares();
-
-
-
-
-            //// Erstellt eine neue Liste mit den neuen Infos
-            //UserInfos = new ObservableCollection<UserInfoEntry>
-            //{
-            //    new UserInfoEntry("Name", SelectedUser.DisplayName),
-            //    new UserInfoEntry("Email", SelectedUser.EmailAddress),
-            //    new UserInfoEntry("Letzter Login", SelectedUser.LastLogon.ToString())
-            //};
-
-            //List<GroupPrincipal> tmpList = new List<GroupPrincipal>(); ;
-            //// Liest alle Gruppen aus in dennen der SelectedUser Mitglied ist
-            //PrincipalSearchResult<Principal> grp = SelectedUser.GetGroups();
-            //// Geht über alle Gruppen und fügt sie zur Liste hinzu
-            //foreach (var g in grp)
-            //{
-            //    tmpList.Add(g as GroupPrincipal);
-            //}
-            //// Sortiert die Gruppen
-            //tmpList.Sort((x, y) => x.Name.CompareTo(y.Name));
-
-            //// Setzt SelectedUserGroups auf die Ausgelesene Liste
-            //SelectedUserGroups = new ObservableCollection<GroupPrincipal>(tmpList);
         }
 
         #region UserSearch

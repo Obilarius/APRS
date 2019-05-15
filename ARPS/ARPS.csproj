@@ -150,7 +150,6 @@
     <Compile Include="Models\Schedule\HistoryLogEntry.cs" />
     <Compile Include="Models\Schedule\SubmitPlanningFormConverter.cs" />
     <Compile Include="Models\Schedule\UserInfoEntry.cs" />
-    <Compile Include="ViewModels\BaseViewModel.cs" />
     <Compile Include="ViewModels\DashboardViewModel.cs" />
     <Compile Include="ViewModels\PermissionsViewModel.cs" />
     <Compile Include="ViewModels\ResourcesViewModel.cs" />

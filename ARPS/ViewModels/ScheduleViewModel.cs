@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Prism.Mvvm;
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
@@ -18,7 +19,7 @@ namespace ARPS.ViewModels
     /// IDataErrorInfo - Validierung - Video[https://www.youtube.com/watch?v=OOHDie8BdGI]
     /// ASYNC / AWAIT - Video[https://www.youtube.com/watch?v=6_GTdR0gBVE]
     /// </summary>
-    public class ScheduleViewModel : BaseViewModel, IDataErrorInfo
+    public class ScheduleViewModel : BindableBase, IDataErrorInfo
     {
         #region Commands
 

@@ -80,7 +80,7 @@
 
             <Border DockPanel.Dock="Top" BorderThickness="2" BorderBrush="{StaticResource ArgesGelb}" />
 
-            <DataGrid DockPanel.Dock="Top" ItemsSource="{Binding PermissionItemColl.Items}" 
+            <DataGrid DockPanel.Dock="Top" Margin="0 10 0 0" ItemsSource="{Binding PermissionItemColl.Items}" 
                       AutoGenerateColumns="False" IsReadOnly="True" GridLinesVisibility="Horizontal">
                 <DataGrid.ColumnHeaderStyle>
                     <Style TargetType="{x:Type DataGridColumnHeader}">
