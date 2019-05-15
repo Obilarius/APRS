@@ -12,10 +12,10 @@
             <ColumnDefinition Width="2*"/>
         </Grid.ColumnDefinitions>
 
-        <!-- User -->
-        <DockPanel Grid.Row="0" Margin="10">
+        <!-- Linke Spalte - Users -->
+        <DockPanel Grid.Column="0" Margin="10 0 5 0">
             <DockPanel LastChildFill="True" VerticalAlignment="Stretch">
-                <DockPanel DockPanel.Dock="Top" Margin="0 0 0 10">
+                <DockPanel DockPanel.Dock="Top" Margin="0 10 10 10">
                     <TextBlock Text="User: " DockPanel.Dock="Left" Margin="5" VerticalAlignment="Center"/>
                     <TextBox Width="Auto" Text="{Binding SearchTextUser, UpdateSourceTrigger=PropertyChanged}">
                         <TextBox.InputBindings>
@@ -50,6 +50,191 @@
             </DockPanel>
         </DockPanel>
 
-        <TextBlock Grid.Column="1" Text="{Binding AllUsers.Count, FallbackValue=000}"/>
+        <GridSplitter Grid.Column="0" Width="5" Background="{StaticResource ArgesGrauBlau_hell}"/>
+
+        <!-- Rechte Spalte - Paths -->
+        <DockPanel Grid.Column="1" LastChildFill="True">
+            <StackPanel DockPanel.Dock="Top" Orientation="Horizontal" Margin="20">
+                <Image Width="30">
+                    <Image.Style>
+                        <Style TargetType="Image">
+                            <Style.Triggers>
+                                <DataTrigger  Binding="{Binding SelectedUser.Type}" Value="Administrator">
+                                    <Setter Property="Source" Value="{StaticResource Img_Administrator}"/>
+                                </DataTrigger >
+                                <DataTrigger  Binding="{Binding SelectedUser.Type}" Value="User">
+                                    <Setter Property="Source" Value="{StaticResource Img_User}"/>
+                                </DataTrigger >
+                            </Style.Triggers>
+                        </Style>
+                    </Image.Style>
+                </Image>
+                <StackPanel Orientation="Vertical">
+                    <Label Content="{Binding SelectedUser}" Padding="20 0 0 0" HorizontalAlignment="Left" VerticalAlignment="Center" 
+                         FontSize="18" FontWeight="Bold" Foreground="{StaticResource ArgesBlau}"/>
+                    <TextBlock Text="{Binding SelectedUser.SID, StringFormat=SID:  {0}}"  Padding="20 0 0 0" HorizontalAlignment="Left" VerticalAlignment="Center" 
+                         FontSize="10" FontWeight="Bold" Foreground="{StaticResource ArgesBlau}"/>
+                </StackPanel>
+                          
+            </StackPanel>
+
+            <Border DockPanel.Dock="Top" BorderThickness="2" BorderBrush="{StaticResource ArgesGelb}" />
+
+            <DataGrid DockPanel.Dock="Top" ItemsSource="{Binding PermissionItemColl.Items}" 
+                      AutoGenerateColumns="False" IsReadOnly="True" GridLinesVisibility="Horizontal">
+                <DataGrid.ColumnHeaderStyle>
+                    <Style TargetType="{x:Type DataGridColumnHeader}">
+                        <Setter Property="LayoutTransform">
+                            <Setter.Value>
+                                <RotateTransform Angle="270" />
+                            </Setter.Value>
+                        </Setter>
+                        <Setter Property="Background" Value="White"/>
+                        <Setter Property="Margin" Value="0 0 0 10"/>
+                        <Setter Property="FontWeight" Value="Bold"/>
+                        <Setter Property="Width" Value="90"/>
+                        <Setter Property="BorderThickness" Value="0"/>
+                    </Style>
+                </DataGrid.ColumnHeaderStyle>
+
+                <DataGrid.Columns>
+
+                    <DataGridTemplateColumn Header="Unc Pfad" SortMemberPath="UncPath">
+                        <DataGridTemplateColumn.CellTemplate>
+                            <DataTemplate>
+                                <TextBlock Text="{Binding UncPath}" Margin="10 0 50 0">
+                                    <TextBlock.Style>
+                                        <Style TargetType="TextBlock">
+                                            <Style.Triggers>
+                                                <DataTrigger Binding="{Binding IsHidden}" Value="True">
+                                                    <Setter Property="Foreground" Value="{StaticResource ArgesGrauBlau_dunkel}"/>
+                                                </DataTrigger>
+                                            </Style.Triggers>
+                                        </Style>
+                                    </TextBlock.Style>
+                                </TextBlock>
+                            </DataTemplate>
+                        </DataGridTemplateColumn.CellTemplate>
+                    </DataGridTemplateColumn>
+
+                    <DataGridTemplateColumn Header="Vollzugriff" Width="30" SortMemberPath="HasFullControl">
+                        <DataGridTemplateColumn.CellTemplate>
+                            <DataTemplate>
+                                <Image Width="20" Height="20" Source="{StaticResource Img_Checkmark}">
+                                    <Image.Style>
+                                        <Style TargetType="Image">
+                                            <Style.Triggers>
+                                                <DataTrigger  Binding="{Binding HasFullControl}" Value="False">
+                                                    <Setter Property="Visibility" Value="Hidden"/>
+                                                </DataTrigger >
+                                            </Style.Triggers>
+                                        </Style>
+                                    </Image.Style>
+                                </Image>
+                            </DataTemplate>
+                        </DataGridTemplateColumn.CellTemplate>
+                    </DataGridTemplateColumn>
+
+                    <DataGridTemplateColumn Header="Ändern" Width="30" SortMemberPath="HasModify">
+                        <DataGridTemplateColumn.CellTemplate>
+                            <DataTemplate>
+                                <Image Width="20" Height="20" Source="{StaticResource Img_Checkmark}">
+                                    <Image.Style>
+                                        <Style TargetType="Image">
+                                            <Style.Triggers>
+                                                <DataTrigger  Binding="{Binding HasModify}" Value="False">
+                                                    <Setter Property="Visibility" Value="Hidden"/>
+                                                </DataTrigger >
+                                            </Style.Triggers>
+                                        </Style>
+                                    </Image.Style>
+                                </Image>
+                            </DataTemplate>
+                        </DataGridTemplateColumn.CellTemplate>
+                    </DataGridTemplateColumn>
+
+                    <DataGridTemplateColumn Header="Lesen, Ausführen" Width="30" SortMemberPath="HasReadAndExecute">
+                        <DataGridTemplateColumn.CellTemplate>
+                            <DataTemplate>
+                                <Image Width="20" Height="20" Source="{StaticResource Img_Checkmark}">
+                                    <Image.Style>
+                                        <Style TargetType="Image">
+                                            <Style.Triggers>
+                                                <DataTrigger  Binding="{Binding HasReadAndExecute}" Value="False">
+                                                    <Setter Property="Visibility" Value="Hidden"/>
+                                                </DataTrigger >
+                                            </Style.Triggers>
+                                        </Style>
+                                    </Image.Style>
+                                </Image>
+                            </DataTemplate>
+                        </DataGridTemplateColumn.CellTemplate>
+                    </DataGridTemplateColumn>
+
+                    <DataGridTemplateColumn Header="Schreiben" Width="30" SortMemberPath="HasWrite">
+                        <DataGridTemplateColumn.CellTemplate>
+                            <DataTemplate>
+                                <Image Width="20" Height="20" Source="{StaticResource Img_Checkmark}">
+                                    <Image.Style>
+                                        <Style TargetType="Image">
+                                            <Style.Triggers>
+                                                <DataTrigger  Binding="{Binding HasWrite}" Value="False">
+                                                    <Setter Property="Visibility" Value="Hidden"/>
+                                                </DataTrigger >
+                                            </Style.Triggers>
+                                        </Style>
+                                    </Image.Style>
+                                </Image>
+                            </DataTemplate>
+                        </DataGridTemplateColumn.CellTemplate>
+                    </DataGridTemplateColumn>
+
+                    <DataGridTemplateColumn Header="Lesen" Width="30" SortMemberPath="HasRead">
+                        <DataGridTemplateColumn.CellTemplate>
+                            <DataTemplate>
+                                <Image Width="20" Height="20" Source="{StaticResource Img_Checkmark}">
+                                    <Image.Style>
+                                        <Style TargetType="Image">
+                                            <Style.Triggers>
+                                                <DataTrigger  Binding="{Binding HasRead}" Value="False">
+                                                    <Setter Property="Visibility" Value="Hidden"/>
+                                                </DataTrigger >
+                                            </Style.Triggers>
+                                        </Style>
+                                    </Image.Style>
+                                </Image>
+                            </DataTemplate>
+                        </DataGridTemplateColumn.CellTemplate>
+                    </DataGridTemplateColumn>
+
+                    <DataGridTemplateColumn Header="Ordnerinhalt anzeigen" Width="30" SortMemberPath="HasListDirectory">
+                        <DataGridTemplateColumn.CellTemplate>
+                            <DataTemplate>
+                                <Image Width="20" Height="20" Source="{StaticResource Img_Checkmark}">
+                                    <Image.Style>
+                                        <Style TargetType="Image">
+                                            <Style.Triggers>
+                                                <DataTrigger  Binding="{Binding HasListDirectory}" Value="False">
+                                                    <Setter Property="Visibility" Value="Hidden"/>
+                                                </DataTrigger >
+                                            </Style.Triggers>
+                                        </Style>
+                                    </Image.Style>
+                                </Image>
+                            </DataTemplate>
+                        </DataGridTemplateColumn.CellTemplate>
+                    </DataGridTemplateColumn>
+
+                    <DataGridTemplateColumn Header="Anwenden auf" SortMemberPath="Propagation">
+                        <DataGridTemplateColumn.CellTemplate>
+                            <DataTemplate>
+                                <TextBlock Text="{Binding Propagation}" Margin="30 0 0 0" />
+                            </DataTemplate>
+                        </DataGridTemplateColumn.CellTemplate>
+                    </DataGridTemplateColumn>
+
+                </DataGrid.Columns>
+            </DataGrid>
+        </DockPanel>
     </Grid>
 </UserControl>

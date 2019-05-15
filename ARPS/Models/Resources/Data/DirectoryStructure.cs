@@ -10,7 +10,6 @@ namespace ARPS
     public static class DirectoryStructure
     {
         #region Get Lists
-
         /// <summary>
         /// Gibt eine Liste mit allen angegebenen Servers zurück.
         /// </summary>
@@ -64,7 +63,6 @@ namespace ARPS
             // Gibt eine Liste mit DirectoryItems zurück die die Server beinhaltet
             return retList;
         }
-
 
         /// <summary>
         /// Gibt eine Liste mit allen Unterordnern des angegebenen Servers zurück die keine ParentId besitzen.
@@ -247,12 +245,9 @@ namespace ARPS
 
             return retList;
         }
-
         #endregion
 
-
         #region Helper
-
         /// <summary>
         /// Gibt nur den Ordnernamen eines vollen Pfades zurück
         /// </summary>
@@ -584,7 +579,7 @@ namespace ARPS
 
             return retList;
         }
-
         #endregion
+
     }
 }

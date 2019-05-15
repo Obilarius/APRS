@@ -2,7 +2,9 @@
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Data.SqlClient;
 using System.Linq;
+using System.Security.AccessControl;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Input;
@@ -58,6 +60,12 @@ namespace ARPS.ViewModels
             }
         }
 
+        /// <summary>
+        /// Anzeigetiefe der Ordnerpfade
+        /// </summary>
+        public int ViewDeepth { get; set; }
+
+
         #region Search
         /// <summary>
         /// Der letzte Suchtext der gesucht wurde
@@ -70,6 +78,7 @@ namespace ARPS.ViewModels
         public string SearchTextUser { get; set; }
         #endregion
 
+        #region Konstruktor
         /// <summary>
         /// Konstruktor
         /// </summary>
@@ -84,7 +93,11 @@ namespace ARPS.ViewModels
             UsersFiltered = new ObservableCollection<ADElement>();
 
             AsyncLoadedAllUsers();
+
+            // Setze Suchtiefe bei Start auf 3
+            ViewDeepth = 3;
         }
+        #endregion
 
         #region Async Function Calls
 
@@ -127,11 +140,19 @@ namespace ARPS.ViewModels
 
         #endregion
 
+
+        public PermissionItemCollection PermissionItemColl { get; set; }
         /// <summary>
         /// Wenn ein neuer User selektiert wird
         /// </summary>
         public void UserSelectionChanged()
         {
+            PermissionItemColl = new PermissionItemCollection(SelectedUser.SID);
+            PermissionItemColl.FillItemsWithShares();
+
+
+
+
             //// Erstellt eine neue Liste mit den neuen Infos
             //UserInfos = new ObservableCollection<UserInfoEntry>
             //{
