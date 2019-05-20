@@ -10,7 +10,7 @@ namespace ARPS
         public string DistinguishedName { get; }
         public int ACEId { get; }
         public string SID { get; }
-        public FileSystemRights Rights { get; }
+        public FileSystemRights Rights { get; set; }
         public bool Type { get; }
         public string FileSystemRight { get; }
         public bool IsInherited { get; }

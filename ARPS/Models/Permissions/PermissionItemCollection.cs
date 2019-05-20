@@ -103,6 +103,17 @@ namespace ARPS
                         if (newPI.Rights <= 0 || !newPI.PropagationOnThisFolder)
                             continue;
 
+                        // Prüft ob der aktuelle Pfad schon in der Liste vorhanden ist.
+                        PermissionItem value = Items.FirstOrDefault(item => item.PathID == newPI.PathID);
+                        // Falls der Pfad schon vorhanden ist werden die zwei Rechte über ein binär oder zusammengerechnet
+                        if (value != null)
+                        {
+                            value.Rights = newPI.Rights | value.Rights;
+                            // Das neue Item wird nicht hunzugefügt.
+                            continue;
+                        }
+
+
                         Items.Add(newPI);
                     }
                 }
