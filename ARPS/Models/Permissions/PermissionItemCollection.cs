@@ -98,6 +98,10 @@ namespace ARPS
                         //newPI.ShareType = _share_type;
                         newPI.IsHidden = _hidden;
 
+                        // Falls keine Rechte in diesem Datensatz vergeben werden oder wenn die Rechte nur auf Unterordner gelten
+                        // wird der Datensatz nicht hinzugefügt
+                        if (newPI.Rights <= 0 || !newPI.PropagationOnThisFolder)
+                            continue;
 
                         Items.Add(newPI);
                     }

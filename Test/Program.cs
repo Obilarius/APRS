@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Data.SqlClient;
+using System.DirectoryServices.AccountManagement;
 using System.IO;
 using System.Linq;
 using System.Security.AccessControl;
@@ -16,63 +17,30 @@ namespace Test
 
         static void Main(string[] args)
         {
-            //mssql = new MsSql();
-            //mssql.Open();
+            // create your domain context
+            PrincipalContext ctx = new PrincipalContext(ContextType.Domain);
 
-            //for (int i = 22; i > 1; i--)
-            //{
-            //    Console.WriteLine(i);
+            // define a "query-by-example" principal - here, we search for a UserPrincipal 
+            UserPrincipal qbeUser = new UserPrincipal(ctx);
 
-            //    string sql = $"SELECT _path_id, _path_name, _parent_path_id " +
-            //        $"FROM dirs " +
-            //        $"WHERE _scan_deepth = {i} AND _has_children = 0";
+            // create your principal searcher passing in the QBE principal    
+            PrincipalSearcher srch = new PrincipalSearcher(qbeUser);
 
-            //    SqlCommand cmd = new SqlCommand(sql, mssql.Con);
-
-            //    using (SqlDataReader reader = cmd.ExecuteReader())
-            //    {
-            //        while (reader.Read())
-            //        {
-            //            int id = reader.GetInt32(0);
-            //            string path = reader.GetString(1);
-            //            int parentId = reader.GetInt32(2);
-
-            //            string herkunft = id.ToString() + " -> " + parentId.ToString();
-            //        }
-            //    }
-            //}
-
-            //mssql.Close();
-
-
-            //Console.WriteLine("Fertig");
-            //Console.ReadKey();
-
-
-
-            TestShares("filer", "filer");
-
-            Console.ReadKey();
-        }
-
-
-        static void TestShares(string server, string displayname)
-        {
-            // Enumerate shares on a remote computer;
-            if (server != null && server.Trim().Length > 0)
+            // find all matches
+            foreach (var found in srch.FindAll())
             {
-                ShareCollection shi = ShareCollection.GetShares(server);
-                if (shi != null)
+                if (found is UserPrincipal user)
                 {
-                    foreach (Share si in shi)
+                    if (found.SamAccountName == "walzenbach")
                     {
-                        Console.WriteLine("{0}: {1} [{2}] -- {3}", si.ShareType, si, si.Path, si.Remark);
+
                     }
                 }
             }
 
 
-            Console.ReadLine();
+            Console.WriteLine("Belibige Taste Drücken zum beenden...");
+            Console.ReadKey();
         }
 
     }

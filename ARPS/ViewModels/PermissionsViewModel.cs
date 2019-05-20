@@ -142,6 +142,7 @@ namespace ARPS.ViewModels
 
 
         public PermissionItemCollection PermissionItemColl { get; set; }
+
         /// <summary>
         /// Wenn ein neuer User selektiert wird
         /// </summary>
