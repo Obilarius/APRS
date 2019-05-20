@@ -1,9 +1,10 @@
-﻿using System;
+﻿using Prism.Mvvm;
+using System;
 using System.Security.AccessControl;
 
 namespace ARPS
 {
-    public class DirectoryACE : IEquatable<DirectoryACE>
+    public class DirectoryACE : BindableBase, IEquatable<DirectoryACE>
     {
         public bool IsGroup { get; }
         public string IdentityName { get; }

@@ -15,7 +15,7 @@ namespace ARPS
         /// <summary>
         /// Hällt die Items die angezeigt werden
         /// </summary>
-        public ObservableCollection<PermissionItem> Items { get; set; }
+        public ObservableCollection<PermissionItem> DisplayedItems { get; set; }
 
         /// <summary>
         /// Hällt alle Gruppen zum selektierten User
@@ -30,14 +30,16 @@ namespace ARPS
         {
             // Liest alle Gruppen des Users aus
             AllGroups = new List<ADElement>(ADStructure.GetGroupsFromUser(userSid));
+            AllGroups.Add(ADStructure.GetADUser(userSid));
         }
+
 
         /// <summary>
         /// Füllt die Shares in das Property Items
         /// </summary>
         public void FillItemsWithShares()
         {
-            Items = new ObservableCollection<PermissionItem>();
+            var Shares = new ObservableCollection<PermissionItem>();
 
             // erstellt eine MSSQL Verbindung und öffnet Sie
             var mssql = new MsSql();
@@ -86,17 +88,9 @@ namespace ARPS
                         string _share_type = reader["_share_type"].ToString();
                         bool _hidden = Convert.ToBoolean(reader["_hidden"]);
 
-                        PermissionItem newPI = new PermissionItem(_sid, _rights, _type, _fsr, _is_inherited, _inheritance_flags, _propagation_flags);
-                        newPI.PathID = _path_id;
-                        newPI.UncPath = _unc_path_name;
-                        newPI.OwnerSid = _owner_sid;
-                        newPI.HasChildren = _has_children;
-                        newPI.Size = _size;
-                        newPI.LocalPath = _path_name;
-                        //newPI.DisplayName = _display_name;
-                        //newPI.Remark = _remark;
-                        //newPI.ShareType = _share_type;
-                        newPI.IsHidden = _hidden;
+                        PermissionItem newPI = new PermissionItem(_sid, _rights, _type, _fsr, _is_inherited, _inheritance_flags, _propagation_flags,
+                            _path_id, _unc_path_name, _owner_sid, _has_children, _size, _hidden, AllGroups, DirectoryItemType.SharedFolder);
+                        
 
                         // Falls keine Rechte in diesem Datensatz vergeben werden oder wenn die Rechte nur auf Unterordner gelten
                         // wird der Datensatz nicht hinzugefügt
@@ -104,7 +98,7 @@ namespace ARPS
                             continue;
 
                         // Prüft ob der aktuelle Pfad schon in der Liste vorhanden ist.
-                        PermissionItem value = Items.FirstOrDefault(item => item.PathID == newPI.PathID);
+                        PermissionItem value = Shares.FirstOrDefault(item => item.PathID == newPI.PathID);
                         // Falls der Pfad schon vorhanden ist werden die zwei Rechte über ein binär oder zusammengerechnet
                         if (value != null)
                         {
@@ -113,31 +107,42 @@ namespace ARPS
                             continue;
                         }
 
-
-                        Items.Add(newPI);
+                        // Fügt das neue Item der Collection hinzu
+                        Shares.Add(newPI);
                     }
                 }
+            }
+
+            DisplayedItems = new ObservableCollection<PermissionItem>();
+            foreach (var share in Shares)
+            {
+                // Sucht ob der Server des Share Element schon vorhanden ist
+                PermissionItem value = DisplayedItems.FirstOrDefault(item => item.ServerName == share.ServerName);
+                // Falls der Server noch nicht vorhanden ist
+                if (value == null)
+                {
+                    // Ein neuer Server wird erstellt
+                    var newServer = new PermissionItem(share.ServerName, share.Rights, true, "", false, 0, 0);
+                    newServer.UncPath = share.ServerName;
+                    // Das aktuelle Share Element wird dem Server als Kind hinzugefügt
+                    newServer.Children.Add(share);
+
+                    // Der neue Server wird der Liste hinzugefügt
+                    DisplayedItems.Add(newServer);
+                }
+                else
+                {
+                    // Falls der Server schon vorhanden ist wird das Share Element dem Server als Kind hinzugefügt
+                    value.Children.Add(share);
+                    // Die Rechte des Servers werden um die Rechte des Share Elements erweitert
+                    value.Rights = value.Rights | share.Rights;
+                }
+
             }
 
             // Schließt die MSSQL verbindung
             mssql.Close();
         }
 
-        public void GroupItems()
-        {
-            List<PermissionItem> tempItems = new List<PermissionItem>();
-
-            foreach (var item in Items)
-            {
-                // Prüft ob das Recht auf diesen Ordner gewährt wird
-                if (item.InheritanceFlags == 0 && item.PropagationFlags == 0 ||
-                    item.InheritanceFlags == 3 && item.PropagationFlags == 0 ||
-                    item.InheritanceFlags == 1 && item.PropagationFlags == 0 ||
-                    item.InheritanceFlags == 2 && item.PropagationFlags == 0)
-                {
-                    // TODO: Vergleich ob Item schon vorhanden ist und in der Liste tempItems zusammenführen
-                }
-            }
-        }
     }
 }
