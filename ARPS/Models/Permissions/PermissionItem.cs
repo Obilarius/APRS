@@ -41,7 +41,7 @@ namespace ARPS
                 if (UncPath == null)
                     return null;
 
-                return this.UncPath.TrimEnd('\\').Split('\\').Last();
+                return this.UncPath.TrimEnd('\\').Split('\\').Last().TrimEnd('$');
             }
         }
 

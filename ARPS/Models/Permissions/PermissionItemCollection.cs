@@ -35,7 +35,7 @@ namespace ARPS
 
 
         /// <summary>
-        /// Füllt die Shares in das Property Items
+        /// Füllt die Shares in ein Übergeordnetes Server Element und fügt alles dem Property DisplayedItems hinzu
         /// </summary>
         public void FillItemsWithShares()
         {
@@ -113,8 +113,13 @@ namespace ARPS
                 }
             }
 
+            // Sortiert die Liste mit Shares
+            var sortedShares = from item in Shares
+                               orderby item.FolderName
+                               select item;
+
             DisplayedItems = new ObservableCollection<PermissionItem>();
-            foreach (var share in Shares)
+            foreach (var share in sortedShares)
             {
                 // Sucht ob der Server des Share Element schon vorhanden ist
                 PermissionItem value = DisplayedItems.FirstOrDefault(item => item.ServerName == share.ServerName);
