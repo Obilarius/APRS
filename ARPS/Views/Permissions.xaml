@@ -199,6 +199,13 @@
                 <TreeView.ItemTemplate>
                     <HierarchicalDataTemplate ItemsSource="{Binding Children}">
                         <Border BorderThickness="0 0 0 1" BorderBrush="Gainsboro">
+                            
+                            <Border.ContextMenu>
+                                <ContextMenu>
+                                    <MenuItem Header="Details" Command="{Binding ContextShowDetailsCommand}"/>
+                                </ContextMenu>
+                            </Border.ContextMenu>
+                            
                             <Grid>
                                 <Grid.ColumnDefinitions>
                                     <ColumnDefinition Width="auto"/>

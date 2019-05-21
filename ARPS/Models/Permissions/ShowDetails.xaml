@@ -1,0 +1,173 @@
+﻿<controls:MetroWindow x:Class="ARPS.Models.Permissions.ShowDetails"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:controls="http://metro.mahapps.com/winfx/xaml/controls"
+        xmlns:local="clr-namespace:ARPS.Models.Permissions"
+        mc:Ignorable="d"
+        Title="Details" Height="330" Width="800" ResizeMode="NoResize">
+
+    <StackPanel Margin="10">
+        <Border BorderBrush="{StaticResource ArgesGrauBlau_dunkel}" BorderThickness="2" Padding="10">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="auto"/>
+                    <ColumnDefinition Width="*" />
+                </Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="*" />
+                    <RowDefinition Height="*" />
+                    <RowDefinition Height="*" />
+                </Grid.RowDefinitions>
+
+                <TextBlock Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2" Text="{Binding FolderName}" FontWeight="Bold" FontSize="20" Margin="0 0 0 20"/>
+
+                <TextBlock Grid.Row="1" Grid.Column="0" Text="UNC Pfad:" Margin="0 0 20 0"/>
+                <TextBlock Grid.Row="1" Grid.Column="1" Text="{Binding UncPath}"/>
+
+                <!--<TextBlock Grid.Row="1" Grid.Column="0" Text="Pricipal:" Margin="0 0 20 10"/>
+                <TextBlock Grid.Row="1" Grid.Column="1" Text="{Binding IdentityName}"/>
+
+                <TextBlock Grid.Row="2" Grid.Column="0" Text="Anwenden auf:" Margin="0 0 20 0"/>
+                <TextBlock Grid.Row="2" Grid.Column="1" Text="{Binding Propagation}"/>-->
+
+            </Grid>
+        </Border>
+
+        <Border BorderBrush="{StaticResource ArgesGrauBlau_dunkel}" BorderThickness="2" Padding="10" Margin="0 10 0 0">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="*" />
+                    <RowDefinition Height="*" />
+                    <RowDefinition Height="*" />
+                    <RowDefinition Height="*" />
+                    <RowDefinition Height="*" />
+                    <RowDefinition Height="*" />
+                    <RowDefinition Height="*" />
+                    <RowDefinition Height="*" />
+                </Grid.RowDefinitions>
+
+                <!-- Grundlegende Berechtigungen -->
+                <TextBlock Grid.Row="0" Grid.Column="0" Text="Grundlegende Berechtigungen" Margin="0 0 20 10" FontWeight="Bold"/>
+
+                <StackPanel Grid.Row="1" Grid.Column="0" Orientation="Horizontal">
+                    <CheckBox IsChecked="{Binding HasFullControl, Mode=OneWay}" IsHitTestVisible="False"/>
+                    <TextBlock Text="Vollzugriff"/>
+                </StackPanel>
+
+                <StackPanel Grid.Row="2" Grid.Column="0" Orientation="Horizontal">
+                    <CheckBox IsChecked="{Binding HasModify, Mode=OneWay}" IsHitTestVisible="False"/>
+                    <TextBlock Text="Ändern"/>
+                </StackPanel>
+
+                <StackPanel Grid.Row="3" Grid.Column="0" Orientation="Horizontal">
+                    <CheckBox IsChecked="{Binding HasReadAndExecute, Mode=OneWay}" IsHitTestVisible="False"/>
+                    <TextBlock Text="Lesen, Ausführen"/>
+                </StackPanel>
+
+                <StackPanel Grid.Row="4" Grid.Column="0" Orientation="Horizontal">
+                    <CheckBox IsChecked="{Binding HasListDirectory, Mode=OneWay}" IsHitTestVisible="False"/>
+                    <TextBlock Text="Ordnerinhalt anzeigen"/>
+                </StackPanel>
+
+                <StackPanel Grid.Row="5" Grid.Column="0" Orientation="Horizontal">
+                    <CheckBox IsChecked="{Binding HasRead, Mode=OneWay}" IsHitTestVisible="False"/>
+                    <TextBlock Text="Lesen"/>
+                </StackPanel>
+
+                <StackPanel Grid.Row="6" Grid.Column="0" Orientation="Horizontal">
+                    <CheckBox IsChecked="{Binding HasWrite, Mode=OneWay}" IsHitTestVisible="False"/>
+                    <TextBlock Text="Schreiben"/>
+                </StackPanel>
+
+                <StackPanel Grid.Row="7" Grid.Column="0" Orientation="Horizontal">
+                    <CheckBox IsChecked="{Binding HasSpecialPermissions, Mode=OneWay}" IsHitTestVisible="False"/>
+                    <TextBlock Text="Spezielle Berechtigung"/>
+                </StackPanel>
+                
+                
+                <!-- Erweiterte Berechtigung -->
+                <TextBlock Grid.Row="0" Grid.Column="1" Grid.ColumnSpan="2" Text="Erweiterte Berechtigungen" Margin="0 0 20 10" FontWeight="Bold"/>
+
+                <StackPanel Grid.Row="1" Grid.Column="1" Orientation="Horizontal">
+                    <CheckBox IsChecked="{Binding HasFullControl, Mode=OneWay}" IsHitTestVisible="False"/>
+                    <TextBlock Text="Vollzugriff"/>
+                </StackPanel>
+
+                <StackPanel Grid.Row="2" Grid.Column="1" Orientation="Horizontal">
+                    <CheckBox IsChecked="{Binding HasExecuteFileTraverse, Mode=OneWay}" IsHitTestVisible="False"/>
+                    <TextBlock Text="Ordner durchsuchen / Datei ausführen"/>
+                </StackPanel>
+
+                <StackPanel Grid.Row="3" Grid.Column="1" Orientation="Horizontal">
+                    <CheckBox IsChecked="{Binding HasReadData, Mode=OneWay}" IsHitTestVisible="False"/>
+                    <TextBlock Text="Ordner auflisten / Daten lesen"/>
+                </StackPanel>
+
+                <StackPanel Grid.Row="4" Grid.Column="1" Orientation="Horizontal">
+                    <CheckBox IsChecked="{Binding HasReadAttributes, Mode=OneWay}" IsHitTestVisible="False"/>
+                    <TextBlock Text="Attribute lesen"/>
+                </StackPanel>
+
+                <StackPanel Grid.Row="5" Grid.Column="1" Orientation="Horizontal">
+                    <CheckBox IsChecked="{Binding HasReadExtendedAttributes, Mode=OneWay}" IsHitTestVisible="False"/>
+                    <TextBlock Text="Erweiterte Attribute lesen"/>
+                </StackPanel>
+
+                <StackPanel Grid.Row="6" Grid.Column="1" Orientation="Horizontal">
+                    <CheckBox IsChecked="{Binding HasWriteDataCreateFiles, Mode=OneWay}" IsHitTestVisible="False"/>
+                    <TextBlock Text="Dateien erstellen / Daten schreiben"/>
+                </StackPanel>
+
+                <StackPanel Grid.Row="7" Grid.Column="1" Orientation="Horizontal">
+                    <CheckBox IsChecked="{Binding HasCreateDirectoryAppendData, Mode=OneWay}" IsHitTestVisible="False"/>
+                    <TextBlock Text="Ordner erstellen / Daten anhängen"/>
+                </StackPanel>
+                
+                <!-- Spalte 3 -->
+                <StackPanel Grid.Row="1" Grid.Column="2" Orientation="Horizontal">
+                    <CheckBox IsChecked="{Binding HasWriteAttributes, Mode=OneWay}" IsHitTestVisible="False"/>
+                    <TextBlock Text="Attribute schreiben"/>
+                </StackPanel>
+
+                <StackPanel Grid.Row="2" Grid.Column="2" Orientation="Horizontal">
+                    <CheckBox IsChecked="{Binding HasWriteExtendedAttributes, Mode=OneWay}" IsHitTestVisible="False"/>
+                    <TextBlock Text="Erweiterte Attribute schreiben"/>
+                </StackPanel>
+
+                <StackPanel Grid.Row="3" Grid.Column="2" Orientation="Horizontal">
+                    <CheckBox IsChecked="{Binding HasDeleteSubdirectoriesAndFiles, Mode=OneWay}" IsHitTestVisible="False"/>
+                    <TextBlock Text="Unterordner und Dateien löschen"/>
+                </StackPanel>
+
+                <StackPanel Grid.Row="4" Grid.Column="2" Orientation="Horizontal">
+                    <CheckBox IsChecked="{Binding HasDelete, Mode=OneWay}" IsHitTestVisible="False"/>
+                    <TextBlock Text="Löschen"/>
+                </StackPanel>
+
+                <StackPanel Grid.Row="5" Grid.Column="2" Orientation="Horizontal">
+                    <CheckBox IsChecked="{Binding HasReadPermissions, Mode=OneWay}" IsHitTestVisible="False"/>
+                    <TextBlock Text="Berechtigungen lesen"/>
+                </StackPanel>
+
+                <StackPanel Grid.Row="6" Grid.Column="2" Orientation="Horizontal">
+                    <CheckBox IsChecked="{Binding HasChangePermissions, Mode=OneWay}" IsHitTestVisible="False"/>
+                    <TextBlock Text="Berechtigungen ändern"/>
+                </StackPanel>
+
+                <StackPanel Grid.Row="7" Grid.Column="2" Orientation="Horizontal">
+                    <CheckBox IsChecked="{Binding HasTakeOwnership, Mode=OneWay}" IsHitTestVisible="False"/>
+                    <TextBlock Text="Besitz übernehmen"/>
+                </StackPanel>
+
+            </Grid>
+        </Border>
+
+    </StackPanel>
+</controls:MetroWindow>

@@ -1,4 +1,5 @@
-﻿using System;
+﻿using ARPS.Models.Permissions;
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Data.SqlClient;
@@ -6,12 +7,27 @@ using System.Linq;
 using System.Security.AccessControl;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows;
 using System.Windows.Input;
 
 namespace ARPS
 {
     public class PermissionItem : DirectoryACE
     {
+
+        #region Commands
+        /// <summary>
+        /// Der Befehl um das Item aufzuklappen
+        /// </summary>
+        public ICommand ExpandCommand { get; set; }
+
+        /// <summary>
+        /// Command der beim Klick im COntextMenu auf Details ausgelöst wird
+        /// </summary>
+        public ICommand ContextShowDetailsCommand { get; set; }
+        #endregion
+
+
         public int PathID { get; set; }
         public string UncPath { get; set; }
         public string OwnerSid { get; set; }
@@ -23,6 +39,9 @@ namespace ARPS
 
         public DirectoryItemType ItemType { get; set; }
 
+        /// <summary>
+        /// Gibt den Name des Servers zurück
+        /// </summary>
         public string ServerName
         {
             get
@@ -34,6 +53,9 @@ namespace ARPS
             }
         }
 
+        /// <summary>
+        /// Gibt den Namen des Ordners zurück
+        /// </summary>
         public string FolderName
         {
             get
@@ -186,9 +208,16 @@ namespace ARPS
         }
 
         /// <summary>
-        /// Der Befehl um das Item aufzuklappen
+        /// Funktion die Ausgeführt wird wenn jemand auf Details im Kontextmenü klickt
         /// </summary>
-        public ICommand ExpandCommand { get; set; }
+        public void ContextShowDetails()
+        {
+            ShowDetails view = new ShowDetails { DataContext = this };
+            view.Show();
+
+        }
+
+        
 
 
 
@@ -223,7 +252,8 @@ namespace ARPS
             ItemType = itemType;
 
             // Erstelle Commands
-            this.ExpandCommand = new RelayCommand(Expand);
+            ExpandCommand = new RelayCommand(Expand);
+            ContextShowDetailsCommand = new RelayCommand(ContextShowDetails);
 
 
             Children = new ObservableCollection<PermissionItem>();
@@ -245,7 +275,8 @@ namespace ARPS
             base(sid, rights, type, fileSystemRight, isInherited, inheritanceFlags, propagationFlags)
         {
             // Erstelle Commands
-            this.ExpandCommand = new RelayCommand(Expand);
+            ExpandCommand = new RelayCommand(Expand);
+            ContextShowDetailsCommand = new RelayCommand(ContextShowDetails);
 
             ItemType = DirectoryItemType.Server;
 

@@ -127,6 +127,7 @@
       <SubType>Designer</SubType>
     </ApplicationDefinition>
     <Compile Include="Models\AD\ADStructure.cs" />
+    <Compile Include="Models\ContextAction.cs" />
     <Compile Include="Models\Dashboard\CountEntry.cs" />
     <Compile Include="Models\Dashboard\OU.cs" />
     <Compile Include="Models\Dashboard\Groups.cs" />
@@ -134,6 +135,9 @@
     <Compile Include="Models\AD\ADElement.cs" />
     <Compile Include="Models\Permissions\PermissionItem.cs" />
     <Compile Include="Models\Permissions\PermissionItemCollection.cs" />
+    <Compile Include="Models\Permissions\ShowDetails.xaml.cs">
+      <DependentUpon>ShowDetails.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Models\Resources\Converter\SIDToImageConverter.cs" />
     <Compile Include="Models\Resources\Data\DirectoryACE.cs" />
     <Compile Include="Models\Resources\Data\DirectoryInfoItem.cs" />
@@ -180,6 +184,10 @@
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
+    <Page Include="Models\Permissions\ShowDetails.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Resources\ColorRessources.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>

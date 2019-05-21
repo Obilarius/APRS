@@ -7,11 +7,14 @@ using System.Linq;
 using System.Security.AccessControl;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Input;
 
 namespace ARPS
 {
     public class PermissionItemCollection : BindableBase
     {
+        
+
         /// <summary>
         /// Hällt die Items die angezeigt werden
         /// </summary>
@@ -22,15 +25,21 @@ namespace ARPS
         /// </summary>
         List<ADElement> AllGroups { get; set; }
 
+        
+
         /// <summary>
         /// Konstruktor
         /// </summary>
         /// <param name="userSid"></param>
         public PermissionItemCollection(string userSid)
         {
+            
+
             // Liest alle Gruppen des Users aus
             AllGroups = new List<ADElement>(ADStructure.GetGroupsFromUser(userSid));
             AllGroups.Add(ADStructure.GetADUser(userSid));
+
+
         }
 
 
@@ -148,6 +157,8 @@ namespace ARPS
             // Schließt die MSSQL verbindung
             mssql.Close();
         }
+
+        
 
     }
 }

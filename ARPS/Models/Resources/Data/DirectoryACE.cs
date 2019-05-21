@@ -7,7 +7,23 @@ namespace ARPS
     public class DirectoryACE : BindableBase, IEquatable<DirectoryACE>
     {
         public bool IsGroup { get; }
-        public string IdentityName { get; }
+
+        private string _identityName;
+        public string IdentityName {
+            get
+            {
+                if (_identityName != null)
+                    return _identityName;
+                else
+                {
+                    return ADStructure.GetADElement(SID).ToString();
+                }
+            }
+            set
+            {
+                _identityName = value;
+            }
+        }
         public string DistinguishedName { get; }
         public int ACEId { get; }
         public string SID { get; }

@@ -28,6 +28,8 @@ namespace ARPS.ViewModels
         /// Command wird ausgeführt wenn sich der selektierte User ändert
         /// </summary>
         public ICommand UserSelectionChangedCommand { get; set; }
+
+        
         #endregion
 
         /// <summary>
@@ -60,11 +62,7 @@ namespace ARPS.ViewModels
             }
         }
 
-        /// <summary>
-        /// Anzeigetiefe der Ordnerpfade
-        /// </summary>
-        public int ViewDeepth { get; set; }
-
+        
 
         #region Search
         /// <summary>
@@ -87,15 +85,13 @@ namespace ARPS.ViewModels
             // Erstelle Commands
             SearchUserCommand = new RelayCommand(SearchUser);
             ClearSearchUserCommand = new RelayCommand(ClearSearchUser);
+            
 
             // Erstellt die beiden Listen für die User
             AllUsers = new List<ADElement>();
             UsersFiltered = new ObservableCollection<ADElement>();
 
             AsyncLoadedAllUsers();
-
-            // Setze Suchtiefe bei Start auf 3
-            ViewDeepth = 3;
         }
         #endregion
 
@@ -202,5 +198,7 @@ namespace ARPS.ViewModels
         }
 
         #endregion
+
+        
     }
 }
