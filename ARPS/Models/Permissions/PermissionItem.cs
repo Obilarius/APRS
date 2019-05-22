@@ -35,7 +35,6 @@ namespace ARPS
         public long Size { get; set; }
         public bool IsHidden { get; set; }
         public int ParentId { get; set; }
-        public int ScanDeepth { get; set; }
 
         public DirectoryItemType ItemType { get; set; }
 
