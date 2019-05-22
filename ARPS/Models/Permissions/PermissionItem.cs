@@ -1,4 +1,5 @@
 ﻿using ARPS.Models.Permissions;
+using Prism.Mvvm;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -12,7 +13,7 @@ using System.Windows.Input;
 
 namespace ARPS
 {
-    public class PermissionItem : DirectoryACE
+    public class PermissionItem : BindableBase
     {
 
         #region Commands
@@ -36,7 +37,33 @@ namespace ARPS
         public bool IsHidden { get; set; }
         public int ParentId { get; set; }
 
+        /// <summary>
+        /// Hält die Rechte für das PermissionItem. Hier werden alle Rechte der directoryAces zusammengerechnet
+        /// </summary>
+        public DirectoryACE folderAce { get; set; }
+
+        /// <summary>
+        /// Hält die einzelnen Rechte auf das PermissionItem
+        /// </summary>
+        public List<DirectoryACE> directoryACEs { get; set; }
+
         public DirectoryItemType ItemType { get; set; }
+
+        /// <summary>
+        /// Gibt die Größe lesbar zurück in KB, MB, GB...
+        /// </summary>
+        public string readableSize {
+            get
+            {
+                return DirectoryStructure.GetBytesReadable(Size);
+            }
+
+        }
+
+        /// <summary>
+        /// Hält den Owner
+        /// </summary>
+        public ADElement Owner { get; set; }
 
         /// <summary>
         /// Gibt den Name des Servers zurück
@@ -116,7 +143,7 @@ namespace ARPS
 
             foreach (ADElement group in AllGroups)
             {
-                // Der SQL Befehl um alle Ordner abzurufen die root sind
+                // Der SQL Befehl
                 string sql = $"SELECT ace.*, d.* " +
                     $"FROM [ARPS_Test].[fs].[aces] ace " +
                     $"LEFT JOIN ARPS_Test.fs.acls acl " +
@@ -155,27 +182,42 @@ namespace ARPS
                         long _size = (long)reader["_size"];
                         bool _hidden = IsHidden;
 
-                        PermissionItem newPI = new PermissionItem(_sid, _rights, _type, _fsr, _is_inherited, _inheritance_flags, _propagation_flags,
-                            _path_id, _unc_path_name, _owner_sid, _has_children, _size, _hidden, AllGroups, DirectoryItemType.Folder);
+                        // Legt für die ausgelesene Zeile ein neues PermissionItem an in dem alle Infos über diesen Ordner gespeichert sind
+                        PermissionItem newPI = new PermissionItem(_path_id, _unc_path_name, _owner_sid, _has_children, _size, _hidden, AllGroups, DirectoryItemType.Folder);
+
+                        // Legt für die ausgelesene Zeile ein neues ACE an in dem alle Infos über das Rechte Objekt angeben sind
+                        DirectoryACE newACE = new DirectoryACE(_sid, _rights, _type, _fsr, _is_inherited, _inheritance_flags, _propagation_flags);
 
 
                         // Falls keine Rechte in diesem Datensatz vergeben werden oder wenn die Rechte nur auf Unterordner gelten
                         // wird der Datensatz nicht hinzugefügt
-                        if (newPI.Rights <= 0 || !newPI.PropagationOnThisFolder)
+                        if (newACE.Rights <= 0 || !newACE.PropagationOnThisFolder)
                             continue;
 
-                        // Prüft ob der aktuelle Pfad schon in der Liste vorhanden ist.
+                        // Prüft ob das PermissionItem schon in der Liste vorhanden ist.
                         PermissionItem value = Children.FirstOrDefault(item => item.PathID == newPI.PathID);
-                        // Falls der Pfad schon vorhanden ist werden die zwei Rechte über ein binär oder zusammengerechnet
+
+                        // Falls der Pfad schon vorhanden ist wird das neue ACE Object dem bestehenden PermissionItem hinzugefügt
                         if (value != null)
                         {
-                            value.Rights = newPI.Rights | value.Rights;
-                            // Das neue Item wird nicht hunzugefügt.
-                            continue;
-                        }
+                            // Das neue ACE Objekt wird dem Permission Item (Ordner) hinzugefügt
+                            value.directoryACEs.Add(newACE);
 
-                        // Fügt das neue Item der Collection hinzu
-                        Children.Add(newPI);
+                            // Verbindet die vorhandenen Rechte und die neuen Rechte über ein Binäres ODER
+                            value.folderAce.Rights = value.folderAce.Rights | newACE.Rights;
+                        }
+                        // Falls das PermissionItem noch nicht vorhanden ist, wird das PerItem hinzugefügt und das neue Ace wird ihm hinzugefügt
+                        else
+                        {
+                            // Fügt das neue ACE dem neuen PerItem hinzu
+                            newPI.directoryACEs.Add(newACE);
+
+                            // Setzt das Recht des Ordners auf das neue Ace Recht (Das erstes Ace im PermItem)
+                            newPI.folderAce.Rights = newACE.Rights;
+
+                            // Fügt das neue PerItem der Collection hinzu
+                            Children.Add(newPI);
+                        }
                     }
                 }
             }
@@ -214,6 +256,9 @@ namespace ARPS
             ShowDetails view = new ShowDetails { DataContext = this };
             view.Show();
 
+            // Füllt den Owner
+            Owner = ADStructure.GetADElement(OwnerSid);
+
         }
 
         
@@ -223,13 +268,6 @@ namespace ARPS
         /// <summary>
         /// Konstruktor
         /// </summary>
-        /// <param name="sid"></param>
-        /// <param name="rights"></param>
-        /// <param name="type"></param>
-        /// <param name="fileSystemRight"></param>
-        /// <param name="isInherited"></param>
-        /// <param name="inheritanceFlags"></param>
-        /// <param name="propagationFlags"></param>
         /// <param name="_path_id"></param>
         /// <param name="_unc_path_name"></param>
         /// <param name="_owner_sid"></param>
@@ -237,9 +275,8 @@ namespace ARPS
         /// <param name="_size"></param>
         /// <param name="_path_name"></param>
         /// <param name="_hidden"></param>
-        public PermissionItem(string sid, FileSystemRights rights, bool type, string fileSystemRight, bool isInherited, int inheritanceFlags, int propagationFlags,
-            int _path_id, string _unc_path_name, string _owner_sid, bool _has_children, long _size, bool _hidden, List<ADElement> allGroups, DirectoryItemType itemType) : 
-            base(sid, rights, type, fileSystemRight, isInherited, inheritanceFlags, propagationFlags)
+        public PermissionItem(int _path_id, string _unc_path_name, string _owner_sid, bool _has_children, long _size, 
+            bool _hidden, List<ADElement> allGroups, DirectoryItemType itemType)
         {
             PathID = _path_id;
             UncPath = _unc_path_name;
@@ -258,28 +295,31 @@ namespace ARPS
             Children = new ObservableCollection<PermissionItem>();
             if (HasChildren)
                 Children.Add(null);
+
+            directoryACEs = new List<DirectoryACE>();
+
+            // Setzt die rechte des Ordners initial auf ein leeres Objekt
+            folderAce = new DirectoryACE("-1");
         }
 
         /// <summary>
         /// Konstruktor für Server
         /// </summary>
-        /// <param name="sid"></param>
-        /// <param name="rights"></param>
-        /// <param name="type"></param>
-        /// <param name="fileSystemRight"></param>
-        /// <param name="isInherited"></param>
-        /// <param name="inheritanceFlags"></param>
-        /// <param name="propagationFlags"></param>
-        public PermissionItem(string sid, FileSystemRights rights, bool type, string fileSystemRight, bool isInherited, int inheritanceFlags, int propagationFlags) :
-            base(sid, rights, type, fileSystemRight, isInherited, inheritanceFlags, propagationFlags)
+        public PermissionItem(string serverName)
         {
             // Erstelle Commands
             ExpandCommand = new RelayCommand(Expand);
             ContextShowDetailsCommand = new RelayCommand(ContextShowDetails);
 
+            // Setzt den UNCPfad auf den Servernamen
+            UncPath = serverName;
+
             ItemType = DirectoryItemType.Server;
 
             Children = new ObservableCollection<PermissionItem>();
+
+            // Setzt die rechte des Ordners initial auf ein leeres Objekt
+            folderAce = new DirectoryACE("-1");
         }
     }
 }

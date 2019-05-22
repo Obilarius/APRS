@@ -5,36 +5,56 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:controls="http://metro.mahapps.com/winfx/xaml/controls"
         xmlns:local="clr-namespace:ARPS.Models.Permissions"
+        xmlns:arps="clr-namespace:ARPS"
         mc:Ignorable="d"
-        Title="Details" Height="330" Width="800" ResizeMode="NoResize">
+        Title="Details" Height="640" Width="850" ResizeMode="CanResize">
 
     <StackPanel Margin="10">
         <Border BorderBrush="{StaticResource ArgesGrauBlau_dunkel}" BorderThickness="2" Padding="10">
+            <!--<Grid>
+                <StackPanel Orientation="Horizontal">
+                    <Image Width="20" Source="{Binding ItemType, Converter={x:Static arps:HeaderToImageConverter.Instance}}" VerticalAlignment="Center"/>
+                    <TextBlock Text="{Binding FolderName}" FontWeight="Bold" FontSize="22" Margin="20 0 0 0" VerticalAlignment="Center"/>
+                </StackPanel>
+
+                <StackPanel Orientation="Horizontal" Margin="0 10 0 0">
+                    <TextBlock Text="UNC Pfad:" Margin="0 0 20 0"/>
+                    <TextBlock Text="{Binding UncPath}"/>
+                </StackPanel>
+            </Grid>-->
+
             <Grid>
                 <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="40"/>
+                    <ColumnDefinition Width="*"/>
                     <ColumnDefinition Width="auto"/>
-                    <ColumnDefinition Width="*" />
                 </Grid.ColumnDefinitions>
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="*" />
-                    <RowDefinition Height="*" />
-                    <RowDefinition Height="*" />
-                </Grid.RowDefinitions>
 
-                <TextBlock Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2" Text="{Binding FolderName}" FontWeight="Bold" FontSize="20" Margin="0 0 0 20"/>
+                <Image Grid.Column="0" Height="25" Source="{Binding ItemType, Converter={x:Static arps:HeaderToImageConverter.Instance}}"/>
+                <StackPanel Grid.Column="1">
+                    <TextBlock Text="{Binding FolderName}" FontSize="18" FontWeight="Bold" Foreground="{StaticResource ArgesBlau}"/>
 
-                <TextBlock Grid.Row="1" Grid.Column="0" Text="UNC Pfad:" Margin="0 0 20 0"/>
-                <TextBlock Grid.Row="1" Grid.Column="1" Text="{Binding UncPath}"/>
+                    <TextBlock Text="{Binding UncPath}" Foreground="{StaticResource ArgesBlau}" Margin="0 5 0 0"/>
 
-                <!--<TextBlock Grid.Row="1" Grid.Column="0" Text="Pricipal:" Margin="0 0 20 10"/>
-                <TextBlock Grid.Row="1" Grid.Column="1" Text="{Binding IdentityName}"/>
+                    <StackPanel Orientation="Horizontal" Margin="0 5 0 0">
+                        <TextBlock Text="Besitzer:" Foreground="{StaticResource ArgesBlau}"/>
+                        
+                        <Image Height="16" Width="16" Source="{Binding Owner.Type, Converter={x:Static arps:UserTypeToImageConverter.Instance}}" Margin="10 0 5 0"/>
+                        <TextBlock Text="{Binding Owner}" Foreground="{StaticResource ArgesBlau}" Margin="0 0 10 0"/>
+                        <TextBlock Text="{Binding OwnerSid, StringFormat=({0})}" Foreground="{StaticResource ArgesBlau}" />
+                    </StackPanel>
+                </StackPanel>
 
-                <TextBlock Grid.Row="2" Grid.Column="0" Text="Anwenden auf:" Margin="0 0 20 0"/>
-                <TextBlock Grid.Row="2" Grid.Column="1" Text="{Binding Propagation}"/>-->
-
+                <TextBlock Grid.Column="3" Text="{Binding readableSize, FallbackValue=''}" FontSize="20" 
+                           HorizontalAlignment="Left" VerticalAlignment="Center" Margin="0 0 20 0" FontWeight="Bold" Foreground="{StaticResource ArgesBlau}"/>
+                
+                
             </Grid>
+
+
         </Border>
 
+        <!-- Grundlegende & Erweiterte Berechtigungen -->
         <Border BorderBrush="{StaticResource ArgesGrauBlau_dunkel}" BorderThickness="2" Padding="10" Margin="0 10 0 0">
             <Grid>
                 <Grid.ColumnDefinitions>
@@ -57,37 +77,37 @@
                 <TextBlock Grid.Row="0" Grid.Column="0" Text="Grundlegende Berechtigungen" Margin="0 0 20 10" FontWeight="Bold"/>
 
                 <StackPanel Grid.Row="1" Grid.Column="0" Orientation="Horizontal">
-                    <CheckBox IsChecked="{Binding HasFullControl, Mode=OneWay}" IsHitTestVisible="False"/>
+                    <CheckBox IsChecked="{Binding folderAce.HasFullControl, Mode=OneWay}" IsHitTestVisible="False"/>
                     <TextBlock Text="Vollzugriff"/>
                 </StackPanel>
 
                 <StackPanel Grid.Row="2" Grid.Column="0" Orientation="Horizontal">
-                    <CheckBox IsChecked="{Binding HasModify, Mode=OneWay}" IsHitTestVisible="False"/>
+                    <CheckBox IsChecked="{Binding folderAce.HasModify, Mode=OneWay}" IsHitTestVisible="False"/>
                     <TextBlock Text="Ändern"/>
                 </StackPanel>
 
                 <StackPanel Grid.Row="3" Grid.Column="0" Orientation="Horizontal">
-                    <CheckBox IsChecked="{Binding HasReadAndExecute, Mode=OneWay}" IsHitTestVisible="False"/>
+                    <CheckBox IsChecked="{Binding folderAce.HasReadAndExecute, Mode=OneWay}" IsHitTestVisible="False"/>
                     <TextBlock Text="Lesen, Ausführen"/>
                 </StackPanel>
 
                 <StackPanel Grid.Row="4" Grid.Column="0" Orientation="Horizontal">
-                    <CheckBox IsChecked="{Binding HasListDirectory, Mode=OneWay}" IsHitTestVisible="False"/>
+                    <CheckBox IsChecked="{Binding folderAce.HasListDirectory, Mode=OneWay}" IsHitTestVisible="False"/>
                     <TextBlock Text="Ordnerinhalt anzeigen"/>
                 </StackPanel>
 
                 <StackPanel Grid.Row="5" Grid.Column="0" Orientation="Horizontal">
-                    <CheckBox IsChecked="{Binding HasRead, Mode=OneWay}" IsHitTestVisible="False"/>
+                    <CheckBox IsChecked="{Binding folderAce.HasRead, Mode=OneWay}" IsHitTestVisible="False"/>
                     <TextBlock Text="Lesen"/>
                 </StackPanel>
 
                 <StackPanel Grid.Row="6" Grid.Column="0" Orientation="Horizontal">
-                    <CheckBox IsChecked="{Binding HasWrite, Mode=OneWay}" IsHitTestVisible="False"/>
+                    <CheckBox IsChecked="{Binding folderAce.HasWrite, Mode=OneWay}" IsHitTestVisible="False"/>
                     <TextBlock Text="Schreiben"/>
                 </StackPanel>
 
                 <StackPanel Grid.Row="7" Grid.Column="0" Orientation="Horizontal">
-                    <CheckBox IsChecked="{Binding HasSpecialPermissions, Mode=OneWay}" IsHitTestVisible="False"/>
+                    <CheckBox IsChecked="{Binding folderAce.HasSpecialPermissions, Mode=OneWay}" IsHitTestVisible="False"/>
                     <TextBlock Text="Spezielle Berechtigung"/>
                 </StackPanel>
                 
@@ -96,77 +116,271 @@
                 <TextBlock Grid.Row="0" Grid.Column="1" Grid.ColumnSpan="2" Text="Erweiterte Berechtigungen" Margin="0 0 20 10" FontWeight="Bold"/>
 
                 <StackPanel Grid.Row="1" Grid.Column="1" Orientation="Horizontal">
-                    <CheckBox IsChecked="{Binding HasFullControl, Mode=OneWay}" IsHitTestVisible="False"/>
+                    <CheckBox IsChecked="{Binding folderAce.HasFullControl, Mode=OneWay}" IsHitTestVisible="False"/>
                     <TextBlock Text="Vollzugriff"/>
                 </StackPanel>
 
                 <StackPanel Grid.Row="2" Grid.Column="1" Orientation="Horizontal">
-                    <CheckBox IsChecked="{Binding HasExecuteFileTraverse, Mode=OneWay}" IsHitTestVisible="False"/>
+                    <CheckBox IsChecked="{Binding folderAce.HasExecuteFileTraverse, Mode=OneWay}" IsHitTestVisible="False"/>
                     <TextBlock Text="Ordner durchsuchen / Datei ausführen"/>
                 </StackPanel>
 
                 <StackPanel Grid.Row="3" Grid.Column="1" Orientation="Horizontal">
-                    <CheckBox IsChecked="{Binding HasReadData, Mode=OneWay}" IsHitTestVisible="False"/>
+                    <CheckBox IsChecked="{Binding folderAce.HasReadData, Mode=OneWay}" IsHitTestVisible="False"/>
                     <TextBlock Text="Ordner auflisten / Daten lesen"/>
                 </StackPanel>
 
                 <StackPanel Grid.Row="4" Grid.Column="1" Orientation="Horizontal">
-                    <CheckBox IsChecked="{Binding HasReadAttributes, Mode=OneWay}" IsHitTestVisible="False"/>
+                    <CheckBox IsChecked="{Binding folderAce.HasReadAttributes, Mode=OneWay}" IsHitTestVisible="False"/>
                     <TextBlock Text="Attribute lesen"/>
                 </StackPanel>
 
                 <StackPanel Grid.Row="5" Grid.Column="1" Orientation="Horizontal">
-                    <CheckBox IsChecked="{Binding HasReadExtendedAttributes, Mode=OneWay}" IsHitTestVisible="False"/>
+                    <CheckBox IsChecked="{Binding folderAce.HasReadExtendedAttributes, Mode=OneWay}" IsHitTestVisible="False"/>
                     <TextBlock Text="Erweiterte Attribute lesen"/>
                 </StackPanel>
 
                 <StackPanel Grid.Row="6" Grid.Column="1" Orientation="Horizontal">
-                    <CheckBox IsChecked="{Binding HasWriteDataCreateFiles, Mode=OneWay}" IsHitTestVisible="False"/>
+                    <CheckBox IsChecked="{Binding folderAce.HasWriteDataCreateFiles, Mode=OneWay}" IsHitTestVisible="False"/>
                     <TextBlock Text="Dateien erstellen / Daten schreiben"/>
                 </StackPanel>
 
                 <StackPanel Grid.Row="7" Grid.Column="1" Orientation="Horizontal">
-                    <CheckBox IsChecked="{Binding HasCreateDirectoryAppendData, Mode=OneWay}" IsHitTestVisible="False"/>
+                    <CheckBox IsChecked="{Binding folderAce.HasCreateDirectoryAppendData, Mode=OneWay}" IsHitTestVisible="False"/>
                     <TextBlock Text="Ordner erstellen / Daten anhängen"/>
                 </StackPanel>
                 
                 <!-- Spalte 3 -->
                 <StackPanel Grid.Row="1" Grid.Column="2" Orientation="Horizontal">
-                    <CheckBox IsChecked="{Binding HasWriteAttributes, Mode=OneWay}" IsHitTestVisible="False"/>
+                    <CheckBox IsChecked="{Binding folderAce.HasWriteAttributes, Mode=OneWay}" IsHitTestVisible="False"/>
                     <TextBlock Text="Attribute schreiben"/>
                 </StackPanel>
 
                 <StackPanel Grid.Row="2" Grid.Column="2" Orientation="Horizontal">
-                    <CheckBox IsChecked="{Binding HasWriteExtendedAttributes, Mode=OneWay}" IsHitTestVisible="False"/>
+                    <CheckBox IsChecked="{Binding folderAce.HasWriteExtendedAttributes, Mode=OneWay}" IsHitTestVisible="False"/>
                     <TextBlock Text="Erweiterte Attribute schreiben"/>
                 </StackPanel>
 
                 <StackPanel Grid.Row="3" Grid.Column="2" Orientation="Horizontal">
-                    <CheckBox IsChecked="{Binding HasDeleteSubdirectoriesAndFiles, Mode=OneWay}" IsHitTestVisible="False"/>
+                    <CheckBox IsChecked="{Binding folderAce.HasDeleteSubdirectoriesAndFiles, Mode=OneWay}" IsHitTestVisible="False"/>
                     <TextBlock Text="Unterordner und Dateien löschen"/>
                 </StackPanel>
 
                 <StackPanel Grid.Row="4" Grid.Column="2" Orientation="Horizontal">
-                    <CheckBox IsChecked="{Binding HasDelete, Mode=OneWay}" IsHitTestVisible="False"/>
+                    <CheckBox IsChecked="{Binding folderAce.HasDelete, Mode=OneWay}" IsHitTestVisible="False"/>
                     <TextBlock Text="Löschen"/>
                 </StackPanel>
 
                 <StackPanel Grid.Row="5" Grid.Column="2" Orientation="Horizontal">
-                    <CheckBox IsChecked="{Binding HasReadPermissions, Mode=OneWay}" IsHitTestVisible="False"/>
+                    <CheckBox IsChecked="{Binding folderAce.HasReadPermissions, Mode=OneWay}" IsHitTestVisible="False"/>
                     <TextBlock Text="Berechtigungen lesen"/>
                 </StackPanel>
 
                 <StackPanel Grid.Row="6" Grid.Column="2" Orientation="Horizontal">
-                    <CheckBox IsChecked="{Binding HasChangePermissions, Mode=OneWay}" IsHitTestVisible="False"/>
+                    <CheckBox IsChecked="{Binding folderAce.HasChangePermissions, Mode=OneWay}" IsHitTestVisible="False"/>
                     <TextBlock Text="Berechtigungen ändern"/>
                 </StackPanel>
 
                 <StackPanel Grid.Row="7" Grid.Column="2" Orientation="Horizontal">
-                    <CheckBox IsChecked="{Binding HasTakeOwnership, Mode=OneWay}" IsHitTestVisible="False"/>
+                    <CheckBox IsChecked="{Binding folderAce.HasTakeOwnership, Mode=OneWay}" IsHitTestVisible="False"/>
                     <TextBlock Text="Besitz übernehmen"/>
                 </StackPanel>
 
             </Grid>
+        </Border>
+
+        <!-- Einzelne NTFS Rechte für jedes einzelne ACE -->
+        <Border BorderBrush="{StaticResource ArgesGrauBlau_dunkel}" BorderThickness="2" Padding="10" Margin="0 10 0 0" Height="300">
+            <DataGrid ItemsSource="{Binding directoryACEs}" AutoGenerateColumns="False" 
+                          IsReadOnly="True" GridLinesVisibility="Horizontal" MinHeight="500">
+
+                <DataGrid.ColumnHeaderStyle>
+                    <Style TargetType="{x:Type DataGridColumnHeader}">
+                        <Setter Property="LayoutTransform">
+                            <Setter.Value>
+                                <RotateTransform Angle="270" />
+                            </Setter.Value>
+                        </Setter>
+                        <Setter Property="Background" Value="White"/>
+                        <Setter Property="Margin" Value="0 0 0 10"/>
+                        <Setter Property="FontWeight" Value="Bold"/>
+                        <Setter Property="Width" Value="130"/>
+                        <Setter Property="BorderThickness" Value="0"/>
+                    </Style>
+                </DataGrid.ColumnHeaderStyle>
+
+                <DataGrid.Columns>
+
+                    <DataGridTemplateColumn Header="" Width="30">
+                        <DataGridTemplateColumn.CellTemplate>
+                            <DataTemplate>
+                                <Image Width="20" Source="{Binding SID, Converter={x:Static arps:SIDToImageConverter.Instance}}"/>
+                            </DataTemplate>
+                        </DataGridTemplateColumn.CellTemplate>
+                    </DataGridTemplateColumn>
+
+                    <DataGridTemplateColumn Header="" SortMemberPath="IdentityName">
+                        <DataGridTemplateColumn.CellTemplate>
+                            <DataTemplate>
+                                <TextBlock Text="{Binding IdentityName}" Margin="0 0 30 0" />
+                            </DataTemplate>
+                        </DataGridTemplateColumn.CellTemplate>
+                    </DataGridTemplateColumn>
+
+                    <DataGridTemplateColumn Header="Vererbt" Width="30" SortMemberPath="IsInherited">
+                        <DataGridTemplateColumn.CellTemplate>
+                            <DataTemplate>
+                                <Image Width="20" Height="20" Source="{StaticResource Img_Checkmark}">
+                                    <Image.Style>
+                                        <Style TargetType="Image">
+                                            <Style.Triggers>
+                                                <DataTrigger  Binding="{Binding IsInherited}" Value="False">
+                                                    <Setter Property="Visibility" Value="Hidden"/>
+                                                </DataTrigger >
+                                            </Style.Triggers>
+                                        </Style>
+                                    </Image.Style>
+                                </Image>
+                            </DataTemplate>
+                        </DataGridTemplateColumn.CellTemplate>
+                    </DataGridTemplateColumn>
+
+                    <DataGridTemplateColumn Header="Vollzugriff" Width="30" SortMemberPath="HasFullControl">
+                        <DataGridTemplateColumn.CellTemplate>
+                            <DataTemplate>
+                                <Image Width="20" Height="20" Source="{StaticResource Img_Checkmark}">
+                                    <Image.Style>
+                                        <Style TargetType="Image">
+                                            <Style.Triggers>
+                                                <DataTrigger  Binding="{Binding HasFullControl}" Value="False">
+                                                    <Setter Property="Visibility" Value="Hidden"/>
+                                                </DataTrigger>
+                                                <DataTrigger Binding="{Binding IsInherited}" Value="True">
+                                                    <Setter Property="Opacity" Value="0.3"/>
+                                                </DataTrigger>
+                                            </Style.Triggers>
+                                        </Style>
+                                    </Image.Style>
+                                </Image>
+                            </DataTemplate>
+                        </DataGridTemplateColumn.CellTemplate>
+                    </DataGridTemplateColumn>
+
+                    <DataGridTemplateColumn Header="Ändern" Width="30" SortMemberPath="HasModify">
+                        <DataGridTemplateColumn.CellTemplate>
+                            <DataTemplate>
+                                <Image Width="20" Height="20" Source="{StaticResource Img_Checkmark}">
+                                    <Image.Style>
+                                        <Style TargetType="Image">
+                                            <Style.Triggers>
+                                                <DataTrigger  Binding="{Binding HasModify}" Value="False">
+                                                    <Setter Property="Visibility" Value="Hidden"/>
+                                                </DataTrigger >
+                                                <DataTrigger Binding="{Binding IsInherited}" Value="True">
+                                                    <Setter Property="Opacity" Value="0.3"/>
+                                                </DataTrigger>
+                                            </Style.Triggers>
+                                        </Style>
+                                    </Image.Style>
+                                </Image>
+                            </DataTemplate>
+                        </DataGridTemplateColumn.CellTemplate>
+                    </DataGridTemplateColumn>
+
+                    <DataGridTemplateColumn Header="Lesen, Ausführen" Width="30" SortMemberPath="HasReadAndExecute">
+                        <DataGridTemplateColumn.CellTemplate>
+                            <DataTemplate>
+                                <Image Width="20" Height="20" Source="{StaticResource Img_Checkmark}">
+                                    <Image.Style>
+                                        <Style TargetType="Image">
+                                            <Style.Triggers>
+                                                <DataTrigger  Binding="{Binding HasReadAndExecute}" Value="False">
+                                                    <Setter Property="Visibility" Value="Hidden"/>
+                                                </DataTrigger >
+                                                <DataTrigger Binding="{Binding IsInherited}" Value="True">
+                                                    <Setter Property="Opacity" Value="0.3"/>
+                                                </DataTrigger>
+                                            </Style.Triggers>
+                                        </Style>
+                                    </Image.Style>
+                                </Image>
+                            </DataTemplate>
+                        </DataGridTemplateColumn.CellTemplate>
+                    </DataGridTemplateColumn>
+
+                    <DataGridTemplateColumn Header="Schreiben" Width="30" SortMemberPath="HasWrite">
+                        <DataGridTemplateColumn.CellTemplate>
+                            <DataTemplate>
+                                <Image Width="20" Height="20" Source="{StaticResource Img_Checkmark}">
+                                    <Image.Style>
+                                        <Style TargetType="Image">
+                                            <Style.Triggers>
+                                                <DataTrigger  Binding="{Binding HasWrite}" Value="False">
+                                                    <Setter Property="Visibility" Value="Hidden"/>
+                                                </DataTrigger >
+                                                <DataTrigger Binding="{Binding IsInherited}" Value="True">
+                                                    <Setter Property="Opacity" Value="0.3"/>
+                                                </DataTrigger>
+                                            </Style.Triggers>
+                                        </Style>
+                                    </Image.Style>
+                                </Image>
+                            </DataTemplate>
+                        </DataGridTemplateColumn.CellTemplate>
+                    </DataGridTemplateColumn>
+
+                    <DataGridTemplateColumn Header="Lesen" Width="30" SortMemberPath="HasRead">
+                        <DataGridTemplateColumn.CellTemplate>
+                            <DataTemplate>
+                                <Image Width="20" Height="20" Source="{StaticResource Img_Checkmark}">
+                                    <Image.Style>
+                                        <Style TargetType="Image">
+                                            <Style.Triggers>
+                                                <DataTrigger  Binding="{Binding HasRead}" Value="False">
+                                                    <Setter Property="Visibility" Value="Hidden"/>
+                                                </DataTrigger >
+                                                <DataTrigger Binding="{Binding IsInherited}" Value="True">
+                                                    <Setter Property="Opacity" Value="0.3"/>
+                                                </DataTrigger>
+                                            </Style.Triggers>
+                                        </Style>
+                                    </Image.Style>
+                                </Image>
+                            </DataTemplate>
+                        </DataGridTemplateColumn.CellTemplate>
+                    </DataGridTemplateColumn>
+
+                    <DataGridTemplateColumn Header="Ordnerinhalt anzeigen" Width="30" SortMemberPath="HasListDirectory">
+                        <DataGridTemplateColumn.CellTemplate>
+                            <DataTemplate>
+                                <Image Width="20" Height="20" Source="{StaticResource Img_Checkmark}">
+                                    <Image.Style>
+                                        <Style TargetType="Image">
+                                            <Style.Triggers>
+                                                <DataTrigger  Binding="{Binding HasListDirectory}" Value="False">
+                                                    <Setter Property="Visibility" Value="Hidden"/>
+                                                </DataTrigger >
+                                                <DataTrigger Binding="{Binding IsInherited}" Value="True">
+                                                    <Setter Property="Opacity" Value="0.3"/>
+                                                </DataTrigger>
+                                            </Style.Triggers>
+                                        </Style>
+                                    </Image.Style>
+                                </Image>
+                            </DataTemplate>
+                        </DataGridTemplateColumn.CellTemplate>
+                    </DataGridTemplateColumn>
+
+                    <DataGridTemplateColumn Header="Anwenden auf" SortMemberPath="Propagation">
+                        <DataGridTemplateColumn.CellTemplate>
+                            <DataTemplate>
+                                <TextBlock Text="{Binding Propagation}" Margin="30 0 0 0" />
+                            </DataTemplate>
+                        </DataGridTemplateColumn.CellTemplate>
+                    </DataGridTemplateColumn>
+
+                </DataGrid.Columns>
+            </DataGrid>
         </Border>
 
     </StackPanel>

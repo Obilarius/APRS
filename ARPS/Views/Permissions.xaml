@@ -237,7 +237,7 @@
                                         <Image.Style>
                                             <Style TargetType="Image">
                                                 <Style.Triggers>
-                                                    <DataTrigger  Binding="{Binding HasFullControl}" Value="False">
+                                                    <DataTrigger  Binding="{Binding folderAce.HasFullControl}" Value="False">
                                                         <Setter Property="Visibility" Value="Hidden"/>
                                                     </DataTrigger >
                                                 </Style.Triggers>
@@ -245,12 +245,12 @@
                                         </Image.Style>
                                     </Image>
                                 </Grid>
-
+                                
                                 <Image Grid.Column="3" Width="40" Height="20" Source="{StaticResource Img_Checkmark}">
                                     <Image.Style>
                                         <Style TargetType="Image">
                                             <Style.Triggers>
-                                                <DataTrigger  Binding="{Binding HasModify}" Value="False">
+                                                <DataTrigger  Binding="{Binding folderAce.HasModify}" Value="False">
                                                     <Setter Property="Visibility" Value="Hidden"/>
                                                 </DataTrigger >
                                             </Style.Triggers>
@@ -263,7 +263,7 @@
                                         <Image.Style>
                                             <Style TargetType="Image">
                                                 <Style.Triggers>
-                                                    <DataTrigger  Binding="{Binding HasReadAndExecute}" Value="False">
+                                                    <DataTrigger  Binding="{Binding folderAce.HasReadAndExecute}" Value="False">
                                                         <Setter Property="Visibility" Value="Hidden"/>
                                                     </DataTrigger >
                                                 </Style.Triggers>
@@ -276,7 +276,7 @@
                                     <Image.Style>
                                         <Style TargetType="Image">
                                             <Style.Triggers>
-                                                <DataTrigger  Binding="{Binding HasListDirectory}" Value="False">
+                                                <DataTrigger  Binding="{Binding folderAce.HasListDirectory}" Value="False">
                                                     <Setter Property="Visibility" Value="Hidden"/>
                                                 </DataTrigger >
                                             </Style.Triggers>
@@ -289,7 +289,7 @@
                                         <Image.Style>
                                             <Style TargetType="Image">
                                                 <Style.Triggers>
-                                                    <DataTrigger  Binding="{Binding HasRead}" Value="False">
+                                                    <DataTrigger  Binding="{Binding folderAce.HasRead}" Value="False">
                                                         <Setter Property="Visibility" Value="Hidden"/>
                                                     </DataTrigger >
                                                 </Style.Triggers>
@@ -302,7 +302,7 @@
                                     <Image.Style>
                                         <Style TargetType="Image">
                                             <Style.Triggers>
-                                                <DataTrigger  Binding="{Binding HasWrite}" Value="False">
+                                                <DataTrigger  Binding="{Binding folderAce.HasWrite}" Value="False">
                                                     <Setter Property="Visibility" Value="Hidden"/>
                                                 </DataTrigger >
                                             </Style.Triggers>
@@ -315,7 +315,7 @@
                                         <Image.Style>
                                             <Style TargetType="Image">
                                                 <Style.Triggers>
-                                                    <DataTrigger  Binding="{Binding HasSpecialPermissions}" Value="False">
+                                                    <DataTrigger  Binding="{Binding folderAce.HasSpecialPermissions}" Value="False">
                                                         <Setter Property="Visibility" Value="Hidden"/>
                                                     </DataTrigger >
                                                 </Style.Triggers>

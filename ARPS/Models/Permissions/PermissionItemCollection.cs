@@ -97,27 +97,42 @@ namespace ARPS
                         string _share_type = reader["_share_type"].ToString();
                         bool _hidden = Convert.ToBoolean(reader["_hidden"]);
 
-                        PermissionItem newPI = new PermissionItem(_sid, _rights, _type, _fsr, _is_inherited, _inheritance_flags, _propagation_flags,
-                            _path_id, _unc_path_name, _owner_sid, _has_children, _size, _hidden, AllGroups, DirectoryItemType.SharedFolder);
+                        // Legt für die ausgelesene Zeile ein neues PermissionItem an in dem alle Infos über diesen Ordner gespeichert sind
+                        PermissionItem newPI = new PermissionItem(_path_id, _unc_path_name, _owner_sid, _has_children, _size, _hidden, AllGroups, DirectoryItemType.SharedFolder);
                         
+                        // Legt für die ausgelesene Zeile ein neues ACE an in dem alle Infos über das Rechte Objekt angeben sind
+                        DirectoryACE newACE = new DirectoryACE(_sid, _rights, _type, _fsr, _is_inherited, _inheritance_flags, _propagation_flags);
+
 
                         // Falls keine Rechte in diesem Datensatz vergeben werden oder wenn die Rechte nur auf Unterordner gelten
                         // wird der Datensatz nicht hinzugefügt
-                        if (newPI.Rights <= 0 || !newPI.PropagationOnThisFolder)
+                        if (newACE.Rights <= 0 || !newACE.PropagationOnThisFolder)
                             continue;
 
-                        // Prüft ob der aktuelle Pfad schon in der Liste vorhanden ist.
+                        // Prüft ob das PermissionItem schon in der Liste vorhanden ist.
                         PermissionItem value = Shares.FirstOrDefault(item => item.PathID == newPI.PathID);
-                        // Falls der Pfad schon vorhanden ist werden die zwei Rechte über ein binär oder zusammengerechnet
+
+                        // Falls der Pfad schon vorhanden ist wird das neue ACE Object dem bestehenden PermissionItem hinzugefügt
                         if (value != null)
                         {
-                            value.Rights = newPI.Rights | value.Rights;
-                            // Das neue Item wird nicht hunzugefügt.
-                            continue;
-                        }
+                            // Das neue ACE Objekt wird dem Permission Item (Ordner) hinzugefügt
+                            value.directoryACEs.Add(newACE);
 
-                        // Fügt das neue Item der Collection hinzu
-                        Shares.Add(newPI);
+                            // Verbindet die vorhandenen Rechte und die neuen Rechte über ein Binäres ODER
+                            value.folderAce.Rights = value.folderAce.Rights | newACE.Rights;
+                        }
+                        // Falls das PermissionItem noch nicht vorhanden ist, wird das PerItem hinzugefügt und das neue Ace wird ihm hinzugefügt
+                        else
+                        {
+                            // Fügt das neue ACE dem neuen PerItem hinzu
+                            newPI.directoryACEs.Add(newACE);
+
+                            // Setzt das Recht des Ordners auf das neue Ace Recht (Das erstes Ace im PermItem)
+                            newPI.folderAce.Rights = newACE.Rights;
+
+                            // Fügt das neue PerItem der Collection hinzu
+                            Shares.Add(newPI);
+                        }
                     }
                 }
             }
@@ -136,8 +151,8 @@ namespace ARPS
                 if (value == null)
                 {
                     // Ein neuer Server wird erstellt
-                    var newServer = new PermissionItem(share.ServerName, share.Rights, true, "", false, 0, 0);
-                    newServer.UncPath = share.ServerName;
+                    var newServer = new PermissionItem(share.ServerName);
+
                     // Das aktuelle Share Element wird dem Server als Kind hinzugefügt
                     newServer.Children.Add(share);
 
@@ -148,8 +163,6 @@ namespace ARPS
                 {
                     // Falls der Server schon vorhanden ist wird das Share Element dem Server als Kind hinzugefügt
                     value.Children.Add(share);
-                    // Die Rechte des Servers werden um die Rechte des Share Elements erweitert
-                    value.Rights = value.Rights | share.Rights;
                 }
 
             }
