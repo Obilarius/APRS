@@ -31,9 +31,6 @@ namespace ARPSDeamon
 
             // Arbeitet das AD ab. Liest User, Gruppen und Computer ein
             WorkOnAD();
-
-            Console.WriteLine("FERTIG");
-            Console.ReadKey();
         }
 
 
