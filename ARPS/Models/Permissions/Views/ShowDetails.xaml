@@ -53,13 +53,13 @@
                 </Grid.ColumnDefinitions>
 
                 <Image Grid.Column="0" Source="{StaticResource Img_Folder}"/>
-                <TextBlock Grid.Column="0" Text="{Binding EffectiveRight_ThisFolder}" VerticalAlignment="Center" HorizontalAlignment="Center" FontWeight="Bold" FontSize="20"/>
+                <TextBlock Grid.Column="0" Text="{Binding EffectiveRight_ThisFolder}" VerticalAlignment="Center" HorizontalAlignment="Center" FontWeight="Bold" FontSize="16"/>
 
                 <Image Grid.Column="1" Source="{StaticResource Img_SubFolder}"/>
-                <TextBlock Grid.Column="1" Text="{Binding EffectiveRight_Subfolder}" VerticalAlignment="Center" HorizontalAlignment="Center" FontWeight="Bold" FontSize="20"/>
+                <TextBlock Grid.Column="1" Text="{Binding EffectiveRight_Subfolder}" VerticalAlignment="Center" HorizontalAlignment="Center" FontWeight="Bold" FontSize="16"/>
 
                 <Image Grid.Column="2" Source="{StaticResource Img_File}"/>
-                <TextBlock Grid.Column="2" Text="{Binding EffectiveRight_Files}" VerticalAlignment="Center" HorizontalAlignment="Center" FontWeight="Bold" FontSize="20"/>
+                <TextBlock Grid.Column="2" Text="{Binding EffectiveRight_Files}" VerticalAlignment="Center" HorizontalAlignment="Center" FontWeight="Bold" FontSize="16"/>
 
             </Grid>
         </Border>

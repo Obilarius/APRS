@@ -135,7 +135,7 @@
     <Compile Include="Models\AD\ADElement.cs" />
     <Compile Include="Models\Permissions\PermissionItem.cs" />
     <Compile Include="Models\Permissions\PermissionItemCollection.cs" />
-    <Compile Include="Models\Permissions\ShowDetails.xaml.cs">
+    <Compile Include="Models\Permissions\Views\ShowDetails.xaml.cs">
       <DependentUpon>ShowDetails.xaml</DependentUpon>
     </Compile>
     <Compile Include="Models\Resources\Converter\SIDToImageConverter.cs" />
@@ -184,7 +184,7 @@
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
-    <Page Include="Models\Permissions\ShowDetails.xaml">
+    <Page Include="Models\Permissions\Views\ShowDetails.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
