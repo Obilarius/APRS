@@ -110,6 +110,7 @@ namespace ARPS
         /// </summary>
         public ObservableCollection<PermissionItem> Children { get; set; }
 
+        #region Expand
         /// <summary>
         /// Sagt uns ob das aktuelle Item aufgeklappt ist oder nicht
         /// </summary>
@@ -223,11 +224,12 @@ namespace ARPS
                 }
             }
         }
-
+        
         /// <summary>
         /// Sagt uns ob das aktuelle Element Kinder hat und dammit aufgeklappt werden kann
         /// </summary>
         public bool CanExpand { get { return HasChildren; } }
+        #endregion
 
         /// <summary>
         /// Löscht alle Kinder in der Liste. Fügt ein Dummy Item hinzu damit das Symbol zum aufklappen angezeit wird, falls es nötig ist.
@@ -261,6 +263,12 @@ namespace ARPS
             Owner = ADStructure.GetADElement(OwnerSid);
         }
 
+
+        #region Effektive Rechte auf den Ordner, Unterordner und Dateien
+
+        /// <summary>
+        /// Gibt einen String zurück der das Recht auf diesen Ordner wiedergibt
+        /// </summary>
         public string EffectiveRight_ThisFolder
         {
             get
@@ -271,6 +279,9 @@ namespace ARPS
             
         }
 
+        /// <summary>
+        /// Gibt einen String zurück der das Recht auf die Unterordner wiedergibt
+        /// </summary>
         public string EffectiveRight_Subfolder
         {
             get
@@ -280,6 +291,9 @@ namespace ARPS
             }
         }
 
+        /// <summary>
+        /// Gibt einen String zurück der das Recht auf die Dateien wiedergibt
+        /// </summary>
         public string EffectiveRight_Files
         {
             get
@@ -289,6 +303,11 @@ namespace ARPS
             }
         }
 
+        /// <summary>
+        /// Übersetzt das FileSystemRight in einen Text
+        /// </summary>
+        /// <param name="right"></param>
+        /// <returns></returns>
         private string getRightText(FileSystemRights right)
         {
             if (right.HasFlag(FileSystemRights.FullControl))
@@ -310,6 +329,7 @@ namespace ARPS
             else
                 return "Spezielle Berechtigungen";
         }
+        #endregion
 
 
         #region Kontstruktoren

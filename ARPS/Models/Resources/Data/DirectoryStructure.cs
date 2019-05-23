@@ -474,9 +474,10 @@ namespace ARPS
 
             foreach (DirectoryACE ace in aces)
             {
-                // Der ACE gilt nur für Unterordner und zählt hier also nicht als Recht auf diesen Ordner
-                if (ace.PropagationFlags == 2)
+                // Der ACE gilt nicht für diesen Ordner oder ist ein Disallow Recht und zählt hier also nicht als Recht
+                if (!ace.PropagationOnThisFolder || ace.Type == true)
                     continue;
+
 
                 // Wenn User
                 if (ace.IsGroup == false)
