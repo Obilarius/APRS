@@ -1,5 +1,6 @@
 ﻿using Prism.Mvvm;
 using System;
+using System.Collections.Generic;
 using System.Security.AccessControl;
 
 namespace ARPS
@@ -327,6 +328,9 @@ namespace ARPS
             }
         }
 
+        /// <summary>
+        /// Ob die ACE auf diesen Ordner berechtigt ist
+        /// </summary>
         public bool PropagationOnThisFolder
         {
             get
@@ -336,11 +340,41 @@ namespace ARPS
                     (InheritanceFlags == 1 && PropagationFlags == 0) ||
                     (InheritanceFlags == 2 && PropagationFlags == 0))
                     return true;
-                else if ((InheritanceFlags == 3 && PropagationFlags == 2) ||
-                        (InheritanceFlags == 1 && PropagationFlags == 2) ||
-                        (InheritanceFlags == 2 && PropagationFlags == 2))
-                    return false;
                 else 
+                    return false;
+            }
+        }
+
+        /// <summary>
+        /// Ob die ACE auf Unterordner berechtigt ist
+        /// </summary>
+        public bool PropagationOnSubfolder
+        {
+            get
+            {
+                if ((InheritanceFlags == 3 && PropagationFlags == 0) ||
+                    (InheritanceFlags == 1 && PropagationFlags == 0) ||
+                    (InheritanceFlags == 3 && PropagationFlags == 2) ||
+                    (InheritanceFlags == 1 && PropagationFlags == 2))
+                    return true;
+                else
+                    return false;
+            }
+        }
+
+        /// <summary>
+        /// Ob die ACE auf Dateien berechtigt ist
+        /// </summary>
+        public bool PropagationOnFiles
+        {
+            get
+            {
+                if ((InheritanceFlags == 3 && PropagationFlags == 0) ||
+                    (InheritanceFlags == 2 && PropagationFlags == 0) ||
+                    (InheritanceFlags == 3 && PropagationFlags == 2) ||
+                    (InheritanceFlags == 2 && PropagationFlags == 2))
+                    return true;
+                else
                     return false;
             }
         }
@@ -356,5 +390,117 @@ namespace ARPS
                    InheritanceFlags == other.InheritanceFlags &&
                    PropagationFlags == other.PropagationFlags;
         }
+
+        #region Berechnung effektiver Rechte
+        /// <summary>
+        /// Berechnet das effektive Recht für diesen Ordner auf grundlage einer Liste mit Allow und Disallow Rechten
+        /// </summary>
+        /// <param name="aceList"></param>
+        /// <returns></returns>
+        public static FileSystemRights CalculateEffectiveRight_ThisFolder(List<DirectoryACE> aceList)
+        {
+            if (aceList == null)
+                return new FileSystemRights();
+
+            List<FileSystemRights> allow = new List<FileSystemRights>();
+            List<FileSystemRights> disallow = new List<FileSystemRights>();
+
+            foreach (var ace in aceList)
+            {
+                // Wenn Allow und das Recht auf diesen Ordner gilt
+                if (ace.Type == false && ace.PropagationOnThisFolder == true)
+                    allow.Add(ace.Rights);
+                // Wenn Denied und das recht auf diesen Ordner gilt
+                else if (ace.Type == true && ace.PropagationOnThisFolder == true)
+                    disallow.Add(ace.Rights);
+            }
+
+            return CalculateEffectiveRight(allow, disallow);
+        }
+
+        /// <summary>
+        /// Berechnet das effektive Recht für Unterordner auf grundlage einer Liste mit Allow und Disallow Rechten
+        /// </summary>
+        /// <param name="aceList"></param>
+        /// <returns></returns>
+        public static FileSystemRights CalculateEffectiveRight_Subfolder(List<DirectoryACE> aceList)
+        {
+            if (aceList == null)
+                return new FileSystemRights();
+
+            List<FileSystemRights> allow = new List<FileSystemRights>();
+            List<FileSystemRights> disallow = new List<FileSystemRights>();
+
+            foreach (var ace in aceList)
+            {
+                // Wenn Allow und das Recht auf Unterordner gilt
+                if (ace.Type == false && ace.PropagationOnSubfolder == true)
+                    allow.Add(ace.Rights);
+                // Wenn Denied und das recht auf Unterordner gilt
+                else if (ace.Type == true && ace.PropagationOnSubfolder == true)
+                    disallow.Add(ace.Rights);
+            }
+
+            return CalculateEffectiveRight(allow, disallow);
+        }
+
+        /// <summary>
+        /// Berechnet das effektive Recht für Dateien auf grundlage einer Liste mit Allow und Disallow Rechten
+        /// </summary>
+        /// <param name="aceList"></param>
+        /// <returns></returns>
+        public static FileSystemRights CalculateEffectiveRight_Files(List<DirectoryACE> aceList)
+        {
+            if (aceList == null)
+                return new FileSystemRights();
+
+            List<FileSystemRights> allow = new List<FileSystemRights>();
+            List<FileSystemRights> disallow = new List<FileSystemRights>();
+
+            foreach (var ace in aceList)
+            {
+                // Wenn Allow und das Recht auf Unterordner gilt
+                if (ace.Type == false && ace.PropagationOnFiles == true)
+                    allow.Add(ace.Rights);
+                // Wenn Denied und das recht auf Unterordner gilt
+                else if (ace.Type == true && ace.PropagationOnFiles == true)
+                    disallow.Add(ace.Rights);
+            }
+
+            return CalculateEffectiveRight(allow, disallow);
+        }
+
+        /// <summary>
+        /// Berechnet die Effektiven Rechte anhand zweier Listen die die Rechte beinhalten die erlauben bzw. verweigern
+        /// </summary>
+        /// <param name="allow"></param>
+        /// <param name="disallow"></param>
+        /// <returns></returns>
+        private static FileSystemRights CalculateEffectiveRight (List<FileSystemRights> allow, List<FileSystemRights> disallow)
+        {
+            // Rechnet alle Allow Rechte zusammen
+            int allAllow = 0;
+            foreach (var allowRight in allow)
+            {
+                allAllow = allAllow | (int)allowRight;
+            }
+
+            // Rechnet alle Disallow Rechte zusammen
+            int allDisallow = 0;
+            foreach (var disallowRight in disallow)
+            {
+                allDisallow = allDisallow | (int)disallowRight;
+            }
+
+            // Dreht die bits des erlaubten Rechts um 010 -> 101
+            allAllow = ~allAllow;
+            // Bitweises oder der beiden Rechte
+            int result = allAllow | allDisallow;
+            // Dreht die bits des Ergebnisses wieder um
+            result = ~result;
+
+            return (FileSystemRights)result;
+        }
+        #endregion
     }
 }

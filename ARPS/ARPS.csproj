@@ -353,7 +353,13 @@
     <Resource Include="Resources\Images\icons8-checkmark-50-2.png" />
     <Resource Include="Resources\Images\icons8-checkmark-50.png" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Resource Include="Resources\Images\icons8-document-50-2.png" />
+    <Resource Include="Resources\Images\icons8-document-50.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\Images\treeview\Subfolder_32x.png" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="..\packages\Fody.4.2.1\build\Fody.targets" Condition="Exists('..\packages\Fody.4.2.1\build\Fody.targets')" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">

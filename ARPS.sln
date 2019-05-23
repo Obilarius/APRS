@@ -13,6 +13,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Test", "Test\Test.csproj", 
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ArgPerm", "ArgPerm\ArgPerm.csproj", "{BB8D4A00-93EC-44CE-966A-81465F949A9C}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UnitTestARPS", "UnitTestARPS\UnitTestARPS.csproj", "{AA639093-84A7-4328-808F-362A91EBDEFC}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -39,6 +41,10 @@ Global
 		{BB8D4A00-93EC-44CE-966A-81465F949A9C}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{BB8D4A00-93EC-44CE-966A-81465F949A9C}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{BB8D4A00-93EC-44CE-966A-81465F949A9C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{AA639093-84A7-4328-808F-362A91EBDEFC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{AA639093-84A7-4328-808F-362A91EBDEFC}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{AA639093-84A7-4328-808F-362A91EBDEFC}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{AA639093-84A7-4328-808F-362A91EBDEFC}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

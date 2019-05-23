@@ -5,8 +5,10 @@
 
     <!-- TREEVIEW -->
     <BitmapImage x:Key="Img_Folder" UriSource="pack://application:,,,/Resources/Images/treeview/Folder_32x.png"/>
+    <BitmapImage x:Key="Img_SubFolder" UriSource="pack://application:,,,/Resources/Images/treeview/Subfolder_32x.png"/>
     <BitmapImage x:Key="Img_SharedFolder" UriSource="pack://application:,,,/Resources/Images/treeview/FolderShared_32x.png"/>
     <BitmapImage x:Key="Img_Server" UriSource="pack://application:,,,/Resources/Images/treeview/LocalServer_32x.png"/>
+    <BitmapImage x:Key="Img_File" UriSource="pack://application:,,,/Resources/Images/icons8-document-50.png"/>
 
     <!-- IMAGES -->
     <BitmapImage x:Key="Img_User" UriSource="pack://application:,,,/Resources/Images/icons8-person-50-2.png"/>

@@ -106,7 +106,7 @@ namespace ARPS
 
                         // Falls keine Rechte in diesem Datensatz vergeben werden oder wenn die Rechte nur auf Unterordner gelten
                         // wird der Datensatz nicht hinzugefügt
-                        if (newACE.Rights <= 0 || !newACE.PropagationOnThisFolder)
+                        if (newACE.Rights <= 0)
                             continue;
 
                         // Prüft ob das PermissionItem schon in der Liste vorhanden ist.
@@ -117,18 +117,12 @@ namespace ARPS
                         {
                             // Das neue ACE Objekt wird dem Permission Item (Ordner) hinzugefügt
                             value.directoryACEs.Add(newACE);
-
-                            // Verbindet die vorhandenen Rechte und die neuen Rechte über ein Binäres ODER
-                            value.folderAce.Rights = value.folderAce.Rights | newACE.Rights;
                         }
                         // Falls das PermissionItem noch nicht vorhanden ist, wird das PerItem hinzugefügt und das neue Ace wird ihm hinzugefügt
                         else
                         {
                             // Fügt das neue ACE dem neuen PerItem hinzu
                             newPI.directoryACEs.Add(newACE);
-
-                            // Setzt das Recht des Ordners auf das neue Ace Recht (Das erstes Ace im PermItem)
-                            newPI.folderAce.Rights = newACE.Rights;
 
                             // Fügt das neue PerItem der Collection hinzu
                             Shares.Add(newPI);

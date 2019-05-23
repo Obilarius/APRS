@@ -40,12 +40,19 @@ namespace ARPS
         /// <summary>
         /// Hält die Rechte für das PermissionItem. Hier werden alle Rechte der directoryAces zusammengerechnet
         /// </summary>
-        public DirectoryACE folderAce { get; set; }
+        public DirectoryACE folderAce
+        {
+            get
+            {
+                return new DirectoryACE("-1") { Rights = DirectoryACE.CalculateEffectiveRight_ThisFolder(directoryACEs) };
+            }
+        }
 
         /// <summary>
         /// Hält die einzelnen Rechte auf das PermissionItem
         /// </summary>
         public List<DirectoryACE> directoryACEs { get; set; }
+
 
         public DirectoryItemType ItemType { get; set; }
 
@@ -191,7 +198,7 @@ namespace ARPS
 
                         // Falls keine Rechte in diesem Datensatz vergeben werden oder wenn die Rechte nur auf Unterordner gelten
                         // wird der Datensatz nicht hinzugefügt
-                        if (newACE.Rights <= 0 || !newACE.PropagationOnThisFolder)
+                        if (newACE.Rights <= 0)
                             continue;
 
                         // Prüft ob das PermissionItem schon in der Liste vorhanden ist.
@@ -202,18 +209,12 @@ namespace ARPS
                         {
                             // Das neue ACE Objekt wird dem Permission Item (Ordner) hinzugefügt
                             value.directoryACEs.Add(newACE);
-
-                            // Verbindet die vorhandenen Rechte und die neuen Rechte über ein Binäres ODER
-                            value.folderAce.Rights = value.folderAce.Rights | newACE.Rights;
                         }
                         // Falls das PermissionItem noch nicht vorhanden ist, wird das PerItem hinzugefügt und das neue Ace wird ihm hinzugefügt
                         else
                         {
                             // Fügt das neue ACE dem neuen PerItem hinzu
                             newPI.directoryACEs.Add(newACE);
-
-                            // Setzt das Recht des Ordners auf das neue Ace Recht (Das erstes Ace im PermItem)
-                            newPI.folderAce.Rights = newACE.Rights;
 
                             // Fügt das neue PerItem der Collection hinzu
                             Children.Add(newPI);
@@ -258,13 +259,60 @@ namespace ARPS
 
             // Füllt den Owner
             Owner = ADStructure.GetADElement(OwnerSid);
-
         }
 
-        
+        public string EffectiveRight_ThisFolder
+        {
+            get
+            {
+                FileSystemRights right = DirectoryACE.CalculateEffectiveRight_ThisFolder(directoryACEs);
+                return getRightText(right);
+            }
+            
+        }
+
+        public string EffectiveRight_Subfolder
+        {
+            get
+            {
+                var right = DirectoryACE.CalculateEffectiveRight_Subfolder(directoryACEs);
+                return getRightText(right);
+            }
+        }
+
+        public string EffectiveRight_Files
+        {
+            get
+            {
+                var right = DirectoryACE.CalculateEffectiveRight_Files(directoryACEs);
+                return getRightText(right);
+            }
+        }
+
+        private string getRightText(FileSystemRights right)
+        {
+            if (right.HasFlag(FileSystemRights.FullControl))
+                return "Vollzugriff";
+            else if (right.HasFlag(FileSystemRights.Modify))
+                return "Ändern";
+            else if (right.HasFlag(FileSystemRights.ReadAndExecute) && right.HasFlag(FileSystemRights.Write))
+                return "Lesen, Ausführen & Schreiben";
+            else if (right.HasFlag(FileSystemRights.ReadAndExecute))
+                return "Lesen, Ausführen";
+            else if (right.HasFlag(FileSystemRights.Read) && right.HasFlag(FileSystemRights.Write))
+                return "Lesen & Schreiben";
+            else if (right.HasFlag(FileSystemRights.Read))
+                return "Lesen";
+            else if (right.HasFlag(FileSystemRights.Write))
+                return "Schreiben";
+            else if (right.HasFlag(FileSystemRights.Synchronize) || right == (FileSystemRights)0)
+                return "Keine Rechte";
+            else
+                return "Spezielle Berechtigungen";
+        }
 
 
-
+        #region Kontstruktoren
         /// <summary>
         /// Konstruktor
         /// </summary>
@@ -297,9 +345,6 @@ namespace ARPS
                 Children.Add(null);
 
             directoryACEs = new List<DirectoryACE>();
-
-            // Setzt die rechte des Ordners initial auf ein leeres Objekt
-            folderAce = new DirectoryACE("-1");
         }
 
         /// <summary>
@@ -317,9 +362,7 @@ namespace ARPS
             ItemType = DirectoryItemType.Server;
 
             Children = new ObservableCollection<PermissionItem>();
-
-            // Setzt die rechte des Ordners initial auf ein leeres Objekt
-            folderAce = new DirectoryACE("-1");
         }
+        #endregion
     }
 }

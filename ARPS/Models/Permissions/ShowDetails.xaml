@@ -7,21 +7,11 @@
         xmlns:local="clr-namespace:ARPS.Models.Permissions"
         xmlns:arps="clr-namespace:ARPS"
         mc:Ignorable="d"
-        Title="Details" Height="640" Width="850" ResizeMode="CanResize">
+        Title="Details" Height="715" Width="850" ResizeMode="CanResize">
 
     <StackPanel Margin="10">
+        <!-- Ordner Infos -->
         <Border BorderBrush="{StaticResource ArgesGrauBlau_dunkel}" BorderThickness="2" Padding="10">
-            <!--<Grid>
-                <StackPanel Orientation="Horizontal">
-                    <Image Width="20" Source="{Binding ItemType, Converter={x:Static arps:HeaderToImageConverter.Instance}}" VerticalAlignment="Center"/>
-                    <TextBlock Text="{Binding FolderName}" FontWeight="Bold" FontSize="22" Margin="20 0 0 0" VerticalAlignment="Center"/>
-                </StackPanel>
-
-                <StackPanel Orientation="Horizontal" Margin="0 10 0 0">
-                    <TextBlock Text="UNC Pfad:" Margin="0 0 20 0"/>
-                    <TextBlock Text="{Binding UncPath}"/>
-                </StackPanel>
-            </Grid>-->
 
             <Grid>
                 <Grid.ColumnDefinitions>
@@ -32,9 +22,9 @@
 
                 <Image Grid.Column="0" Height="25" Source="{Binding ItemType, Converter={x:Static arps:HeaderToImageConverter.Instance}}"/>
                 <StackPanel Grid.Column="1">
-                    <TextBlock Text="{Binding FolderName}" FontSize="18" FontWeight="Bold" Foreground="{StaticResource ArgesBlau}"/>
+                    <TextBlock Text="{Binding FolderName, FallbackValue=Foldername}" FontSize="18" FontWeight="Bold" Foreground="{StaticResource ArgesBlau}"/>
 
-                    <TextBlock Text="{Binding UncPath}" Foreground="{StaticResource ArgesBlau}" Margin="0 5 0 0"/>
+                    <TextBlock Text="{Binding UncPath, FallbackValue=UNCPfad}" Foreground="{StaticResource ArgesBlau}" Margin="0 5 0 0"/>
 
                     <StackPanel Orientation="Horizontal" Margin="0 5 0 0">
                         <TextBlock Text="Besitzer:" Foreground="{StaticResource ArgesBlau}"/>
@@ -52,6 +42,26 @@
             </Grid>
 
 
+        </Border>
+
+        <Border BorderBrush="{StaticResource ArgesGrauBlau_dunkel}" BorderThickness="2" Padding="10" Margin="0 10 0 0">
+            <Grid Height="40">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+
+                <Image Grid.Column="0" Source="{StaticResource Img_Folder}"/>
+                <TextBlock Grid.Column="0" Text="{Binding EffectiveRight_ThisFolder}" VerticalAlignment="Center" HorizontalAlignment="Center" FontWeight="Bold" FontSize="20"/>
+
+                <Image Grid.Column="1" Source="{StaticResource Img_SubFolder}"/>
+                <TextBlock Grid.Column="1" Text="{Binding EffectiveRight_Subfolder}" VerticalAlignment="Center" HorizontalAlignment="Center" FontWeight="Bold" FontSize="20"/>
+
+                <Image Grid.Column="2" Source="{StaticResource Img_File}"/>
+                <TextBlock Grid.Column="2" Text="{Binding EffectiveRight_Files}" VerticalAlignment="Center" HorizontalAlignment="Center" FontWeight="Bold" FontSize="20"/>
+
+            </Grid>
         </Border>
 
         <!-- Grundlegende & Erweiterte Berechtigungen -->
@@ -219,10 +229,31 @@
                         </DataGridTemplateColumn.CellTemplate>
                     </DataGridTemplateColumn>
 
-                    <DataGridTemplateColumn Header="" SortMemberPath="IdentityName">
+                    <DataGridTemplateColumn Header="Principal" SortMemberPath="IdentityName">
                         <DataGridTemplateColumn.CellTemplate>
                             <DataTemplate>
                                 <TextBlock Text="{Binding IdentityName}" Margin="0 0 30 0" />
+                            </DataTemplate>
+                        </DataGridTemplateColumn.CellTemplate>
+                    </DataGridTemplateColumn>
+
+                    <DataGridTemplateColumn Header="Typ" SortMemberPath="Type" SortDirection="Descending">
+                        <DataGridTemplateColumn.CellTemplate>
+                            <DataTemplate>
+                                <TextBlock HorizontalAlignment="Center">
+                                    <TextBlock.Style>
+                                        <Style TargetType="TextBlock">
+                                            <Style.Triggers>
+                                                <DataTrigger Binding="{Binding Type}" Value="False">
+                                                    <Setter Property="Text" Value="Zulassen"/>
+                                                </DataTrigger>
+                                                <DataTrigger Binding="{Binding Type}" Value="True">
+                                                    <Setter Property="Text" Value="Verweigern"/>
+                                                </DataTrigger>
+                                            </Style.Triggers>
+                                        </Style>
+                                    </TextBlock.Style>
+                                </TextBlock>
                             </DataTemplate>
                         </DataGridTemplateColumn.CellTemplate>
                     </DataGridTemplateColumn>
@@ -378,6 +409,8 @@
                             </DataTemplate>
                         </DataGridTemplateColumn.CellTemplate>
                     </DataGridTemplateColumn>
+
+                    
 
                 </DataGrid.Columns>
             </DataGrid>
