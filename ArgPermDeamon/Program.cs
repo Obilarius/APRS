@@ -1,5 +1,7 @@
-﻿using System;
+﻿using ARPSMSSQL;
+using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Xml;
 using Trinet.Networking;
@@ -10,12 +12,25 @@ namespace ARPSDeamon
     {
         static void Main(string[] args)
         {
+            Log.writeLog("######################################");
+            Stopwatch sw = new Stopwatch();
+            sw.Start();
+
+            MsSql.DeleteTempTables();
+            MsSql.CreateTempTables();
+            Log.writeLog("Temp Datenbanken wurden erstellt");
+
+            // Arbeitet das AD ab. Liest User, Gruppen und Computer ein
+            WorkOnAD();
+            Log.writeLog("AD wurde eingelesen");
+
             // Liest die Config ein
             Config config = new Config();
 
             // Läuft über jeden Server der Config
             foreach (var server in config.Servers)
             {
+                Log.writeLog(server.Name + " wird gescannt...");
                 // Switch über den Type um jeden Type anders zu behandeln
                 switch (server.Type)
                 {
@@ -27,10 +42,13 @@ namespace ARPSDeamon
                     default:
                         break;
                 }
+
+                Log.writeLog(server.Name + " wurde eingetragen");
             }
 
-            // Arbeitet das AD ab. Liest User, Gruppen und Computer ein
-            WorkOnAD();
+            sw.Stop();
+            Log.writeLog("Deamon wird beendet");
+            Log.writeLog("Laufzeit: " + sw.Elapsed.TotalMinutes);
         }
 
 

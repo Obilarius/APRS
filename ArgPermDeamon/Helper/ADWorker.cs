@@ -43,11 +43,11 @@ namespace ARPSDeamon
                 if (found is UserPrincipal user)
                 {
                     int enabled = (bool)user.Enabled ? 1 : 0;
-                    string sql = $"IF NOT EXISTS (SELECT * FROM adusers WHERE SID = '{user.Sid}') " +
-                                        $"INSERT INTO adusers(SID, DisplayName, SamAccountName, DistinguishedName, UserPrincipalName, Enabled) " +
+                    string sql = $"IF NOT EXISTS (SELECT * FROM {MsSql.TBL_tmp_AD_Users} WHERE SID = '{user.Sid}') " +
+                                        $"INSERT INTO {MsSql.TBL_tmp_AD_Users}(SID, DisplayName, SamAccountName, DistinguishedName, UserPrincipalName, Enabled) " +
                                         $"VALUES ('{user.Sid}', '{user.DisplayName}', '{user.SamAccountName}', '{user.DistinguishedName}', '{user.UserPrincipalName}', '{enabled}') " +
                                  $"ELSE " +
-                                        $"UPDATE adusers " +
+                                        $"UPDATE {MsSql.TBL_tmp_AD_Users} " +
                                         $"SET DisplayName = '{user.DisplayName}'," +
                                             $"SamAccountName = '{user.SamAccountName}'," +
                                             $"DistinguishedName = '{user.DistinguishedName}'," +
@@ -86,8 +86,8 @@ namespace ARPSDeamon
                 {
                     int isSecurityGroup = (bool)grp.IsSecurityGroup ? 1 : 0;
 
-                    string sql = $"IF NOT EXISTS (SELECT * FROM adgroups WHERE SID = '{grp.Sid}') " +
-                                        $"INSERT INTO adgroups(SID, SamAccountName, DistinguishedName, Name, Description, IsSecurityGroup, GroupScope) " +
+                    string sql = $"IF NOT EXISTS (SELECT * FROM {MsSql.TBL_tmp_AD_Groups} WHERE SID = '{grp.Sid}') " +
+                                        $"INSERT INTO {MsSql.TBL_tmp_AD_Groups}(SID, SamAccountName, DistinguishedName, Name, Description, IsSecurityGroup, GroupScope) " +
                                         $"VALUES ('{grp.Sid}', " +
                                             $"'{grp.SamAccountName}', " +
                                             $"'{grp.DistinguishedName}', " +
@@ -96,7 +96,7 @@ namespace ARPSDeamon
                                             $"'{isSecurityGroup}', " +
                                             $"'{grp.GroupScope}') " +
                                  $"ELSE " +
-                                        $"UPDATE adgroups " +
+                                        $"UPDATE {MsSql.TBL_tmp_AD_Groups} " +
                                         $"SET SamAccountName = '{grp.SamAccountName}', " +
                                             $"DistinguishedName = '{grp.DistinguishedName}', " +
                                             $"Name = '{grp.Name}', " +
@@ -125,8 +125,8 @@ namespace ARPSDeamon
         {
             foreach (var user in grp.Members)
             {
-                string sql = $"IF NOT EXISTS (SELECT * FROM grp_user WHERE userSID = '{user.Sid}' AND grpSID = '{grp.Sid}') " +
-                                $"INSERT INTO grp_user(userSID, grpSID) " +
+                string sql = $"IF NOT EXISTS (SELECT * FROM {MsSql.TBL_tmp_AD_UserInGroup} WHERE userSID = '{user.Sid}' AND grpSID = '{grp.Sid}') " +
+                                $"INSERT INTO {MsSql.TBL_tmp_AD_UserInGroup}(userSID, grpSID) " +
                                 $"VALUES ('{user.Sid}', '{grp.Sid}')";
 
                 SqlCommand cmd = new SqlCommand(sql, con);
@@ -155,12 +155,12 @@ namespace ARPSDeamon
                 if (found is ComputerPrincipal computer)
                 {
                     int enabled = (bool)computer.Enabled ? 1 : 0;
-                    string sql = $"IF NOT EXISTS (SELECT * FROM adcomputers WHERE SID = '{computer.Sid}') " +
-                                        $"INSERT INTO adcomputers(SID, SamAccountName, Name, DistinguishedName, DisplayName, Description, Enabled, LastLogon, LastPasswordSet) " +
+                    string sql = $"IF NOT EXISTS (SELECT * FROM {MsSql.TBL_tmp_AD_Computers} WHERE SID = '{computer.Sid}') " +
+                                        $"INSERT INTO {MsSql.TBL_tmp_AD_Computers}(SID, SamAccountName, Name, DistinguishedName, DisplayName, Description, Enabled, LastLogon, LastPasswordSet) " +
                                         $"VALUES ('{computer.Sid}', '{computer.SamAccountName}', '{computer.Name}', '{computer.DistinguishedName}', '{computer.DisplayName}', " +
                                         $"'{computer.Description}', '{enabled}', '{computer.LastLogon}', '{computer.LastPasswordSet}') " +
                                  $"ELSE " +
-                                        $"UPDATE adcomputers " +
+                                        $"UPDATE {MsSql.TBL_tmp_AD_Computers} " +
                                         $"SET SamAccountName = '{computer.SamAccountName}'," +
                                             $"Name = '{computer.Name}'," +
                                             $"DistinguishedName = '{computer.DistinguishedName}'," +

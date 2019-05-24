@@ -58,7 +58,7 @@ namespace ARPSDeamon
 
             #region Prüfung ob schon vorhanden ist
             // Der SQL Befehl zum überprüfen ob der jeweilige Eintrag schon vorhanden ist
-            string sql = $"SELECT _path_id FROM fs.dirs WHERE _path_hash = @PathHash";
+            string sql = $"SELECT _path_id FROM {MsSql.TBL_tmp_FS_Dirs} WHERE _path_hash = @PathHash";
             SqlCommand cmd = new SqlCommand(sql, mssql.Con);
             // Der Hash wird als Parameter an den SQL Befehl gehängt
             cmd.Parameters.AddWithValue("@PathHash", _path_hash);
@@ -76,7 +76,7 @@ namespace ARPSDeamon
             long _size;
             if (_path_id != null)
             {
-                sql = $"SELECT _size FROM fs.dirs WHERE _path_id = @PathId";
+                sql = $"SELECT _size FROM {MsSql.TBL_tmp_FS_Dirs} WHERE _path_id = @PathId";
                 cmd = new SqlCommand(sql, mssql.Con);
                 // Der Hash wird als Parameter an den SQL Befehl gehängt
                 cmd.Parameters.AddWithValue("@PathId", _path_id);
@@ -127,7 +127,7 @@ namespace ARPSDeamon
             if (_path_id == null)
             {
                 // Der SQL Befehl zum INSERT in die Datenbank
-                sql = $"INSERT INTO fs.dirs(_path_name, _owner_sid, _path_hash, _parent_path_id, _is_root, _has_children, _scan_deepth, _size) " +
+                sql = $"INSERT INTO {MsSql.TBL_tmp_FS_Dirs}(_path_name, _owner_sid, _path_hash, _parent_path_id, _is_root, _has_children, _scan_deepth, _size) " +
                       $"OUTPUT INSERTED._path_id " +
                       $"VALUES (@PathName, @OwnerSid, @PathHash, @ParentPathId, @IsRoot, @HasChildren, @ScanDeepth, @Size) ";
 
@@ -154,7 +154,7 @@ namespace ARPSDeamon
             else
             {
                 // SQL Befehl zum Updaten des Eintrags
-                sql = $"UPDATE fs.dirs " +
+                sql = $"UPDATE {MsSql.TBL_tmp_FS_Dirs} " +
                       $"SET _path_name = @PathName, _owner_sid = @OwnerSid, _path_hash = @PathHash, _parent_path_id = @ParentPathId, " +
                       $"_is_root = @IsRoot, _has_children = @HasChildren, _scan_deepth = @ScanDeepth, _size = @Size " +
                       $"WHERE _path_id = @PathId";
@@ -227,7 +227,7 @@ namespace ARPSDeamon
 
             #region Prüfung ob schon vorhanden ist
             // Der SQL Befehl zum überprüfen ob der jeweilige Eintrag schon vorhanden ist
-            string sql = $"SELECT _path_id FROM {mssql.TBL_FS_Shares} WHERE _path_hash = @PathHash";
+            string sql = $"SELECT _path_id FROM {MsSql.TBL_tmp_FS_Shares} WHERE _path_hash = @PathHash";
             SqlCommand cmd = new SqlCommand(sql, mssql.Con);
             // Der Hash wird als Parameter an den SQL Befehl gehängt
             cmd.Parameters.AddWithValue("@PathHash", _path_hash);
@@ -245,7 +245,7 @@ namespace ARPSDeamon
             long _size;
             if (_path_id != null)
             {
-                sql = $"SELECT _size FROM {mssql.TBL_FS_Shares} WHERE _path_id = @PathId";
+                sql = $"SELECT _size FROM {MsSql.TBL_tmp_FS_Shares} WHERE _path_id = @PathId";
                 cmd = new SqlCommand(sql, mssql.Con);
                 // Der Hash wird als Parameter an den SQL Befehl gehängt
                 cmd.Parameters.AddWithValue("@PathId", _path_id);
@@ -296,7 +296,7 @@ namespace ARPSDeamon
             if (_path_id == null)
             {
                 // Der SQL Befehl zum INSERT in die Datenbank
-                sql = $"INSERT INTO {mssql.TBL_FS_Shares}(_unc_path_name, _owner_sid, _has_children, _size, _path_hash, _path_name, _display_name, _remark, _share_type, _hidden) " +
+                sql = $"INSERT INTO {MsSql.TBL_tmp_FS_Shares}(_unc_path_name, _owner_sid, _has_children, _size, _path_hash, _path_name, _display_name, _remark, _share_type, _hidden) " +
                       $"OUTPUT INSERTED._path_id " +
                       $"VALUES (@UncPathName, @OwnerSid, @HasChildren, @Size, @PathHash, @PathName, @DisplayName, @Remark, @ShareType, @Hidden) ";
 
@@ -325,7 +325,7 @@ namespace ARPSDeamon
             else
             {
                 // SQL Befehl zum Updaten des Eintrags
-                sql = $"UPDATE {mssql.TBL_FS_Shares} " +
+                sql = $"UPDATE {MsSql.TBL_tmp_FS_Shares} " +
                       $"SET _unc_path_name = @UncPathName, _owner_sid = @OwnerSid, _has_children = @HasChildren, _size = @Size, _path_hash = @PathHash, " +
                       $"_path_name = @PathName, _display_name = @DisplayName, _remark = @Remark, _share_type = @ShareType, _hidden = @Hidden " +
                       $"WHERE _path_id = @PathId";
@@ -410,7 +410,7 @@ namespace ARPSDeamon
 
                 #region Prüfung ob schon vorhanden ist
                 // Der SQL Befehl zum überprüfen ob der jeweilige Eintrag schon vorhanden ist
-                string sql = $"SELECT _ace_id FROM fs.aces WHERE _ace_hash = @AceHash";
+                string sql = $"SELECT _ace_id FROM {MsSql.TBL_tmp_FS_ACEs} WHERE _ace_hash = @AceHash";
                 SqlCommand cmd = new SqlCommand(sql, mssql.Con);
                 // Der Hash wird als Parameter an den SQL Befehl gehängt
                 cmd.Parameters.AddWithValue("@AceHash", _ace_hash);
@@ -427,7 +427,7 @@ namespace ARPSDeamon
                 if (_ace_id == null)
                 {
                     // Der SQL Befehl zum INSERT in die Datenbank
-                    sql = $"INSERT INTO fs.aces(_sid, _fsr, _rights, _type, _is_inherited, _inheritance_flags, _propagation_flags, _ace_hash) " +
+                    sql = $"INSERT INTO {MsSql.TBL_tmp_FS_ACEs}(_sid, _fsr, _rights, _type, _is_inherited, _inheritance_flags, _propagation_flags, _ace_hash) " +
                           $"OUTPUT INSERTED._ace_id " +
                           $"VALUES (@Sid, @Fsr, @Rights, @Type, @IsInherited, @InheritanceFlags, @PropagationFlags, @AceHash) ";
 
@@ -455,7 +455,7 @@ namespace ARPSDeamon
                 else
                 {
                     // SQL Befehl zum Updaten des Eintrags
-                    sql = $"UPDATE fs.aces " +
+                    sql = $"UPDATE {MsSql.TBL_tmp_FS_ACEs} " +
                           $"SET _sid = @Sid, _fsr = @Fsr, _rights = @Rights, _type = @Type, _is_inherited = @IsInherited, " +
                           $"_inheritance_flags = @InheritanceFlags, _propagation_flags = @PropagationFlags, _ace_hash = @AceHash " +
                           $"WHERE _ace_id = @AceId";
@@ -483,8 +483,8 @@ namespace ARPSDeamon
 
 
                 #region Eintragung in die ACL Datenbank
-                sql = $"INSERT INTO fs.acls (_path_id, _ace_id, _type) SELECT @PathId, @AceId, @AclType " +
-                    $"WHERE NOT EXISTS(SELECT * FROM fs.acls WHERE _path_id = @PathId AND _ace_id = @AceId AND _type = @AclType)";
+                sql = $"INSERT INTO {MsSql.TBL_tmp_FS_ACLs} (_path_id, _ace_id, _type) SELECT @PathId, @AceId, @AclType " +
+                    $"WHERE NOT EXISTS(SELECT * FROM {MsSql.TBL_tmp_FS_ACLs} WHERE _path_id = @PathId AND _ace_id = @AceId AND _type = @AclType)";
 
                 cmd = new SqlCommand(sql, mssql.Con);
 
@@ -508,6 +508,9 @@ namespace ARPSDeamon
         /// <returns>Größe in Bytes</returns>
         static long DirSize(DirectoryInfo d)
         {
+            // Wird aktuell geskippt das es zu lange dauert (Lauf ca.5h)
+            return 0;
+
             long size = 0;
 
             FileInfo[] fis;
