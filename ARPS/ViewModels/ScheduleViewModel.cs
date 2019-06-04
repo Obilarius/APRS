@@ -435,7 +435,7 @@ namespace ARPS.ViewModels
 
             // Hollt sich die geplanten Mitgliedschaften aus der Dantenbank
             HistoryLog = new ObservableCollection<HistoryLogEntry>();
-            // Ruft die übergeben Anzahl an Eiträgen ab
+            // Ruft die übergeben Anzahl an Einträgen ab
             AsyncLoadedHistoryLog(100);
         }
         #endregion
@@ -449,7 +449,7 @@ namespace ARPS.ViewModels
             // Ruft die Funktion der ScheduleDeamon Klasse die den Deamon startet
             ScheduleDeamon.Start();
 
-            // Ruft die übergeben Anzahl an Eiträgen ab
+            // Löd das HistoryLog neu
             AsyncLoadedHistoryLog(100);
         }
         #endregion
@@ -853,6 +853,8 @@ namespace ARPS.ViewModels
 
                     while (reader.Read())
                     {
+                        var endDate = ((DateTime)reader["EndDate"]).ToShortDateString();
+
                         HistoryLog.Insert(0, new HistoryLogEntry
                         {
                             ID = (int)reader["ID"],
@@ -861,7 +863,8 @@ namespace ARPS.ViewModels
                             Groupname = reader["Groupname"].ToString(),
                             GroupSid = reader["GroupSid"].ToString(),
                             StartDate = ((DateTime)reader["StartDate"]).ToShortDateString(),
-                            EndDate = ((DateTime)reader["EndDate"]).ToShortDateString(),
+                            //EndDate = ((DateTime)reader["EndDate"]).ToShortDateString(),
+                            EndDate = (endDate == DateTime.MaxValue.ToShortDateString()) ? "∞" : endDate,
                             Status = reader["Status"].ToString(),
                             Creator = reader["Creator"].ToString(),
                             Comment = reader["Comment"].ToString()
