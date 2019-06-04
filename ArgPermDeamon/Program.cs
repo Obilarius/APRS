@@ -12,25 +12,37 @@ namespace ARPSDeamon
     {
         static void Main(string[] args)
         {
-            Log.writeLog("######################################");
+            Log.writeLine("######################################");
             Stopwatch sw = new Stopwatch();
             sw.Start();
 
             MsSql.DeleteTempTables();
             MsSql.CreateTempTables();
-            Log.writeLog("Temp Datenbanken wurden erstellt");
+            Log.writeLine("Temp Datenbanken wurden erstellt");
 
             // Arbeitet das AD ab. Liest User, Gruppen und Computer ein
+            Log.write("AD wird eingelesen...", true, false);
             WorkOnAD();
-            Log.writeLog("AD wurde eingelesen");
+            Log.write("fertig", false, true);
 
             // Liest die Config ein
-            Config config = new Config();
+            Log.write("Config wird eingelesen...", true, false);
+            Config config;
+            try
+            {
+                config = new Config();
+            }
+            catch (Exception ex)
+            {
+                Log.writeLine("CONFIG: " + ex.Message);
+                throw;
+            }
+            Log.write("fertig", false, true);
 
             // Läuft über jeden Server der Config
             foreach (var server in config.Servers)
             {
-                Log.writeLog(server.Name + " wird gescannt...");
+                Log.writeLine(server.Name + " wird gescannt...");
                 // Switch über den Type um jeden Type anders zu behandeln
                 switch (server.Type)
                 {
@@ -43,12 +55,14 @@ namespace ARPSDeamon
                         break;
                 }
 
-                Log.writeLog(server.Name + " wurde eingetragen");
+                Log.writeLine(server.Name + " wurde eingetragen");
             }
 
+            MsSql.WriteTempToLive();
+
             sw.Stop();
-            Log.writeLog("Deamon wird beendet");
-            Log.writeLog("Laufzeit: " + sw.Elapsed.TotalMinutes);
+            Log.writeLine("Deamon wird beendet");
+            Log.writeLine("Laufzeit: " + (int)sw.Elapsed.TotalMinutes);
         }
 
 
@@ -73,11 +87,16 @@ namespace ARPSDeamon
             if (shareColl == null)
                 return;
 
+            int shareIndex = 1;
             // Schleife über jede ausgelesene Freigabe 
             foreach (Share share in shareColl)
             {
+                Log.write(shareIndex + "/" + shareColl.Count + " - "  + share.NetName + " wird ausgelesen...", true, false);
                 // Ruft alle Informationen ab und schreibt sie in die Datenbank
                 FSWorker.GetSharesSecurity(share, server.DisplayName);
+
+                Log.write(" fertig", false, true);
+                shareIndex++;
             }
         }
 

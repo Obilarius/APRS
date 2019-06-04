@@ -1,4 +1,5 @@
-﻿using System;
+﻿using ARPSDeamon;
+using System;
 using System.Collections.Generic;
 using System.Data.SqlClient;
 using System.Linq;
@@ -10,6 +11,8 @@ namespace ARPSMSSQL
     public class MsSql
     {
         #region Tabellennamen
+
+        #region Temp
         public static string TBL_tmp_AD_Users { get { return "temp.adusers"; } }
         public static string TBL_tmp_AD_UserInGroup { get { return "temp.grp_user"; } }
         public static string TBL_tmp_AD_Groups { get { return "temp.adgroups"; } }
@@ -18,6 +21,19 @@ namespace ARPSMSSQL
         public static string TBL_tmp_FS_Shares { get { return "temp.shares"; } }
         public static string TBL_tmp_FS_ACLs { get { return "temp.acls"; } }
         public static string TBL_tmp_FS_ACEs { get { return "temp.aces"; } }
+        #endregion
+
+        #region Live
+        public static string TBL_AD_Users { get { return "dbo.adusers"; } }
+        public static string TBL_AD_UserInGroup { get { return "dbo.grp_user"; } }
+        public static string TBL_AD_Groups { get { return "dbo.adgroups"; } }
+        public static string TBL_AD_Computers { get { return "dbo.adcomputers"; } }
+        public static string TBL_FS_Dirs { get { return "fs.dirs"; } }
+        public static string TBL_FS_Shares { get { return "fs.shares"; } }
+        public static string TBL_FS_ACLs { get { return "fs.acls"; } }
+        public static string TBL_FS_ACEs { get { return "fs.aces"; } }
+        #endregion
+
         #endregion
 
         /// <summary>
@@ -46,6 +62,8 @@ namespace ARPSMSSQL
                 throw new Exception("Es konnte keine Vebindung zum MSSQL Server hergestellt werden! /n/r" + ex.Message);
             }
         }
+
+        
 
         /// <summary>
         /// Öffnet die Verbindung zum MSSQL Server
@@ -229,6 +247,147 @@ namespace ARPSMSSQL
 
             SqlCommand cmd = new SqlCommand(sql, mssql.Con);
             cmd.ExecuteNonQuery();
+        }
+
+
+        /// <summary>
+        /// Löscht den Inhalt der live Tabelle, kopiert den Inhalt der temp Tabelle zur live Tabelle und löscht die temp Tabelle
+        /// </summary>
+        internal static void WriteTempToLive()
+        {
+            var mssql = new MsSql();
+            mssql.Open();
+
+            #region ADUsers
+            SqlCommand cmd = new SqlCommand($"SELECT CASE WHEN OBJECT_ID('{TBL_tmp_AD_Users}', 'U') IS NOT NULL THEN 1 ELSE 0 END", mssql.Con);
+
+            if ((int)cmd.ExecuteScalar() == 1)
+            {
+                string sql = $"TRUNCATE TABLE {TBL_AD_Users}; " +
+                $"INSERT INTO {TBL_AD_Users} SELECT * FROM {TBL_tmp_AD_Users}; " +
+                $"DROP TABLE IF EXISTS {TBL_tmp_AD_Users}; ";
+
+                cmd = new SqlCommand(sql, mssql.Con);
+                cmd.ExecuteNonQuery();
+            }
+            else
+                Log.writeLine("Temp Users existiert nicht");
+            #endregion
+
+            #region ADUserInGroup
+            cmd = new SqlCommand($"SELECT CASE WHEN OBJECT_ID('{TBL_tmp_AD_UserInGroup}', 'U') IS NOT NULL THEN 1 ELSE 0 END", mssql.Con);
+
+            if ((int)cmd.ExecuteScalar() == 1)
+            {
+                string sql = $"TRUNCATE TABLE {TBL_AD_UserInGroup}; " +
+                $"INSERT INTO {TBL_AD_UserInGroup} SELECT * FROM {TBL_tmp_AD_UserInGroup}; " +
+                $"DROP TABLE IF EXISTS {TBL_tmp_AD_UserInGroup}; ";
+
+                cmd = new SqlCommand(sql, mssql.Con);
+                cmd.ExecuteNonQuery();
+            }
+            else
+                Log.writeLine("Temp UsersInGroup existiert nicht");
+            #endregion
+
+            #region ADGroups
+            cmd = new SqlCommand($"SELECT CASE WHEN OBJECT_ID('{TBL_tmp_AD_Groups}', 'U') IS NOT NULL THEN 1 ELSE 0 END", mssql.Con);
+
+            if ((int)cmd.ExecuteScalar() == 1)
+            {
+                string sql = $"TRUNCATE TABLE {TBL_AD_Groups}; " +
+                $"INSERT INTO {TBL_AD_Groups} SELECT * FROM {TBL_tmp_AD_Groups}; " +
+                $"DROP TABLE IF EXISTS {TBL_tmp_AD_Groups}; ";
+
+                cmd = new SqlCommand(sql, mssql.Con);
+                cmd.ExecuteNonQuery();
+            }
+            else
+                Log.writeLine("Temp Groups existiert nicht");
+            #endregion
+
+            #region ADComputers
+            cmd = new SqlCommand($"SELECT CASE WHEN OBJECT_ID('{TBL_tmp_AD_Computers}', 'U') IS NOT NULL THEN 1 ELSE 0 END", mssql.Con);
+
+            if ((int)cmd.ExecuteScalar() == 1)
+            {
+                string sql = $"TRUNCATE TABLE {TBL_AD_Computers}; " +
+                $"INSERT INTO {TBL_AD_Computers} SELECT * FROM {TBL_tmp_AD_Computers}; " +
+                $"DROP TABLE IF EXISTS {TBL_tmp_AD_Computers}; ";
+
+                cmd = new SqlCommand(sql, mssql.Con);
+                cmd.ExecuteNonQuery();
+            }
+            else
+                Log.writeLine("Temp Computers existiert nicht");
+            #endregion
+
+            #region FSDirs
+            cmd = new SqlCommand($"SELECT CASE WHEN OBJECT_ID('{TBL_tmp_FS_Dirs}', 'U') IS NOT NULL THEN 1 ELSE 0 END", mssql.Con);
+
+            if ((int)cmd.ExecuteScalar() == 1)
+            {
+                string sql = $"TRUNCATE TABLE {TBL_FS_Dirs}; " +
+                $"INSERT INTO {TBL_FS_Dirs} SELECT * FROM {TBL_tmp_FS_Dirs}; " +
+                $"DROP TABLE IF EXISTS {TBL_tmp_FS_Dirs}; ";
+
+                cmd = new SqlCommand(sql, mssql.Con);
+                cmd.ExecuteNonQuery();
+            }
+            else
+                Log.writeLine("Temp Dirs existiert nicht");
+            #endregion
+
+            #region FSShares
+            cmd = new SqlCommand($"SELECT CASE WHEN OBJECT_ID('{TBL_tmp_FS_Shares}', 'U') IS NOT NULL THEN 1 ELSE 0 END", mssql.Con);
+
+            if ((int)cmd.ExecuteScalar() == 1)
+            {
+                string sql = $"TRUNCATE TABLE {TBL_FS_Shares}; " +
+                $"INSERT INTO {TBL_FS_Shares} SELECT * FROM {TBL_tmp_FS_Shares}; " +
+                $"DROP TABLE IF EXISTS {TBL_tmp_FS_Shares}; ";
+
+                cmd = new SqlCommand(sql, mssql.Con);
+                cmd.ExecuteNonQuery();
+            }
+            else
+                Log.writeLine("Temp Shares existiert nicht");
+            #endregion
+
+            #region FSACLs
+            cmd = new SqlCommand($"SELECT CASE WHEN OBJECT_ID('{TBL_tmp_FS_ACLs}', 'U') IS NOT NULL THEN 1 ELSE 0 END", mssql.Con);
+
+            if ((int)cmd.ExecuteScalar() == 1)
+            {
+                string sql = $"TRUNCATE TABLE {TBL_FS_ACLs}; " +
+                $"INSERT INTO {TBL_FS_ACLs} SELECT * FROM {TBL_tmp_FS_ACLs}; " +
+                $"DROP TABLE IF EXISTS {TBL_tmp_FS_ACLs}; ";
+
+                cmd = new SqlCommand(sql, mssql.Con);
+                cmd.ExecuteNonQuery();
+            }
+            else
+                Log.writeLine("Temp ACLs existiert nicht");
+            #endregion
+
+            #region FSACEs
+            cmd = new SqlCommand($"SELECT CASE WHEN OBJECT_ID('{TBL_tmp_FS_ACEs}', 'U') IS NOT NULL THEN 1 ELSE 0 END", mssql.Con);
+
+            if ((int)cmd.ExecuteScalar() == 1)
+            {
+                string sql = $"TRUNCATE TABLE {TBL_FS_ACEs}; " +
+                $"INSERT INTO {TBL_FS_ACEs} SELECT * FROM {TBL_tmp_FS_ACEs}; " +
+                $"DROP TABLE IF EXISTS {TBL_tmp_FS_ACEs}; ";
+
+                cmd = new SqlCommand(sql, mssql.Con);
+                cmd.ExecuteNonQuery();
+            }
+            else
+                Log.writeLine("Temp ACEs existiert nicht");
+            #endregion
+
+            mssql.Close();
+            Log.writeLine("Alle Datenbanken ins live System übertragen");
         }
     }
 

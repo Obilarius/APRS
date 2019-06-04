@@ -508,8 +508,8 @@ namespace ARPSDeamon
         /// <returns>Größe in Bytes</returns>
         static long DirSize(DirectoryInfo d)
         {
-            // Wird aktuell geskippt das es zu lange dauert (Lauf ca.5h)
-            return 0;
+            // TODO: Wird aktuell geskippt das es zu lange dauert (Lauf ca.5h)
+            //return 0;
 
             long size = 0;
 

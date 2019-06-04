@@ -10,7 +10,7 @@
 
 #pragma warning disable 1591
 
-namespace ArgPermDeamon {
+namespace ARPSDeamon {
     
     
     /// <summary>
@@ -729,7 +729,7 @@ namespace ArgPermDeamon {
         }
     }
 }
-namespace ArgPermDeamon.ArgesPermDataSetTableAdapters {
+namespace ARPSDeamon.ArgesPermDataSetTableAdapters {
     
     
     /// <summary>

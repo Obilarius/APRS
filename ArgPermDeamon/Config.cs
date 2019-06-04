@@ -1,6 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Xml;
+using System.IO;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 
 namespace ARPSDeamon
 {
@@ -9,7 +14,7 @@ namespace ARPSDeamon
         /// <summary>
         /// Prop das den Pfad zur Config Datei hält
         /// </summary>
-        private string Path = @"config.xml";
+        private string path = Path.GetDirectoryName(Process.GetCurrentProcess().MainModule.FileName) + @"\config.xml";
 
         /// <summary>
         /// Hält die EInträge für jeden einzelnen Server in der Config
@@ -33,7 +38,7 @@ namespace ARPSDeamon
             List<ConfigServer> retList = new List<ConfigServer>();
 
             // Liest die config Datei in ein TextReader Objekt
-            XmlTextReader xtr = new XmlTextReader(Path);
+            XmlTextReader xtr = new XmlTextReader(path);
 
             // Liest jede Zeile der XML Datei
             while (xtr.Read())
