@@ -446,11 +446,17 @@ namespace ARPS.ViewModels
         /// </summary>
         public void DeamonStart()
         {
+            // Setzt den Cursor auf die Sanduhr
+            Mouse.OverrideCursor = Cursors.Wait;
+
             // Ruft die Funktion der ScheduleDeamon Klasse die den Deamon startet
             ScheduleDeamon.Start();
 
             // Löd das HistoryLog neu
             AsyncLoadedHistoryLog(100);
+
+            // Setzt den Cursor zurück auf Standard
+            Mouse.OverrideCursor = null;
         }
         #endregion
 
