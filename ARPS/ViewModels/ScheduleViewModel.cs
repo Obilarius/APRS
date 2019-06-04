@@ -1,4 +1,5 @@
-﻿using Prism.Mvvm;
+﻿using ARPS.Models.Schedule;
+using Prism.Mvvm;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -69,6 +70,11 @@ namespace ARPS.ViewModels
         /// Command zum Eintragen einer Planung
         /// </summary>
         public ICommand SubmitPlanningFormCommand { get; set; }
+
+        /// <summary>
+        /// Command zum starten des Deamons
+        /// </summary>
+        public ICommand DeamonStartCommand { get; set; }
 
         #region HistoryLog
         /// <summary>
@@ -412,6 +418,7 @@ namespace ARPS.ViewModels
             AddGroupToPlanCommand = new RelayCommand<GroupPrincipal>(AddGroupToPlan);
             RemoveGroupFromPlanCommand = new RelayCommand<GroupPrincipal>(RemoveGroupFromPlan);
             SubmitPlanningFormCommand = new RelayCommand(SubmitPlanningForm);
+            DeamonStartCommand = new RelayCommand(DeamonStart);
             HistoryLogHeaderClickCommand = new RelayCommand<string>(HistoryLogHeaderClick);
             RemoveHistoryLogEntryCommand = new RelayCommand<HistoryLogEntry>(RemoveHistoryLogEntry);
 
@@ -433,6 +440,19 @@ namespace ARPS.ViewModels
         }
         #endregion
 
+        #region Deamon
+        /// <summary>
+        /// Leitet den Aufrud an die ScheduleDeamon Klasse weiter und startet den Deamon
+        /// </summary>
+        public void DeamonStart()
+        {
+            // Ruft die Funktion der ScheduleDeamon Klasse die den Deamon startet
+            ScheduleDeamon.Start();
+
+            // Ruft die übergeben Anzahl an Eiträgen ab
+            AsyncLoadedHistoryLog(100);
+        }
+        #endregion
 
         #region Async Function Calls
 
