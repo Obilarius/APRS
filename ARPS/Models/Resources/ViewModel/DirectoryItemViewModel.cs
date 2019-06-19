@@ -9,6 +9,18 @@ using System.Windows.Input;
 
 namespace ARPS
 {
+    public class ScheduleItem
+    {
+        public string Task { get; set; }
+        public double Duration { get; set; }
+        public string Notes { get; set; }
+        public ScheduleItem[] SubItems { get; set; }
+        public ScheduleItem()
+        {
+            SubItems = new ScheduleItem[0];
+        }
+    }
+
     public class DirectoryItemViewModel : BindableBase
     {
         #region Public Propertys
@@ -18,6 +30,11 @@ namespace ARPS
         /// Alle ACEs des Ordners
         /// </summary>
         public List<DirectoryACE> ACEs { get; private set; }
+
+        /// <summary>
+        /// Alle ACEs die alle Gruppen enthalten. Im Feld Member werden die User in Gruppen gespeichert. (NICHT AUFGELÖST)
+        /// </summary>
+        public DirectoryACE AllAuthorizedACE { get; private set; }
 
         /// <summary>
         /// Alle berechtigten User des Ordners. Die berechtigten Gruppen werden rekursiv ausgelesen bis nur noch User in der Liste sind
@@ -248,6 +265,8 @@ namespace ARPS
             ACEs = new List<DirectoryACE>(DirectoryStructure.GetACEs(Item.Id));
         }
 
+        
+
         /// <summary>
         /// Ruft die ACEs der User ab (aufgelöste Gruppen) und speichert sie
         /// </summary>
@@ -258,6 +277,10 @@ namespace ARPS
                 FillACEs();
 
             AllAuthorizedUserACE = new List<DirectoryACE>(DirectoryStructure.GetAllAuthorizedUser(ACEs));
+
+            AllAuthorizedACE = new DirectoryACE("-");
+            AllAuthorizedACE.Member = new List<DirectoryACE>(DirectoryStructure.GetAllAuthorizedUser(ACEs));
+
         }
 
 

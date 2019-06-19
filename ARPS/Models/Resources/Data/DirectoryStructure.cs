@@ -475,8 +475,8 @@ namespace ARPS
             foreach (DirectoryACE ace in aces)
             {
                 // Der ACE gilt nicht für diesen Ordner oder ist ein Disallow Recht und zählt hier also nicht als Recht
-                if (!ace.PropagationOnThisFolder || ace.Type == true)
-                    continue;
+                //if (!ace.PropagationOnThisFolder || ace.Type == true)
+                //    continue;
 
 
                 // Wenn User
@@ -487,9 +487,13 @@ namespace ARPS
                 // Wenn Gruppe dann wird die Funktion GetMemberInGroup aufgerufen die alle User die über diese Gruppe berechtigt sind abgerufen
                 else
                 {
-                    retACEs.AddRange(GetMemberInGroup(ace));
+                    ace.Member = new List<DirectoryACE>(GetMemberInGroup(ace));
+                    retACEs.Add(ace);
                 }
             }
+
+            // Sortiert die Liste die zurück gegeben wird
+            retACEs.Sort(delegate (DirectoryACE ace1, DirectoryACE ace2) { return ace1.IdentityName.CompareTo(ace2.IdentityName); });
 
             return retACEs;
         }
@@ -499,7 +503,7 @@ namespace ARPS
         /// </summary>
         /// <param name="groupAce">Das ACE der Gruppe die ausgelesen werden soll</param>
         /// <returns></returns>
-        private static List<DirectoryACE> GetMemberInGroup(DirectoryACE groupAce)
+        public static List<DirectoryACE> GetMemberInGroup(DirectoryACE groupAce)
         {
 
             List<DirectoryACE> retList = new List<DirectoryACE>();

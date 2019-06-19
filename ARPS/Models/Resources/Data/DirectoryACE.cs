@@ -35,6 +35,8 @@ namespace ARPS
         public int InheritanceFlags { get; }
         public int PropagationFlags { get; }
 
+        public List<DirectoryACE> Member { get; set; }
+
 
         public DirectoryACE(bool isGroup, string identityName, string distinguishedName, int aCEId, string sID, FileSystemRights rights, bool type, string fileSystemRight, bool isInherited, int inheritanceFlags, int propagationFlags)
         {
