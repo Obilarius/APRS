@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Linq;
+using System.Windows.Input;
 
 namespace ARPS.ViewModels
 {
@@ -63,14 +64,19 @@ namespace ARPS.ViewModels
         /// <param name="newSelectedItem"></param>
         private void SelectedItemChange(DirectoryItemViewModel newSelectedItem)
         {
+            Mouse.OverrideCursor = System.Windows.Input.Cursors.Wait;
+
             // Falls das neue Item dem alten entspricht wird nichts gemacht
             if (newSelectedItem == null || newSelectedItem.Item.Id == SelectedItem.Item.Id)
                 return;
 
-            newSelectedItem.FillAccountWithPermissons();
+            //newSelectedItem.FillAccountWithPermissons();
+            newSelectedItem.FillAllAuthorizedUserACE();
 
             // Setzt das Selected Item auf das neue Item
             SelectedItem = newSelectedItem;
+
+            Mouse.OverrideCursor = null;
         }
 
 

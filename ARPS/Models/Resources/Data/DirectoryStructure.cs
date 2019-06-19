@@ -499,11 +499,89 @@ namespace ARPS
         }
 
         /// <summary>
-        /// Hilfsfunktion die alle Member einer Gruppe ausliest. Falls Gruppen in Gruppen sind wir diese Funktion auch rekursiv aufgerufen
+        /// Hilfsfunktion die alle Member einer Gruppe ausliest.
         /// </summary>
         /// <param name="groupAce">Das ACE der Gruppe die ausgelesen werden soll</param>
         /// <returns></returns>
         public static List<DirectoryACE> GetMemberInGroup(DirectoryACE groupAce)
+        {
+            // TODO: Die Abfrage muss noch geändert werden dass auch die Grppen zurückgegeben werden
+            List<DirectoryACE> retList = new List<DirectoryACE>();
+
+            // erstellt eine MSSQL Verbindung und öffnet Sie
+            var mssql = new MsSql();
+            mssql.Open();
+
+            // Der SQL Befehl um alle Ordner abzurufen die root sind
+            string sql = $"SELECT gu.userSID, CASE WHEN u.SID IS NULL THEN 1 ELSE 0 END as _is_group, u.* " +
+                $"FROM ARPS_Test.dbo.adgroups g " +
+                $"JOIN ARPS_Test.dbo.grp_user gu " +
+                $"ON g.SID = gu.grpSID " +
+                $"LEFT JOIN ARPS_Test.dbo.adusers u " +
+                $"ON u.SID = gu.userSID " +
+                $"WHERE g.SID = @GroupSid ";
+
+            // Sendet den SQL Befehl an den SQL Server
+            SqlCommand cmd = new SqlCommand(sql, mssql.Con);
+
+            //Parameter anhängen
+            cmd.Parameters.AddWithValue("@GroupSid", groupAce.SID);
+
+            // Benutzt den SQL Reader um über alle Zeilen der Abfrage zu gehen
+            using (SqlDataReader reader = cmd.ExecuteReader())
+            {
+                while (reader.Read())
+                {
+                    // Speichert die Daten des Readers in einzelne Variablen
+                    bool isGroup = Convert.ToBoolean(reader["_is_group"]);
+                    string sid = reader["userSID"].ToString();
+
+                    ADElement Element = ADStructure.GetADElement(sid);
+                    
+                    //string displayName = reader["DisplayName"].ToString();
+                    //string samAccountName = reader["SamAccountName"].ToString();
+                    //string distinguishedName = reader["DistinguishedName"].ToString();
+                    //string userPrincipalName = reader["UserPrincipalName"].ToString();
+                    //bool enabled = Convert.ToBoolean(reader["Enabled"]);
+
+                    // erstellt das ACE falls er aktiv oder eine Gruppe ist
+                    if (Element.Enabled || Element.Type == ADElementType.Group)
+                    {
+                        var nAce = new DirectoryACE(
+                            isGroup,
+                            (isGroup) ? Element.Name : reader["DisplayName"].ToString() + " (" + reader["UserPrincipalName"].ToString() + ")",
+                            "",
+                            -1,
+                            sid,
+                            groupAce.Rights,
+                            groupAce.Type,
+                            groupAce.FileSystemRight,
+                            groupAce.IsInherited,
+                            groupAce.InheritanceFlags,
+                            groupAce.PropagationFlags);
+
+                        // Falls das ACE eine Gruppe ist werden die Member der Gruppe rekursiv gefüllt
+                        if (isGroup)
+                            nAce.Member = new List<DirectoryACE>(GetMemberInGroup(nAce));
+
+                        // Das ACE wird der Liste hinzugefügt die zurückgegeben wird
+                        retList.Add(nAce);
+                    }
+                }
+            }
+
+            // Schließt die MSSQL verbindung
+            mssql.Close();
+
+            return retList;
+        }
+
+        /// <summary>
+        /// Hilfsfunktion die alle Member einer Gruppe ausliest. Falls Gruppen in Gruppen sind wir diese Funktion auch rekursiv aufgerufen
+        /// </summary>
+        /// <param name="groupAce">Das ACE der Gruppe die ausgelesen werden soll</param>
+        /// <returns></returns>
+        public static List<DirectoryACE> GetOnlyUserInGroup(DirectoryACE groupAce)
         {
 
             List<DirectoryACE> retList = new List<DirectoryACE>();
@@ -539,7 +617,7 @@ namespace ARPS
                     if (isGroup)
                     {
                         // Fügt die Rückgabewert der rekursiven Funktion an die Liste an
-                        retList.AddRange(GetMemberInGroup(new DirectoryACE(
+                        retList.AddRange(GetOnlyUserInGroup(new DirectoryACE(
                             sid, 
                             groupAce.Rights, 
                             groupAce.Type, 

@@ -228,6 +228,7 @@ namespace ARPS
         /// <returns></returns>
         public static ADElement GetADElement(string sid)
         {
+
             // Überprüft ob die übergebene SID ein User ist
             ADElement returnElement = GetADUser(sid);
 

@@ -268,7 +268,7 @@ namespace ARPS
         
 
         /// <summary>
-        /// Ruft die ACEs der User ab (aufgelöste Gruppen) und speichert sie
+        /// Ruft die ACEs der User ab und speichert sie
         /// </summary>
         public void FillAllAuthorizedUserACE()
         {
@@ -276,7 +276,7 @@ namespace ARPS
             if (ACEs == null)
                 FillACEs();
 
-            AllAuthorizedUserACE = new List<DirectoryACE>(DirectoryStructure.GetAllAuthorizedUser(ACEs));
+            //AllAuthorizedUserACE = new List<DirectoryACE>(DirectoryStructure.GetAllAuthorizedUser(ACEs));
 
             AllAuthorizedACE = new DirectoryACE("-");
             AllAuthorizedACE.Member = new List<DirectoryACE>(DirectoryStructure.GetAllAuthorizedUser(ACEs));

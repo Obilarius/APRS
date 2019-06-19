@@ -31,7 +31,7 @@
     <InstallUrl>\\FILER\Install\Anwendungen\Arges\ARPS\ARPS\</InstallUrl>
     <ProductName>ARPS</ProductName>
     <PublisherName>Arges GmbH</PublisherName>
-    <ApplicationRevision>3</ApplicationRevision>
+    <ApplicationRevision>4</ApplicationRevision>
     <ApplicationVersion>1.0.0.%2a</ApplicationVersion>
     <UseApplicationTrust>false</UseApplicationTrust>
     <PublishWizardCompleted>true</PublishWizardCompleted>
@@ -143,7 +143,7 @@
     <Compile Include="Models\Resources\Data\DirectoryACE.cs" />
     <Compile Include="Models\Resources\Data\DirectoryInfoItem.cs" />
     <Compile Include="Models\Resources\Data\DirectoryItem.cs" />
-    <Compile Include="Models\AD\UserType.cs" />
+    <Compile Include="Models\AD\ADElementType.cs" />
     <Compile Include="Models\Resources\Data\DirectoryItemType.cs" />
     <Compile Include="Models\Resources\Converter\UserTypeToImageConverter.cs" />
     <Compile Include="Models\Resources\Converter\HeaderToImageConverter.cs" />
