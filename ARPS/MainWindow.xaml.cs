@@ -28,6 +28,7 @@ namespace ARPS
         {
             InitializeComponent();
             DataContext = new DashboardViewModel();
+            btn_dashboard.Background = (Brush)Application.Current.FindResource("ArgesGrauBlau_mittel");
 
             var statusBar = new StatusBarViewModel();
             StatusBarNote = statusBar.StatusBarText;
