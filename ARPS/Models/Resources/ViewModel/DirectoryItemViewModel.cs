@@ -276,8 +276,6 @@ namespace ARPS
             if (ACEs == null)
                 FillACEs();
 
-            //AllAuthorizedUserACE = new List<DirectoryACE>(DirectoryStructure.GetAllAuthorizedUser(ACEs));
-
             AllAuthorizedACE = new DirectoryACE("-");
             AllAuthorizedACE.Member = new List<DirectoryACE>(DirectoryStructure.GetAllAuthorizedUser(ACEs));
 
@@ -285,6 +283,7 @@ namespace ARPS
 
 
         /// <summary>
+        /// NOT USED
         /// Füllt das Property AccountsWithPermissions mit einer Zusammenfassung der User die Berechtigt sind.
         /// Beinhaltet Count (Wie oft idt der User berechtigt) und InheritedCount (Wie oft ist ein User durch Vererbung berechtigt)
         /// </summary>

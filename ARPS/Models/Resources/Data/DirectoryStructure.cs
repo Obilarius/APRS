@@ -537,12 +537,10 @@ namespace ARPS
                     string sid = reader["userSID"].ToString();
 
                     ADElement Element = ADStructure.GetADElement(sid);
-                    
-                    //string displayName = reader["DisplayName"].ToString();
-                    //string samAccountName = reader["SamAccountName"].ToString();
-                    //string distinguishedName = reader["DistinguishedName"].ToString();
-                    //string userPrincipalName = reader["UserPrincipalName"].ToString();
-                    //bool enabled = Convert.ToBoolean(reader["Enabled"]);
+
+                    // falls das Element null ist wird die SID übersprungen
+                    if (Element == null)
+                        continue;
 
                     // erstellt das ACE falls er aktiv oder eine Gruppe ist
                     if (Element.Enabled || Element.Type == ADElementType.Group)
