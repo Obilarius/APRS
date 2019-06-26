@@ -35,6 +35,9 @@ namespace ARPS
         public int InheritanceFlags { get; }
         public int PropagationFlags { get; }
 
+        // Count wie oft diese Ace berechtigt ist
+        public int rightCount { get; set; }
+
         public List<DirectoryACE> Member { get; set; }
 
 

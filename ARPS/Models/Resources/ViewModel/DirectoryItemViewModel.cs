@@ -279,13 +279,56 @@ namespace ARPS
             AllAuthorizedACE = new DirectoryACE("-");
             AllAuthorizedACE.Member = new List<DirectoryACE>(DirectoryStructure.GetAllAuthorizedUser(ACEs));
 
+            List<DirectoryACE> AllAces = new List<DirectoryACE>();
+
+            foreach (var ace in AllAuthorizedACE.Member)
+            {
+                AllAces.Add(ace);
+
+                if (ace.Member != null)
+                {
+                    foreach (var ace2 in ace.Member)
+                    {
+                        AllAces.Add(ace2);
+
+                        if (ace2.Member != null)
+                            AllAces.AddRange(ace2.Member);
+                    }
+                }
+            }
+
+            var grpList = AllAces.GroupBy(u => u.SID).ToList();
+
+            foreach (var ace in AllAuthorizedACE.Member)
+            {
+                IGrouping<string, DirectoryACE> match = grpList.FirstOrDefault(a => a.Key == ace.SID);
+                ace.rightCount = match.Count();
+
+                if (ace.Member != null)
+                {
+                    foreach (var ace2 in ace.Member)
+                    {
+                        IGrouping<string, DirectoryACE> match2 = grpList.FirstOrDefault(a => a.Key == ace2.SID);
+                        ace2.rightCount = match2.Count();
+
+                        if (ace2.Member != null)
+                        {
+                            foreach (var ace3 in ace2.Member)
+                            {
+                                IGrouping<string, DirectoryACE> match3 = grpList.FirstOrDefault(a => a.Key == ace3.SID);
+                                ace3.rightCount = match3.Count();
+                            }
+                        }
+                    }
+                }
+            }
         }
 
 
         /// <summary>
         /// NOT USED
         /// Füllt das Property AccountsWithPermissions mit einer Zusammenfassung der User die Berechtigt sind.
-        /// Beinhaltet Count (Wie oft idt der User berechtigt) und InheritedCount (Wie oft ist ein User durch Vererbung berechtigt)
+        /// Beinhaltet Count (Wie oft ist der User berechtigt) und InheritedCount (Wie oft ist ein User durch Vererbung berechtigt)
         /// </summary>
         public void FillAccountWithPermissons()
         {
