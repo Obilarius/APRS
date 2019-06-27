@@ -161,8 +161,28 @@
                            HorizontalAlignment="Left"/>
                 </Grid>
             </Grid>
+
+
+
+
+
+
+
+
+
+
             
-            
+
+
+
+
+
+
+
+
+
+
+
 
             <!-- 3. Row - NTFS Access rights -->
             <Expander DockPanel.Dock="Top" Header="Zugriffsberechtigung" Background="White" Foreground="{StaticResource ArgesBlau}" 
@@ -173,10 +193,11 @@
                     </DataTemplate>
                 </Expander.HeaderTemplate>
 
-                
 
+                <ScrollViewer HorizontalScrollBarVisibility="Hidden">
+                
                 <!-- TreeGrid "Control" -->
-                <Border BorderBrush="Black" BorderThickness="0">
+                <Border BorderBrush="Black" BorderThickness="0" >
 
                     <!-- Resources -->
                     <Border.Resources>
@@ -204,13 +225,13 @@
                         <!-- Column headers -->
                         <TreeViewItem Grid.Row="0" BorderThickness="1">
                             <TreeViewItem.Header>
-                                <Grid ShowGridLines="True">
+                                <Grid>
                                     <Grid.ColumnDefinitions>
                                         <ColumnDefinition SharedSizeGroup="Name"/>
                                         <!-- Placeholders for two columns of ToggleButton -->
                                         <ColumnDefinition SharedSizeGroup="Toggle"/>
                                         <ColumnDefinition SharedSizeGroup="Toggle"/>
-                                        <ColumnDefinition Width="50px" SharedSizeGroup="rightCount"/>
+                                        <ColumnDefinition Width="80px" SharedSizeGroup="rightCount"/>
                                         <ColumnDefinition Width="30px" SharedSizeGroup="IsInherited"/>
                                         <ColumnDefinition Width="30px" SharedSizeGroup="HasFullControll"/>
                                         <ColumnDefinition Width="30px" SharedSizeGroup="HasModify"/>
@@ -219,6 +240,7 @@
                                         <ColumnDefinition Width="30px" SharedSizeGroup="HasRead"/>
                                         <ColumnDefinition Width="30px" SharedSizeGroup="HasListDirectory"/>
                                         <ColumnDefinition SharedSizeGroup="Propagation"/>
+                                        <ColumnDefinition Width="450px" SharedSizeGroup="RightMargin"/>
                                     </Grid.ColumnDefinitions>
                                     <!-- Empty TreeViewItem to measure the size of its ToggleButton into the "Toggle" group-->
                                     <TreeViewItem Grid.Column="1" Padding="0"/>
@@ -241,7 +263,7 @@
 
                                 <!-- Level 0 template leaves space for 2 child "Toggle" levels -->
                                 <HierarchicalDataTemplate ItemsSource="{Binding Member}">
-                                    <Grid ShowGridLines="True">
+                                    <Grid>
                                         <Grid.ColumnDefinitions>
                                             <ColumnDefinition SharedSizeGroup="Name"/>
                                             <ColumnDefinition SharedSizeGroup="Toggle"/>
@@ -255,9 +277,10 @@
                                             <ColumnDefinition SharedSizeGroup="HasRead"/>
                                             <ColumnDefinition SharedSizeGroup="HasListDirectory"/>
                                             <ColumnDefinition SharedSizeGroup="Propagation"/>
+                                            <ColumnDefinition SharedSizeGroup="RightMargin"/>
                                         </Grid.ColumnDefinitions>
 
-                                        <StackPanel Orientation="Horizontal" Grid.Column="0" Background="DeepPink">
+                                        <StackPanel Orientation="Horizontal" Grid.Column="0">
                                             <Image Width="20" Source="{Binding SID, Converter={x:Static local:SIDToImageConverter.Instance}}"/>
                                             <TextBlock Text="{Binding IdentityName}"/>
                                         </StackPanel>
@@ -386,13 +409,13 @@
                                             </Image.Style>
                                         </Image>
 
-                                        <TextBlock Grid.Column="11" Text="{Binding Propagation}" Style="{StaticResource TextBlockStyle}" Background="HotPink"/>
+                                        <TextBlock Grid.Column="11" Text="{Binding Propagation}" Style="{StaticResource TextBlockStyle}"/>
                                     </Grid>
 
                                     <!-- Level 1 template leaves space for 1 child "Toggle" level -->
                                     <HierarchicalDataTemplate.ItemTemplate>
                                         <HierarchicalDataTemplate ItemsSource="{Binding Member}">
-                                            <Grid ShowGridLines="True">
+                                            <Grid>
                                                 <Grid.ColumnDefinitions>
                                                     <ColumnDefinition SharedSizeGroup="Name"/>
                                                     <ColumnDefinition/>
@@ -406,9 +429,10 @@
                                                     <ColumnDefinition SharedSizeGroup="HasRead"/>
                                                     <ColumnDefinition SharedSizeGroup="HasListDirectory"/>
                                                     <ColumnDefinition SharedSizeGroup="Propagation"/>
+                                                    <ColumnDefinition SharedSizeGroup="RightMargin"/>
                                                 </Grid.ColumnDefinitions>
 
-                                                <StackPanel Orientation="Horizontal" Grid.Column="0" Background="HotPink">
+                                                <StackPanel Orientation="Horizontal" Grid.Column="0">
                                                     <Image Width="20" Source="{Binding SID, Converter={x:Static local:SIDToImageConverter.Instance}}"/>
                                                     <TextBlock Text="{Binding IdentityName}"/>
                                                 </StackPanel>
@@ -537,14 +561,14 @@
                                                     </Image.Style>
                                                 </Image>
 
-                                                <TextBlock Grid.Column="11" Text="{Binding Propagation}" Style="{StaticResource TextBlockStyle}" Background="HotPink"/>
+                                                <TextBlock Grid.Column="11" Text="{Binding Propagation}" Style="{StaticResource TextBlockStyle}"/>
 
                                             </Grid>
 
                                             <!-- Level 2 template has no children -->
                                             <HierarchicalDataTemplate.ItemTemplate>
                                                 <HierarchicalDataTemplate ItemsSource="{Binding Member}">
-                                                    <Grid ShowGridLines="True">
+                                                    <Grid>
                                                         <Grid.ColumnDefinitions>
                                                             <ColumnDefinition SharedSizeGroup="Name"/>
                                                             <ColumnDefinition/>
@@ -558,9 +582,10 @@
                                                             <ColumnDefinition SharedSizeGroup="HasRead"/>
                                                             <ColumnDefinition SharedSizeGroup="HasListDirectory"/>
                                                             <ColumnDefinition SharedSizeGroup="Propagation"/>
+                                                            <ColumnDefinition SharedSizeGroup="RightMargin"/>
                                                         </Grid.ColumnDefinitions>
                                                         
-                                                        <StackPanel Orientation="Horizontal" Grid.Column="0" Background="PaleVioletRed">
+                                                        <StackPanel Orientation="Horizontal" Grid.Column="0">
                                                             <Image Width="20" Source="{Binding SID, Converter={x:Static local:SIDToImageConverter.Instance}}"/>
                                                             <TextBlock Text="{Binding IdentityName}"/>
                                                         </StackPanel>
@@ -587,6 +612,110 @@
                                                             </Grid>
                                                         </Border>
 
+                                                        <Image Grid.Column="4" Width="20" Height="20" Source="{StaticResource Img_Checkmark}">
+                                                            <Image.Style>
+                                                                <Style TargetType="Image">
+                                                                    <Style.Triggers>
+                                                                        <DataTrigger  Binding="{Binding IsInherited}" Value="False">
+                                                                            <Setter Property="Visibility" Value="Hidden"/>
+                                                                        </DataTrigger >
+                                                                    </Style.Triggers>
+                                                                </Style>
+                                                            </Image.Style>
+                                                        </Image>
+
+                                                        <Image Grid.Column="5" Width="20" Height="20" Source="{StaticResource Img_Checkmark}">
+                                                            <Image.Style>
+                                                                <Style TargetType="Image">
+                                                                    <Style.Triggers>
+                                                                        <DataTrigger  Binding="{Binding HasFullControl}" Value="False">
+                                                                            <Setter Property="Visibility" Value="Hidden"/>
+                                                                        </DataTrigger>
+                                                                        <DataTrigger Binding="{Binding IsInherited}" Value="True">
+                                                                            <Setter Property="Opacity" Value="0.3"/>
+                                                                        </DataTrigger>
+                                                                    </Style.Triggers>
+                                                                </Style>
+                                                            </Image.Style>
+                                                        </Image>
+
+                                                        <Image Grid.Column="6" Width="20" Height="20" Source="{StaticResource Img_Checkmark}">
+                                                            <Image.Style>
+                                                                <Style TargetType="Image">
+                                                                    <Style.Triggers>
+                                                                        <DataTrigger  Binding="{Binding HasModify}" Value="False">
+                                                                            <Setter Property="Visibility" Value="Hidden"/>
+                                                                        </DataTrigger >
+                                                                        <DataTrigger Binding="{Binding IsInherited}" Value="True">
+                                                                            <Setter Property="Opacity" Value="0.3"/>
+                                                                        </DataTrigger>
+                                                                    </Style.Triggers>
+                                                                </Style>
+                                                            </Image.Style>
+                                                        </Image>
+
+                                                        <Image Grid.Column="7" Width="20" Height="20" Source="{StaticResource Img_Checkmark}">
+                                                            <Image.Style>
+                                                                <Style TargetType="Image">
+                                                                    <Style.Triggers>
+                                                                        <DataTrigger  Binding="{Binding HasReadAndExecute}" Value="False">
+                                                                            <Setter Property="Visibility" Value="Hidden"/>
+                                                                        </DataTrigger >
+                                                                        <DataTrigger Binding="{Binding IsInherited}" Value="True">
+                                                                            <Setter Property="Opacity" Value="0.3"/>
+                                                                        </DataTrigger>
+                                                                    </Style.Triggers>
+                                                                </Style>
+                                                            </Image.Style>
+                                                        </Image>
+
+                                                        <Image Grid.Column="8" Width="20" Height="20" Source="{StaticResource Img_Checkmark}">
+                                                            <Image.Style>
+                                                                <Style TargetType="Image">
+                                                                    <Style.Triggers>
+                                                                        <DataTrigger  Binding="{Binding HasWrite}" Value="False">
+                                                                            <Setter Property="Visibility" Value="Hidden"/>
+                                                                        </DataTrigger >
+                                                                        <DataTrigger Binding="{Binding IsInherited}" Value="True">
+                                                                            <Setter Property="Opacity" Value="0.3"/>
+                                                                        </DataTrigger>
+                                                                    </Style.Triggers>
+                                                                </Style>
+                                                            </Image.Style>
+                                                        </Image>
+
+                                                        <Image Grid.Column="9" Width="20" Height="20" Source="{StaticResource Img_Checkmark}">
+                                                            <Image.Style>
+                                                                <Style TargetType="Image">
+                                                                    <Style.Triggers>
+                                                                        <DataTrigger  Binding="{Binding HasRead}" Value="False">
+                                                                            <Setter Property="Visibility" Value="Hidden"/>
+                                                                        </DataTrigger >
+                                                                        <DataTrigger Binding="{Binding IsInherited}" Value="True">
+                                                                            <Setter Property="Opacity" Value="0.3"/>
+                                                                        </DataTrigger>
+                                                                    </Style.Triggers>
+                                                                </Style>
+                                                            </Image.Style>
+                                                        </Image>
+
+                                                        <Image Grid.Column="10" Width="20" Height="20" Source="{StaticResource Img_Checkmark}">
+                                                            <Image.Style>
+                                                                <Style TargetType="Image">
+                                                                    <Style.Triggers>
+                                                                        <DataTrigger  Binding="{Binding HasListDirectory}" Value="False">
+                                                                            <Setter Property="Visibility" Value="Hidden"/>
+                                                                        </DataTrigger >
+                                                                        <DataTrigger Binding="{Binding IsInherited}" Value="True">
+                                                                            <Setter Property="Opacity" Value="0.3"/>
+                                                                        </DataTrigger>
+                                                                    </Style.Triggers>
+                                                                </Style>
+                                                            </Image.Style>
+                                                        </Image>
+
+                                                        <TextBlock Grid.Column="11" Text="{Binding Propagation}" Style="{StaticResource TextBlockStyle}"/>
+
                                                     </Grid>
                                                 </HierarchicalDataTemplate>
                                             </HierarchicalDataTemplate.ItemTemplate>
@@ -598,6 +727,7 @@
                     </Grid>
                 </Border>
 
+                </ScrollViewer>
 
                 <!--<DataGrid ItemsSource="{Binding SelectedItem.NTFSRights}" AutoGenerateColumns="False" 
                           IsReadOnly="True" GridLinesVisibility="Horizontal">
