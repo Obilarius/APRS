@@ -9,6 +9,24 @@
         mc:Ignorable="d"
         Title="Details" Height="715" Width="850" ResizeMode="CanResize">
 
+    <Window.Resources>
+        <Style TargetType="ToolTip">
+            <Style.Resources>
+                <Style TargetType="TextBlock">
+                    <Setter Property="TextWrapping" Value="Wrap" />
+                    <Setter Property="MaxWidth" Value="500"/>
+                </Style>
+            </Style.Resources>
+            <!--<Setter Property="MaxWidth" Value="500" />-->
+            <Setter Property="Background" Value="{StaticResource ArgesGrauBlau_mittel}"/>
+            <Setter Property="MaxWidth" Value="500"/>
+            <!--<Setter Property="Foreground" Value="White"/>-->
+        </Style>
+    </Window.Resources>
+    
+    
+
+
     <StackPanel Margin="10">
         <!-- Ordner Infos -->
         <Border BorderBrush="{StaticResource ArgesGrauBlau_dunkel}" BorderThickness="2" Padding="10">
@@ -128,72 +146,166 @@
                 <StackPanel Grid.Row="1" Grid.Column="1" Orientation="Horizontal">
                     <CheckBox IsChecked="{Binding folderAce.HasFullControl, Mode=OneWay}" IsHitTestVisible="False"/>
                     <TextBlock Text="Vollzugriff"/>
+                    <StackPanel.ToolTip>
+                        <ToolTip>
+                            <TextBlock Text="Allows users to read, write, change, and delete files and subfolders. In addition, users can change permissions settings for all files and subdirectories."/>
+                        </ToolTip>
+                    </StackPanel.ToolTip>
                 </StackPanel>
 
                 <StackPanel Grid.Row="2" Grid.Column="1" Orientation="Horizontal">
                     <CheckBox IsChecked="{Binding folderAce.HasExecuteFileTraverse, Mode=OneWay}" IsHitTestVisible="False"/>
                     <TextBlock Text="Ordner durchsuchen / Datei ausführen"/>
+                    <StackPanel.ToolTip>
+                        <ToolTip>
+                            <StackPanel>
+                                <TextBlock>
+                                    <Bold>- Traverse Folder:</Bold> Allows or denies moving through a restricted folder to reach files and folders beneath the restricted folder in the folder hierarchy. Traverse folder takes effect only when the group or user is not granted the &quot;Bypass traverse checking user&quot; right in the Group Policy snap-in. This permission does not automatically allow running program files.
+                                </TextBlock>
+                                <TextBlock>
+                                    <Bold>- Execute File:</Bold> Allows or denies running program (executable) files.
+                                </TextBlock>
+                            </StackPanel>
+                        </ToolTip>
+                    </StackPanel.ToolTip>
                 </StackPanel>
 
                 <StackPanel Grid.Row="3" Grid.Column="1" Orientation="Horizontal">
                     <CheckBox IsChecked="{Binding folderAce.HasReadData, Mode=OneWay}" IsHitTestVisible="False"/>
                     <TextBlock Text="Ordner auflisten / Daten lesen"/>
+                    <StackPanel.ToolTip>
+                        <ToolTip>
+                            <StackPanel>
+                                <TextBlock>
+                                    <Bold>- List Folder:</Bold> Allows or denies viewing file names and subfolder names within the folder. List Folder only affects the contents of that folder and does not affect whether the folder you are setting the permission on will be listed.
+                                </TextBlock>
+                                <TextBlock><Bold>- Read Data:</Bold> Allows or denies viewing data in files.</TextBlock>
+                            </StackPanel>
+                        </ToolTip>
+                    </StackPanel.ToolTip>
                 </StackPanel>
 
                 <StackPanel Grid.Row="4" Grid.Column="1" Orientation="Horizontal">
                     <CheckBox IsChecked="{Binding folderAce.HasReadAttributes, Mode=OneWay}" IsHitTestVisible="False"/>
                     <TextBlock Text="Attribute lesen"/>
+                    <StackPanel.ToolTip>
+                        <ToolTip>
+                            <TextBlock Text="Allows or denies viewing the attributes of a file or folder, for example, &quot;read-only&quot; and &quot;hidden&quot;."/>
+                        </ToolTip>
+                    </StackPanel.ToolTip>
                 </StackPanel>
 
                 <StackPanel Grid.Row="5" Grid.Column="1" Orientation="Horizontal">
                     <CheckBox IsChecked="{Binding folderAce.HasReadExtendedAttributes, Mode=OneWay}" IsHitTestVisible="False"/>
                     <TextBlock Text="Erweiterte Attribute lesen"/>
+                    <StackPanel.ToolTip>
+                        <ToolTip>
+                            <TextBlock Text="Allows or denies viewing the extended attributes of a file or folder. Extended attributes are defined by programs and may vary by program."/>
+                        </ToolTip>
+                    </StackPanel.ToolTip>
                 </StackPanel>
 
                 <StackPanel Grid.Row="6" Grid.Column="1" Orientation="Horizontal">
                     <CheckBox IsChecked="{Binding folderAce.HasWriteDataCreateFiles, Mode=OneWay}" IsHitTestVisible="False"/>
                     <TextBlock Text="Dateien erstellen / Daten schreiben"/>
+                    <StackPanel.ToolTip>
+                        <ToolTip>
+                            <StackPanel>
+                                <TextBlock><Bold>- Create Files:</Bold> Allows or denies creating files within the folder.</TextBlock>
+                                <TextBlock><Bold>- Write Data:</Bold> Allows or denies making changes to a file and overwriting existing content.</TextBlock>
+                            </StackPanel>
+                        </ToolTip>
+                    </StackPanel.ToolTip>
                 </StackPanel>
 
                 <StackPanel Grid.Row="7" Grid.Column="1" Orientation="Horizontal">
                     <CheckBox IsChecked="{Binding folderAce.HasCreateDirectoryAppendData, Mode=OneWay}" IsHitTestVisible="False"/>
                     <TextBlock Text="Ordner erstellen / Daten anhängen"/>
+                    <StackPanel.ToolTip>
+                        <ToolTip>
+                            <StackPanel>
+                                <TextBlock><Bold>- Create Folders:</Bold> Allows or denies creating subfolders within the folder.</TextBlock>
+                                <TextBlock><Bold>- Append Data:</Bold> Allows or denies making changes to the end of the file but not changing, deleting, or overwriting existing data.</TextBlock>
+                            </StackPanel>
+                        </ToolTip>
+                    </StackPanel.ToolTip>
                 </StackPanel>
                 
                 <!-- Spalte 3 -->
                 <StackPanel Grid.Row="1" Grid.Column="2" Orientation="Horizontal">
                     <CheckBox IsChecked="{Binding folderAce.HasWriteAttributes, Mode=OneWay}" IsHitTestVisible="False"/>
                     <TextBlock Text="Attribute schreiben"/>
+                    <StackPanel.ToolTip>
+                        <ToolTip>
+                            <StackPanel>
+                                <TextBlock Text="- Allows or denies changing the attributes of a file or folder, for example, &quot;read-only&quot; or &quot;hidden&quot;."/>
+                                <TextBlock Text="- The Write Attributes permission does not imply creating or deleting files or folders, it only includes the permission to make changes to the attributes of an existing file or folder."/>
+                            </StackPanel>
+                        </ToolTip>
+                    </StackPanel.ToolTip>
                 </StackPanel>
 
                 <StackPanel Grid.Row="2" Grid.Column="2" Orientation="Horizontal">
                     <CheckBox IsChecked="{Binding folderAce.HasWriteExtendedAttributes, Mode=OneWay}" IsHitTestVisible="False"/>
                     <TextBlock Text="Erweiterte Attribute schreiben"/>
+                    <StackPanel.ToolTip>
+                        <ToolTip>
+                            <StackPanel>
+                                <TextBlock Text="- Allows or denies changing the extended attributes of a file or folder. Extended attributes are defined by programs and may vary by program."/>
+                                <TextBlock Text="- The Write Extended Attributes permission does not imply creating or deleting files or folders, it only includes the permission to make changes to the extended attributes of an existing file or folder."/>
+                            </StackPanel>
+                        </ToolTip>
+                    </StackPanel.ToolTip>
                 </StackPanel>
 
                 <StackPanel Grid.Row="3" Grid.Column="2" Orientation="Horizontal">
                     <CheckBox IsChecked="{Binding folderAce.HasDeleteSubdirectoriesAndFiles, Mode=OneWay}" IsHitTestVisible="False"/>
                     <TextBlock Text="Unterordner und Dateien löschen"/>
+                    <StackPanel.ToolTip>
+                        <ToolTip>
+                            <TextBlock Text="Allows or denies deleting subfolders and files, even if the Delete permission has not been granted on the subfolder or file."/>
+                        </ToolTip>
+                    </StackPanel.ToolTip>
                 </StackPanel>
 
                 <StackPanel Grid.Row="4" Grid.Column="2" Orientation="Horizontal">
                     <CheckBox IsChecked="{Binding folderAce.HasDelete, Mode=OneWay}" IsHitTestVisible="False"/>
                     <TextBlock Text="Löschen"/>
+                    <StackPanel.ToolTip>
+                        <ToolTip>
+                            <TextBlock Text="Allows or denies deleting the file or folder. If you don't have Delete permission on a file or folder, you can still delete it if you have been granted Delete Subfolders and Files on the parent folder."/>
+                        </ToolTip>
+                    </StackPanel.ToolTip>
                 </StackPanel>
 
                 <StackPanel Grid.Row="5" Grid.Column="2" Orientation="Horizontal">
                     <CheckBox IsChecked="{Binding folderAce.HasReadPermissions, Mode=OneWay}" IsHitTestVisible="False"/>
                     <TextBlock Text="Berechtigungen lesen"/>
+                    <StackPanel.ToolTip>
+                        <ToolTip>
+                            <TextBlock Text="Allows or denies reading permissions of a file or folder."/>
+                        </ToolTip>
+                    </StackPanel.ToolTip>
                 </StackPanel>
 
                 <StackPanel Grid.Row="6" Grid.Column="2" Orientation="Horizontal">
                     <CheckBox IsChecked="{Binding folderAce.HasChangePermissions, Mode=OneWay}" IsHitTestVisible="False"/>
                     <TextBlock Text="Berechtigungen ändern"/>
+                    <StackPanel.ToolTip>
+                        <ToolTip>
+                            <TextBlock Text="Allows or denies changing permissions of the file or folder."/>
+                        </ToolTip>
+                    </StackPanel.ToolTip>
                 </StackPanel>
 
                 <StackPanel Grid.Row="7" Grid.Column="2" Orientation="Horizontal">
                     <CheckBox IsChecked="{Binding folderAce.HasTakeOwnership, Mode=OneWay}" IsHitTestVisible="False"/>
                     <TextBlock Text="Besitz übernehmen"/>
+                    <StackPanel.ToolTip>
+                        <ToolTip>
+                            <TextBlock Text="Allows or denies taking ownership of the file or folder. The owner of a file or folder can always change permissions on it, regardless of any existing permissions that protect the file or folder."/>
+                        </ToolTip>
+                    </StackPanel.ToolTip>
                 </StackPanel>
 
             </Grid>
