@@ -4,7 +4,9 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Data.SqlClient;
+using System.Diagnostics;
 using System.Linq;
+using System.Runtime.InteropServices;
 using System.Security.AccessControl;
 using System.Text;
 using System.Threading.Tasks;
@@ -26,6 +28,16 @@ namespace ARPS
         /// Command der beim Klick im COntextMenu auf Details ausgelöst wird
         /// </summary>
         public ICommand ContextShowDetailsCommand { get; set; }
+
+        /// <summary>
+        /// Der Befehl der aus dem ContextMenu aufgerufen wird mit dem ein Ordner im Explorer geöffnet wird
+        /// </summary>
+        public ICommand ShowInExplorerCommand { get; set; }
+
+        /// <summary>
+        /// Der Befehl der aus dem ContextMenu aufgerufen wird mit dem die Einstellungen des Ordner geöffnet werden
+        /// </summary>
+        public ICommand ShowFilePropsCommand { get; set; }
         #endregion
 
 
@@ -110,6 +122,7 @@ namespace ARPS
         /// </summary>
         public ObservableCollection<PermissionItem> Children { get; set; }
 
+  
         #region Expand
         /// <summary>
         /// Sagt uns ob das aktuelle Item aufgeklappt ist oder nicht
@@ -230,6 +243,67 @@ namespace ARPS
         /// </summary>
         public bool CanExpand { get { return HasChildren; } }
         #endregion
+
+        #region ShowFileProperties
+        [DllImport("shell32.dll", CharSet = CharSet.Auto)]
+        static extern bool ShellExecuteEx(ref SHELLEXECUTEINFO lpExecInfo);
+
+        [StructLayout(LayoutKind.Sequential, CharSet = CharSet.Auto)]
+        public struct SHELLEXECUTEINFO
+        {
+            public int cbSize;
+            public uint fMask;
+            public IntPtr hwnd;
+            [MarshalAs(UnmanagedType.LPTStr)]
+            public string lpVerb;
+            [MarshalAs(UnmanagedType.LPTStr)]
+            public string lpFile;
+            [MarshalAs(UnmanagedType.LPTStr)]
+            public string lpParameters;
+            [MarshalAs(UnmanagedType.LPTStr)]
+            public string lpDirectory;
+            public int nShow;
+            public IntPtr hInstApp;
+            public IntPtr lpIDList;
+            [MarshalAs(UnmanagedType.LPTStr)]
+            public string lpClass;
+            public IntPtr hkeyClass;
+            public uint dwHotKey;
+            public IntPtr hIcon;
+            public IntPtr hProcess;
+        }
+
+        private const int SW_SHOW = 5;
+        private const uint SEE_MASK_INVOKEIDLIST = 12;
+        public static bool ShowFileProperties(string Filename)
+        {
+            SHELLEXECUTEINFO info = new SHELLEXECUTEINFO();
+            info.cbSize = System.Runtime.InteropServices.Marshal.SizeOf(info);
+            info.lpVerb = "properties";
+            info.lpFile = Filename;
+            info.nShow = SW_SHOW;
+            info.fMask = SEE_MASK_INVOKEIDLIST;
+            return ShellExecuteEx(ref info);
+        }
+        #endregion
+
+        /// <summary>
+        /// Öffnet den Ordner in einem Windows Explorer Fenster
+        /// </summary>
+        private void ShowFileProps()
+        {
+            // Öffnet die Einstellungen des Ordners
+            ShowFileProperties(UncPath);
+        }
+
+        /// <summary>
+        /// Öffnet den Ordner in einem Windows Explorer Fenster
+        /// </summary>
+        private void ShowInExplorer()
+        {
+            // Startet den Explorer und öffnet den Pfad
+            Process.Start(UncPath);
+        }
 
         /// <summary>
         /// Löscht alle Kinder in der Liste. Fügt ein Dummy Item hinzu damit das Symbol zum aufklappen angezeit wird, falls es nötig ist.
@@ -358,6 +432,8 @@ namespace ARPS
             // Erstelle Commands
             ExpandCommand = new RelayCommand(Expand);
             ContextShowDetailsCommand = new RelayCommand(ContextShowDetails);
+            ShowInExplorerCommand = new RelayCommand(ShowInExplorer);
+            ShowFilePropsCommand = new RelayCommand(ShowFileProps);
 
 
             Children = new ObservableCollection<PermissionItem>();

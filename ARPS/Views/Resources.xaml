@@ -14,6 +14,7 @@
             <ColumnDefinition Width="2*"/>
         </Grid.ColumnDefinitions>
 
+        <!-- Linke Seite - Treeview -->
         <TreeView x:Name="treeView_Directorys" Grid.Column="0" ItemsSource="{Binding Items}" BorderThickness="0" Margin="0 0 7 0" Padding="0 10">
             <TreeView.ItemContainerStyle>
                 <Style TargetType="{x:Type TreeViewItem}">
@@ -92,6 +93,12 @@
                                     </Style.Triggers>
                                 </Style>
                             </TextBlock.Style>
+                            <TextBlock.ContextMenu>
+                                <ContextMenu>
+                                    <MenuItem Header="In Explorer öffnen" Command="{Binding ShowInExplorerCommand}"/>
+                                    <MenuItem Header="Ordnereigenschaften öffnen" Command="{Binding ShowFilePropsCommand}"/>
+                                </ContextMenu>
+                            </TextBlock.ContextMenu>
                         </TextBlock>
                         <TextBlock Grid.Column="2" Text="{Binding ReadableSize}" VerticalAlignment="Center" HorizontalAlignment="Right" >
                             <TextBlock.Style>
@@ -115,7 +122,7 @@
         <!-- Rechte Seite - Infos -->
         <DockPanel Grid.Column="1">
             <!-- 1. Row - Folder and Path -->
-            <Grid DockPanel.Dock="Top" Margin="0 7">
+            <Grid DockPanel.Dock="Top" Margin="0 7"> 
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="40"/>
                     <ColumnDefinition Width="*"/>

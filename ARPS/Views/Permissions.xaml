@@ -203,6 +203,8 @@
                             <Border.ContextMenu>
                                 <ContextMenu>
                                     <MenuItem Header="Details" Command="{Binding ContextShowDetailsCommand}"/>
+                                    <MenuItem Header="In Explorer öffnen" Command="{Binding ShowInExplorerCommand}"/>
+                                    <MenuItem Header="Ordnereigenschaften öffnen" Command="{Binding ShowFilePropsCommand}"/>
                                 </ContextMenu>
                             </Border.ContextMenu>
                             
@@ -230,6 +232,7 @@
                                             </Style.Triggers>
                                         </Style>
                                     </TextBlock.Style>
+                                    
                                 </TextBlock>
 
                                 <Grid Grid.Column="2" Background="{StaticResource ArgesGrauBlau_hell}">
