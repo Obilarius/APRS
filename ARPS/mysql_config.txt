@@ -1,0 +1,5 @@
+﻿Data Source=ARPS\SQLEXPRESS
+Initial Catalog=ARPS
+User Id=LokalArps
+Password=nopasswd
+MultipleActiveResultSets=True

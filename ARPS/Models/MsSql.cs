@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Data.SqlClient;
+using System.Diagnostics;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -32,7 +34,7 @@ namespace ARPS
             //Con = new SqlConnection(@"Data Source=PC-W10-SW\MSSQLSERVER_DEV;Initial Catalog=ArgesPerm;Integrated Security=True;MultipleActiveResultSets=True");
             try
             {
-                Con = new SqlConnection(@"Data Source=ARPS\SQLEXPRESS;Initial Catalog=ARPS;User Id=LokalArps;Password=nopasswd;MultipleActiveResultSets=True");
+                Con = new SqlConnection(GetConString());
             }
             catch (Exception ex)
             {
@@ -54,6 +56,22 @@ namespace ARPS
         public void Close ()
         {
             Con.Close();
+        }
+
+        /// <summary>
+        /// Liest die Datei "mysql_config.txt" ein und baut daraus den Connection String zusammen
+        /// </summary>
+        /// <returns>Den Connection String für die MySQL Verbindung</returns>
+        private string GetConString()
+        {
+            // Liest en Pfad der exe aus und baut den Pfad zur Config Datei zusammen
+            string path = Path.GetDirectoryName(Process.GetCurrentProcess().MainModule.FileName) + @"\mysql_config.txt";
+            // Liest alle Zeilen der Config Datei in ein Array
+            string[] configLines = File.ReadAllLines(path);
+            // Verbindet die einzelnen Zeilen zu einem String mit ; getrennt
+            string conString = string.Join(";", configLines);
+
+            return conString;
         }
     }
 
