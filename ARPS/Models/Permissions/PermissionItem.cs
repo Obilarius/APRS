@@ -8,9 +8,6 @@ using System.Diagnostics;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Security.AccessControl;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows;
 using System.Windows.Input;
 
 namespace ARPS
@@ -348,7 +345,7 @@ namespace ARPS
             get
             {
                 FileSystemRights right = DirectoryACE.CalculateEffectiveRight_ThisFolder(directoryACEs);
-                return getRightText(right);
+                return getRightText(right, 1);
             }
             
         }
@@ -360,8 +357,8 @@ namespace ARPS
         {
             get
             {
-                var right = DirectoryACE.CalculateEffectiveRight_Subfolder(directoryACEs);
-                return getRightText(right);
+                FileSystemRights right = DirectoryACE.CalculateEffectiveRight_Subfolder(directoryACEs);
+                return getRightText(right, 2);
             }
         }
 
@@ -373,7 +370,7 @@ namespace ARPS
             get
             {
                 var right = DirectoryACE.CalculateEffectiveRight_Files(directoryACEs);
-                return getRightText(right);
+                return getRightText(right, 3);
             }
         }
 
@@ -382,16 +379,22 @@ namespace ARPS
         /// </summary>
         /// <param name="right"></param>
         /// <returns></returns>
-        private string getRightText(FileSystemRights right)
+        private string getRightText(FileSystemRights right, int type)
         {
             if (right.HasFlag(FileSystemRights.FullControl))
                 return "Vollzugriff";
             else if (right.HasFlag(FileSystemRights.Modify))
                 return "Ändern";
             else if (right.HasFlag(FileSystemRights.ReadAndExecute) && right.HasFlag(FileSystemRights.Write))
-                return "Lesen, Ausführen & Schreiben";
+                if (type != 3)
+                    return "Lesen, Durchqueren & Schreiben";
+                else
+                    return "Lesen, Ausführen & Schreiben";
             else if (right.HasFlag(FileSystemRights.ReadAndExecute))
-                return "Lesen, Ausführen";
+                if (type != 3)
+                    return "Lesen, Durchqueren";
+                else
+                    return "Lesen, Ausführen";
             else if (right.HasFlag(FileSystemRights.Read) && right.HasFlag(FileSystemRights.Write))
                 return "Lesen & Schreiben";
             else if (right.HasFlag(FileSystemRights.Read))
@@ -460,5 +463,6 @@ namespace ARPS
             Children = new ObservableCollection<PermissionItem>();
         }
         #endregion
+
     }
 }
