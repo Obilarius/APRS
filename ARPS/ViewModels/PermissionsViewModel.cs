@@ -61,7 +61,6 @@ namespace ARPS.ViewModels
                     UserSelectionChanged();
             }
         }
-
         
 
         #region Search
