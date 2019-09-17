@@ -19,11 +19,9 @@ namespace ARPS
         /// Die Liste enthält alle Zeilen der Kategorie
         /// </summary>
         public List<CountEnrty> Entrys { get; set; }
-
         #endregion
 
-        #region Cosntructor
-
+        #region Constructor
         /// <summary>
         /// Standard Konstruktor
         /// </summary>
