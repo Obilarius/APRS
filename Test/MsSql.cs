@@ -23,13 +23,14 @@ namespace Test
             //Con = new SqlConnection(@"Data Source=PC-W10-SW\MSSQLSERVER_DEV;Initial Catalog=ArgesPerm;Integrated Security=True;MultipleActiveResultSets=True");
             try
             {
-                Con = new SqlConnection(@"Data Source=8MAN\SQLEXPRESS;Initial Catalog=ARPS;User Id=LokalArps;Password=nopasswd;MultipleActiveResultSets=True");
+                Con = new SqlConnection(@"Data Source=ARPS\SQLEXPRESS;Initial Catalog=ARPS;User Id=LokalArps;Password=nopasswd;MultipleActiveResultSets=True");
             }
             catch (Exception ex)
             {
                 throw new Exception("Es konnte keine Vebindung zum MSSQL Server hergestellt werden! /n/r" + ex.Message);
             }
         }
+
 
         /// <summary>
         /// Öffnet die Verbindung zum MSSQL Server
