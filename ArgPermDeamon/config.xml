@@ -4,5 +4,8 @@
 <config>
   <servers>
     <server name="Apollon" displayname="Filer" type="1"/>
+    <server name="Hephaistos" displayname="Hephaistos" type="1"/>
+    <server name="Hades" displayname="Hades" type="1"/>
+    <server name="Maia" displayname="Maia" type="1"/>
   </servers>
 </config>

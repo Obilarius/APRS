@@ -7,6 +7,7 @@ using System.Linq;
 using System.Security.AccessControl;
 using System.Security.Principal;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using Trinet.Networking;
 
@@ -30,7 +31,7 @@ namespace ARPSDeamon
 
             //baut eine SQL Verbindung auf
             MsSql mssql = new MsSql();
-            mssql.Open();
+            //mssql.Open();
 
             // Der volle Pfad
             string _path_name = dInfo.FullName;
@@ -46,13 +47,13 @@ namespace ARPSDeamon
 
 
             //Ausgabe: Alle Pafde bis zur 3.Ebene werden ausgegeben
-            Index++;
-            if (_scan_deepth <= 5)
-            {
-                //Console.WriteLine(_path_name);
-                float percent = (float)Index / (float)Count * 100f;
-                Console.WriteLine(percent.ToString("n2") + $" % of {Count} -- {_path_name}");
-            }
+            //Index++;
+            //if (_scan_deepth <= 5)
+            //{
+            //    //Console.WriteLine(_path_name);
+            //    float percent = (float)Index / (float)Count * 100f;
+            //    Console.WriteLine(percent.ToString("n2") + $" % of {Count} -- {_path_name}");
+            //}
 
 
 
@@ -73,29 +74,29 @@ namespace ARPSDeamon
             #region Größenberechnung
 
             // Es gibt die Zeile
-            long _size;
-            if (_path_id != null)
-            {
-                sql = $"SELECT _size FROM {MsSql.TBL_tmp_FS_Dirs} WHERE _path_id = @PathId";
-                cmd = new SqlCommand(sql, mssql.Con);
-                // Der Hash wird als Parameter an den SQL Befehl gehängt
-                cmd.Parameters.AddWithValue("@PathId", _path_id);
+            long _size = 0;
+            //if (_path_id != null)
+            //{
+            //    sql = $"SELECT _size FROM {MsSql.TBL_tmp_FS_Dirs} WHERE _path_id = @PathId";
+            //    cmd = new SqlCommand(sql, mssql.Con);
+            //    // Der Hash wird als Parameter an den SQL Befehl gehängt
+            //    cmd.Parameters.AddWithValue("@PathId", _path_id);
 
-                // Öffnet die SQL Verbindung, führt die Abfrage durch und schließt die Verbindung wieder
-                mssql.Open();
-                // Falls es den abgefragten Datensatz schon gibt, bekommt man in index die ID des Datensatzen, sonnst null
-                var size = cmd.ExecuteScalar();
-                mssql.Close();
+            //    // Öffnet die SQL Verbindung, führt die Abfrage durch und schließt die Verbindung wieder
+            //    mssql.Open();
+            //    // Falls es den abgefragten Datensatz schon gibt, bekommt man in index die ID des Datensatzen, sonnst null
+            //    var size = cmd.ExecuteScalar();
+            //    mssql.Close();
 
-                if ((long)size == 0 || size == null)
-                    _size = DirSize(dInfo);
-                else
-                    _size = (long)size;
-            }
-            else
-            {
-                _size = DirSize(dInfo);
-            }
+            //    if ((long)size == 0 || size == null)
+            //        _size = DirSize(dInfo);
+            //    else
+            //        _size = (long)size;
+            //}
+            //else
+            //{
+            //    _size = DirSize(dInfo);
+            //}
             #endregion
 
             // Liest alle Unterordner in ein Array
@@ -123,7 +124,7 @@ namespace ARPSDeamon
             // Ob der Ordner Unterordner hat oder nicht
             int _has_children = (childs.Length > 0) ? 1 : 0;
 
-            // Hash ist noch nicht vorhanden
+            //Hash ist noch nicht vorhanden
             if (_path_id == null)
             {
                 // Der SQL Befehl zum INSERT in die Datenbank
@@ -199,6 +200,7 @@ namespace ARPSDeamon
         /// <param name="displayname">Der Name als die der Server angezeigt werden soll</param>
         internal static void GetSharesSecurity(Share share, string displayname)
         {
+            if (share.NetName != "Install") return;
             DirectoryInfo dInfo = new DirectoryInfo(share.ToString());
 
             if (dInfo == null)
@@ -390,7 +392,7 @@ namespace ARPSDeamon
 
             //baut eine SQL Verbindung auf
             MsSql mssql = new MsSql();
-            mssql.Open();
+            //mssql.Open();
 
             foreach (FileSystemAccessRule ace in acl)
             {
@@ -509,10 +511,12 @@ namespace ARPSDeamon
         static long DirSize(DirectoryInfo d)
         {
             // TODO: Wird aktuell geskippt das es zu lange dauert (Lauf ca.5h)
-            //return 0;
+            return 0;
 
             long size = 0;
 
+
+            #region Original - Ohne FastDirectoryEnumerator
             FileInfo[] fis;
             // Add file sizes.
             try
@@ -535,6 +539,43 @@ namespace ARPSDeamon
                 size += DirSize(di);
             }
             return size;
+            #endregion
+
+            //List<FileData> fis = null;
+            //// Add file sizes.
+            //try
+            //{
+            //    var temp = FastDirectoryEnumerator.EnumerateFiles(d.FullName);
+            //    fis = new List<FileData>(temp);
+            //}
+            //catch (Exception)
+            //{
+            //    return size;
+            //}
+
+            //foreach (FileData fi in fis)
+            //{
+            //    size += fi.Size;
+            //}
+
+
+            //DirectoryInfo[] dis = null; ;
+
+            //try
+            //{
+            //    dis = d.GetDirectories();
+            //}
+            //catch (Exception)
+            //{
+            //    return size;
+            //}
+
+            //// Add subdirectory sizes.
+            //foreach (DirectoryInfo di in dis)
+            //{
+            //    size += DirSize(di);
+            //}
+            //return size;
         }
     }
 }

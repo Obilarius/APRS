@@ -83,6 +83,7 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>ArgesPermDataSet.xsd</DependentUpon>
     </Compile>
+    <Compile Include="Helper\FastDirectoryEnumerator.cs" />
     <Compile Include="Helper\FSWorker.cs" />
     <Compile Include="Helper\Helper.cs" />
     <Compile Include="Helper\Log.cs" />

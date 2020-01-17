@@ -36,10 +36,12 @@ namespace ARPSMSSQL
 
         #endregion
 
+
+        //TODO: Umgestellt auf Test Datenbank
         /// <summary>
         /// Connection String
         /// </summary>
-        private string conString = @"Data Source=ARPS\SQLEXPRESS;Initial Catalog=ARPS;User Id=LokalArps;Password=nopasswd;MultipleActiveResultSets=True";
+        private string conString = @"Data Source=ARPS\SQLEXPRESS;Initial Catalog=ARPS_Test;User Id=LokalArps;Password=nopasswd;MultipleActiveResultSets=True";
 
         /// <summary>
         /// Hält die MSSQL Vebindung

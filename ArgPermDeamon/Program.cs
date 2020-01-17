@@ -22,7 +22,7 @@ namespace ARPSDeamon
 
             // Arbeitet das AD ab. Liest User, Gruppen und Computer ein
             Log.write("AD wird eingelesen...", true, false);
-            WorkOnAD();
+            //WorkOnAD();
             Log.write("fertig", false, true);
 
             // Liest die Config ein

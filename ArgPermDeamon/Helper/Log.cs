@@ -25,6 +25,10 @@ namespace ARPSDeamon
             StreamWriter LogWriter = new StreamWriter(filename, true);
             LogWriter.WriteLine(log);
             LogWriter.Close();
+
+            #if DEBUG
+                Console.WriteLine(log);
+            #endif
         }
 
 
@@ -48,8 +52,18 @@ namespace ARPSDeamon
             StreamWriter LogWriter = new StreamWriter(filename, true);
             LogWriter.Write(log);
 
+            #if DEBUG
+                Console.Write(log);
+            #endif
+
             if (lineEnd)
+            {
                 LogWriter.WriteLine();
+
+                #if DEBUG
+                    Console.WriteLine();
+                #endif
+            }
 
             LogWriter.Close();
         }

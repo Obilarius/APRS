@@ -20,7 +20,7 @@ namespace Test
 
         static void Main(string[] args)
         {
-            ShareSecurity("Hades");
+            ShareSecurity("Maia");
 
             Console.ReadKey();
         }
@@ -100,7 +100,7 @@ namespace Test
                             // Öffnet die SQL Verbindung
                             //mssql.Open();
                             // Führt die Query aus
-                            _path_id = (int)cmd.ExecuteScalar();
+                            var ace_id = (int)cmd.ExecuteScalar();
                             //Schließt die Verbindung
                             //mssql.Close();
                         }
