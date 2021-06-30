@@ -22,11 +22,18 @@ namespace ARPSDeamon
         public List<ConfigServer> Servers { get; set; }
 
         /// <summary>
+        /// Hält den ConnectionString für die SQL Datenbank aus der Config
+        /// </summary>
+        public string SqlConString { get; set; }
+
+
+        /// <summary>
         /// Konstruktor
         /// </summary>
         public Config()
         {
             Servers = GetServersFromConfig();
+            SqlConString = GetSQLConString();
         }
 
         /// <summary>
@@ -60,6 +67,36 @@ namespace ARPSDeamon
                 }
             }
             return retList;
+        }
+
+        /// <summary>
+        /// Liest die Config aus und gibt den Connection String zurück
+        /// </summary>
+        string GetSQLConString()
+        {
+            // Liest die config Datei in ein TextReader Objekt
+            XmlTextReader xtr = new XmlTextReader(path);
+
+            // Liest jede Zeile der XML Datei
+            while (xtr.Read())
+            {
+                // Wenn die Node ein Element ist, der Name der Node ist "server" und die Node hat 3 Attribute
+                if (xtr.NodeType == XmlNodeType.Element &&
+                    xtr.Name == "sqlCon")
+                {
+                    // Speichert die einzelnen Attribute in Variablen
+                    string conString = xtr.GetAttribute(0);
+
+                    if (conString != null && conString.Trim().Length > 0)
+                    {
+                        return conString;
+                    } else { 
+                        return null; 
+                    }
+                }
+            }
+
+            return null;
         }
     }
 

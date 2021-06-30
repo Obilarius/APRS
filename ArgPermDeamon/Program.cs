@@ -16,15 +16,6 @@ namespace ARPSDeamon
             Stopwatch sw = new Stopwatch();
             sw.Start();
 
-            MsSql.DeleteTempTables();
-            MsSql.CreateTempTables();
-            Log.writeLine("Temp Datenbanken wurden erstellt");
-
-            // Arbeitet das AD ab. Liest User, Gruppen und Computer ein
-            Log.write("AD wird eingelesen...", true, false);
-            //WorkOnAD();
-            Log.write("fertig", false, true);
-
             // Liest die Config ein
             Log.write("Config wird eingelesen...", true, false);
             Config config;
@@ -38,6 +29,16 @@ namespace ARPSDeamon
                 throw;
             }
             Log.write("fertig", false, true);
+
+            MsSql.DeleteTempTables();
+            MsSql.CreateTempTables();
+            Log.writeLine("Temp Datenbanken wurden erstellt");
+
+            // Arbeitet das AD ab. Liest User, Gruppen und Computer ein
+            Log.write("AD wird eingelesen...", true, true);
+            ADWorker.ReadCompleteAD();
+
+            
 
             // Läuft über jeden Server der Config
             foreach (var server in config.Servers)
@@ -66,13 +67,7 @@ namespace ARPSDeamon
         }
 
 
-        /// <summary>
-        /// Arbeitet das Active Directory ab
-        /// </summary>
-        static void WorkOnAD()
-        {
-            ADWorker.ReadCompleteAD();
-        }
+
         
         /// <summary>
         /// Arbeitet einen FileServer ab

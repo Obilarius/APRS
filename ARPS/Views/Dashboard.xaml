@@ -17,7 +17,7 @@
         </Grid.ColumnDefinitions>
         
         <!-- TODO: Linke Seite -->
-        <Image Source="{StaticResource ArgesLogoBig}" Margin="100" MaxWidth="300"/>
+        <Image Source="{StaticResource ZieglerLogoBig}" Margin="62,100" MaxWidth="300"/>
 
         <!-- Splitter-->
         <GridSplitter Grid.Column="0" BorderBrush="{StaticResource ArgesGrauBlau_hell}" BorderThickness="4"></GridSplitter>

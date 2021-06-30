@@ -21,6 +21,7 @@
 
     <!-- LOGOS -->
     <BitmapImage x:Key="ArgesLogoBig" UriSource="pack://application:,,,/Resources/Images/logos/ARGES_logo.png"/>
+    <BitmapImage x:Key="ZieglerLogoBig" UriSource="pack://application:,,,/Resources/Images/logos/Ziegler_logo.png"/>
     
     <!-- BUTTON -->
     <BitmapImage x:Key="ButtonPlus" UriSource="pack://application:,,,/Resources/Images/button/plus_24x.png"/>

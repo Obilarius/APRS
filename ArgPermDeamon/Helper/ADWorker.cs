@@ -15,9 +15,15 @@ namespace ARPSDeamon
         /// </summary>
         public static void ReadCompleteAD()
         {
+            Log.write("AD User werden eingelesen...", true, false);
             GetAllADUsers();
+            Log.write("fertig", false, true);
+            Log.write("AD Gruppen werden eingelesen...", true, false);
             GetAllADGroups();
+            Log.write("fertig", false, true);
+            Log.write("AD Computer werden eingelesen...", true, false);
             GetAllADComputer();
+            Log.write("fertig", false, true);
         }
 
         /// <summary>
@@ -86,13 +92,15 @@ namespace ARPSDeamon
                 {
                     int isSecurityGroup = (bool)grp.IsSecurityGroup ? 1 : 0;
 
+                    string grpDesc = (string.IsNullOrEmpty(grp.Description)) ? null : grp.Description.Replace("'", "`");
+
                     string sql = $"IF NOT EXISTS (SELECT * FROM {MsSql.TBL_tmp_AD_Groups} WHERE SID = '{grp.Sid}') " +
                                         $"INSERT INTO {MsSql.TBL_tmp_AD_Groups}(SID, SamAccountName, DistinguishedName, Name, Description, IsSecurityGroup, GroupScope) " +
                                         $"VALUES ('{grp.Sid}', " +
                                             $"'{grp.SamAccountName}', " +
                                             $"'{grp.DistinguishedName}', " +
                                             $"'{grp.Name}', " +
-                                            $"'{grp.Description}', " +
+                                            $"'{grpDesc}', " +
                                             $"'{isSecurityGroup}', " +
                                             $"'{grp.GroupScope}') " +
                                  $"ELSE " +
@@ -100,7 +108,7 @@ namespace ARPSDeamon
                                         $"SET SamAccountName = '{grp.SamAccountName}', " +
                                             $"DistinguishedName = '{grp.DistinguishedName}', " +
                                             $"Name = '{grp.Name}', " +
-                                            $"Description = '{grp.Description}', " +
+                                            $"Description = '{grpDesc}', " +
                                             $"IsSecurityGroup = '{isSecurityGroup}', " +
                                             $"GroupScope = '{grp.GroupScope}'" +
                                         $"WHERE SID = '{grp.Sid}'";

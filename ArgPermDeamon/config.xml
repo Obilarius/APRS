@@ -2,10 +2,8 @@
 <!--<server name="Apollon" displayname="Filer" type="1"/>-->
 <!--types: 1 = FileServer --> 
 <config>
+  <sqlCon string="Data Source=ARPS\SQLEXPRESS;Initial Catalog=ARPS_Test;User Id=LokalArps;Password=nopasswd;MultipleActiveResultSets=True" />
   <servers>
-    <server name="Apollon" displayname="Filer" type="1"/>
-    <server name="Hephaistos" displayname="Hephaistos" type="1"/>
-    <server name="Hades" displayname="Hades" type="1"/>
-    <server name="Maia" displayname="Maia" type="1"/>
+    <server name="debe-svfile01" displayname="debe-svfile01" type="1"/>
   </servers>
 </config>

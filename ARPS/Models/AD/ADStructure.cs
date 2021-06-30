@@ -294,10 +294,10 @@ namespace ARPS
 
             // Der SQL Befehl um alle Ordner abzurufen die root sind
             string sql = $"SELECT gu.userSID, CASE WHEN u.SID IS NULL THEN 1 ELSE 0 END as _is_group, u.* " +
-                $"FROM ARPS_Test.dbo.adgroups g " +
-                $"JOIN ARPS_Test.dbo.grp_user gu " +
+                $"FROM ARPS.dbo.adgroups g " +
+                $"JOIN ARPS.dbo.grp_user gu " +
                 $"ON g.SID = gu.grpSID " +
-                $"LEFT JOIN ARPS_Test.dbo.adusers u " +
+                $"LEFT JOIN ARPS.dbo.adusers u " +
                 $"ON u.SID = gu.userSID " +
                 $"WHERE g.SID = @GroupSid ";
 
@@ -362,8 +362,8 @@ namespace ARPS
 
             // Der SQL Befehl um alle Gruppen eines 
             string sql = $"SELECT g.* " +
-                $"FROM ARPS_Test.dbo.grp_user gu " +
-                $"LEFT JOIN ARPS_Test.dbo.adgroups g " +
+                $"FROM ARPS.dbo.grp_user gu " +
+                $"LEFT JOIN ARPS.dbo.adgroups g " +
                 $"ON gu.grpSID = g.SID " +
                 $"WHERE gu.userSID = @UserSID";
 

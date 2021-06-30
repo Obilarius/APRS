@@ -1,5 +1,5 @@
-﻿Data Source=ARPS\SQLEXPRESS
+﻿Data Source=DEBE-NB088\SQLEXPRESS
 Initial Catalog=ARPS
-User Id=LokalArps
-Password=nopasswd
+User Id=arps_user
+Password=arps
 MultipleActiveResultSets=True
